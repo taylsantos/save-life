@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOS HERO - Ultimate Edition Pro</title>
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+
+<style>
+:root {
+    --bg-gradient: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    --container-bg: rgba(255, 255, 255, 0.08);
+    --text-color: #ffffff;
+    --accent-color: #00e676;
+    --card-bg: rgba(0, 0, 0, 0.4);
+}
+
+body {
+    margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--bg-gradient); color: var(--text-color);
+    text-align: center; min-height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden;
+}
+
+.app-container {
+    max-width: 450px; width: 92%; height: 95vh; margin: auto; padding: 15px;
+    background: var(--container-bg); border-radius: 30px; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex; flex-direction: column; position: relative; box-sizing: border-box;
+}
+
+.screen { display: none; flex-direction: column; height: 100%; overflow: hidden; }
+.active-screen { display: flex; }
+
+h1 { font-size: 22px; margin: 5px 0; text-shadow: 0 2px 4px rgba(0,0,0,0.4); }
+p { font-size: 13px; opacity: 0.9; line-height: 1.4; margin: 4px 0; }
+
+button {
+    display: block; width: 100%; margin: 6px 0; padding: 12px; font-size: 14px; font-weight: bold; border: none; border-radius: 14px; cursor: pointer; transition: all 0.2s ease;
+    background: white; color: #1e3c72; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+button:active { transform: scale(0.97); }
+.btn-menu-play { background: #00c853; color: white; }
+.btn-menu-games { background: #ff007f; color: white; }
+.btn-menu-sos { background: #ff9100; color: white; }
+.btn-back { background: rgba(255,255,255,0.15); color: white; margin-top: auto; padding: 10px; border: 1px solid rgba(255,255,255,0.1); }
+
+.ranking-container { background: rgba(0,0,0,0.4); padding: 10px; border-radius: 16px; margin-bottom: 10px; }
+.rank-bar { width: 100%; background: rgba(255,255,255,0.15); height: 8px; border-radius: 4px; margin-top: 5px; overflow: hidden; }
+.rank-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #00c853, #00e676); transition: width 0.5s; }
+
+.games-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; overflow-y: auto; flex-grow: 1; }
+.game-card { background: var(--card-bg); padding: 10px; border-radius: 14px; border-bottom: 3px solid #ff007f; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.game-card span { font-size: 20px; margin-bottom: 2px; }
+.game-card strong { font-size: 11px; }
+
+.guide-list { overflow-y: auto; flex-grow: 1; }
+.guide-box { background: rgba(0,0,0,0.3); padding: 10px; border-radius: 14px; text-align: left; margin-bottom: 6px; border-left: 4px solid #ff9100; cursor: pointer; }
+.search-input { width: 100%; background: rgba(0,0,0,0.5); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 8px; border-radius: 10px; margin-bottom: 8px; box-sizing: border-box; }
+
+.correct { background: #2e7d32 !important; color: white !important; }
+.wrong { background: #c62828 !important; color: white !important; }
+</style>
+</head>
+<body>
+
+<div class="app-container">
+
+    <div id="screen-menu" class="screen active-screen">
+        <div style="margin-top: 10px;">
+            <span style="font-size: 45px;">🚑</span>
+            <h1>SOS HERO</h1>
+            <p>O aplicativo definitivo que salva vidas</p>
+        </div>
+
+        <div class="ranking-container">
+            <span style="font-size:12px; font-weight:bold;">Seu Ranking: Socorrista Iniciante</span>
+            <div class="rank-bar"><div class="rank-fill" style="width: 25%;"></div></div>
+        </div>
+
+        <div style="margin-top: 20px;">
+            <button class="btn-menu-play" onclick="changeScreen('screen-game')">🎮 QUIZ DE SIMULAÇÃO</button>
+            <button class="btn-menu-games" onclick="changeScreen('screen-games-menu')">🕹️ CENTRAL DE MINI-JOGOS</button>
+            <button class="btn-menu-sos" onclick="changeScreen('screen-sos')">🚨 GUIA SOS / VOZ</button>
+        </div>
+        <p style="margin-top: auto; font-size: 10px; opacity: 0.5;">SOS HERO Versão Completa Original v1.0</p>
+    </div>
+
+    <div id="screen-games-menu" class="screen">
+        <h1>🕹️ MINI-JOGOS</h1>
+        <div class="games-grid">
+            <div class="game-card" onclick="alert('Iniciando simulador de ritmo RCP...')"><span>❤️</span><strong>Ritmo RCP</strong></div>
+            <div class="game-card" onclick="alert('Iniciando simulador DEA...')"><span>⚡</span><strong>Operação DEA</strong></div>
+            <div class="game-card" onclick="alert('Iniciando simulador Heimlich...')"><span>🥖</span><strong>Manobra Heimlich</strong></div>
+            <div class="game-card" onclick="alert('Iniciando montagem de maleta...')"><span>💼</span><strong>Montar Maleta</strong></div>
+        </div>
+        <button class="btn-back" onclick="changeScreen('screen-menu')">↩ Voltar</button>
+    </div>
+
+    <div id="screen-game" class="screen">
+        <div style="font-weight: bold; margin-bottom: 10px; color: #ff5252;">❤️❤️❤️</div>
+        <h2>Missão de Salvamento</h2>
+        <p id="question">Uma pessoa engasgou e NÃO consegue emitir som ou tossir. O que fazer?</p>
+        <div id="answers">
+            <button onclick="this.className='correct'">Fazer Manobra de Heimlich</button>
+            <button onclick="this.className='wrong'">Dar água ou bater nas costas em pé</button>
+        </div>
+        <button class="btn-back" onclick="changeScreen('screen-menu')">↩ Menu</button>
+    </div>
+
+    <div id="screen-sos" class="screen">
+        <h1>🚨 SOS GUIDE</h1>
+        <input type="text" class="search-input" placeholder="🔍 Buscar procedimento...">
+        <div class="guide-list">
+            <div class="guide-box" onclick="speakSOS('Em adultos engasgados, aplique a Manobra de Heimlich empurrando a boca do estômago para dentro e para cima.')">
+                <h3>🚑 Engasgo (Adultos)</h3>
+                <p>Aplique compressões abdominais para dentro e para cima (Heimlich).</p>
+            </div>
+            <div class="guide-box" onclick="speakSOS('Em caso de infarto, ligue para o 192 e acalme a vítima imediatamente.')">
+                <h3>🫀 Infarto Clínico</h3>
+                <p>Dor no peito que irradia para o braço. Chame o SAMU (192).</p>
+            </div>
+        </div>
+        <button class="btn-back" onclick="changeScreen('screen-menu')">↩ Voltar</button>
+    </div>
+
+</div>
+
+<script>
+function changeScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active-screen'));
+    document.getElementById(id).classList.add('active-screen');
+}
+
+function speakSOS(text) {
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'pt-BR';
+    window.speechSynthesis.speak(utterance);
+}
+</script>
+
+</body>
+</html>
