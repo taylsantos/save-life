@@ -1,690 +1,495 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SOS HERO - Gold Edition Pro</title>
-
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="mobile-web-app-capable" content="yes">
-
-<style>
-:root {
-    --bg-gradient: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-    --container-bg: rgba(255, 255, 255, 0.08);
-    --text-color: #ffffff;
-    --accent-color: #00e676;
-    --card-bg: rgba(0, 0, 0, 0.4);
-}
-
-.night-mode {
-    --bg-gradient: linear-gradient(135deg, #000000, #110000, #220000);
-    --container-bg: rgba(255, 0, 0, 0.04);
-    --text-color: #ff5252;
-    --accent-color: #ff1744;
-    --card-bg: rgba(20, 0, 0, 0.6);
-}
-
-body {
-    margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: var(--bg-gradient); color: var(--text-color);
-    text-align: center; min-height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; transition: background 0.3s;
-}
-
-.app-container {
-    max-width: 450px; width: 92%; height: 95vh; margin: auto; padding: 15px;
-    background: var(--container-bg); border-radius: 30px; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1);
-    display: flex; flex-direction: column; position: relative; box-sizing: border-box;
-}
-
-@keyframes shake {
-    0%, 100% { transform: translate(0, 0); }
-    25% { transform: translate(-6px, 3px); }
-    50% { transform: translate(6px, -3px); }
-    75% { transform: translate(-4px, -2px); }
-}
-.shake-effect { animation: shake 0.15s ease-in-out 2; border: 2px solid #ff1744 !important; }
-
-@keyframes flash-bg { 0% { background: white; } 100% { background: transparent; } }
-.flash-effect { animation: flash-bg 0.25s ease-out 1; }
-
-.screen { display: none; flex-direction: column; height: 100%; overflow: hidden; }
-.active-screen { display: flex; }
-
-h1 { font-size: 22px; margin: 5px 0; text-shadow: 0 2px 4px rgba(0,0,0,0.4); }
-p { font-size: 13px; opacity: 0.9; line-height: 1.4; margin: 4px 0; }
-
-button {
-    display: block; width: 100%; margin: 6px 0; padding: 12px; font-size: 14px; font-weight: bold; border: none; border-radius: 14px; cursor: pointer; transition: all 0.2s ease;
-    background: white; color: #1e3c72; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-}
-button:disabled { opacity: 0.4; cursor: not-allowed; }
-button:active { transform: scale(0.97); }
-.btn-menu-play { background: #00c853; color: white; }
-.btn-menu-games { background: #ff007f; color: white; }
-.btn-menu-sos { background: #ff9100; color: white; }
-.btn-back { background: rgba(255,255,255,0.15); color: white; margin-top: auto; padding: 10px; border: 1px solid rgba(255,255,255,0.1); }
-.btn-next-quiz { background: #ff9100; color: white; display: none; padding: 14px; border-radius: 14px; font-weight: bold; box-shadow: 0 4px 12px rgba(255,145,0,0.3); margin: 8px 0; }
-
-.config-row { display: flex; justify-content: center; gap: 8px; margin-bottom: 10px; align-items: center; }
-.lang-btn, .theme-btn { font-size: 18px; background: none; box-shadow: none; width: auto; padding: 4px; margin: 0; }
-.diff-select, .name-input, .search-input { background: rgba(0,0,0,0.5); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 6px; border-radius: 10px; font-weight: bold; font-size: 12px; outline: none; }
-.name-input { width: 85px; text-align: center; border-bottom: 2px solid var(--accent-color); }
-.search-input { width: 100%; margin-bottom: 8px; box-sizing: border-box; }
-
-.ranking-container { background: rgba(0,0,0,0.4); padding: 10px; border-radius: 16px; margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.05); }
-.rank-bar { width: 100%; background: rgba(255,255,255,0.15); height: 8px; border-radius: 4px; margin-top: 5px; overflow: hidden; }
-.rank-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #00c853, #00e676); transition: width 0.5s cubic-bezier(0.1, 0.8, 0.2, 1); }
-
-.games-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; overflow-y: auto; flex-grow: 1; padding-right: 2px; }
-.game-card { background: var(--card-bg); padding: 10px; border-radius: 14px; border-bottom: 3px solid #ff007f; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: all 0.2s; border: 1px solid rgba(255,255,255,0.05); }
-.game-card:active { transform: translateY(2px); }
-.game-card span { font-size: 20px; margin-bottom: 2px; }
-.game-card strong { font-size: 11px; }
-
-.medal-box { display: flex; justify-content: flex-start; gap: 4px; margin-bottom: 8px; background: rgba(0,0,0,0.3); padding: 6px; border-radius: 14px; overflow-x: auto; max-width: 100%; }
-.medal { font-size: 16px; opacity: 0.15; filter: grayscale(100%); transition: all 0.4s; flex-shrink: 0; }
-.medal-unlocked { opacity: 1 !important; filter: grayscale(0%) !important; transform: scale(1.1); text-shadow: 0 0 8px rgba(255,215,0,0.6); }
-
-.game-canvas { background: rgba(0,0,0,0.45); border-radius: 18px; padding: 12px; margin: 8px 0; position: relative; height: 130px; display: flex; align-items: center; justify-content: center; box-sizing: border-box; border: 1px solid rgba(255,255,255,0.08); overflow: hidden; }
-.avc-face { font-size: 44px; cursor: pointer; position: absolute; user-select: none; }
-.bounce-animation { font-size: 42px; animation: wave 0.4s infinite alternate; }
-@keyframes wave { from { transform: translateY(0); } to { transform: translateY(-6px); } }
-
-@keyframes rcp-shock-jump {
-    0% { transform: translateY(0) scale(1); }
-    20% { transform: translateY(-35px) scaleY(1.2); }
-    50% { transform: translateY(-35px) scale(1); }
-    100% { transform: translateY(0) scale(1); }
-}
-.shock-jump { animation: rcp-shock-jump 0.5s ease-out 1; }
-
-.tinder-box { flex-grow: 1; display: flex; align-items: center; justify-content: center; position: relative; width: 100%; }
-.tinder-card { width: 88%; height: 130px; background: linear-gradient(135deg, #ff007f, #7928ca); border-radius: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 15px; box-sizing: border-box; position: absolute; box-shadow: 0 8px 20px rgba(0,0,0,0.3); transition: transform 0.3s ease, opacity 0.3s ease; border: 3px solid transparent; }
-.tinder-buttons { display: flex; justify-content: center; gap: 30px; }
-.btn-tinder-left { background: #d32f2f; color: white; font-size: 18px; border-radius: 50%; width: 45px; height: 45px; padding:0; }
-.btn-tinder-right { background: #388e3c; color: white; font-size: 18px; border-radius: 50%; width: 45px; height: 45px; padding:0; }
-
-.maleta-list { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; overflow-y: auto; max-height: 140px; width: 100%; }
-.item-checkbox { background: rgba(255,255,255,0.12); padding: 10px; border-radius: 12px; cursor: pointer; font-size: 11px; font-weight: bold; }
-.item-selected { background: linear-gradient(135deg, #ff9100, #ff6d00) !important; border: 1px solid white; }
-
-.progress-container-game { width: 100%; background: rgba(255,255,255,0.15); height: 16px; border-radius: 8px; overflow: hidden; margin-bottom: 12px; }
-.progress-fill-game { width: 0%; height: 100%; background: linear-gradient(90deg, #ff5252, #ff1744); transition: all 0.1s linear; }
-
-.quiz-status-bar { display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.2); padding: 5px 12px; border-radius: 10px; margin-bottom: 5px; font-size: 13px; font-weight: bold; }
-.guide-list { overflow-y: auto; flex-grow: 1; padding-right: 2px; }
-.guide-box { background: rgba(0,0,0,0.3); padding: 10px; border-radius: 14px; text-align: left; margin-bottom: 6px; border-left: 4px solid #ff9100; cursor: pointer; }
-.correct { background: #2e7d32 !important; color: white !important; }
-.wrong { background: #c62828 !important; color: white !important; }
-
-.dea-pad { width: 45%; padding: 10px; border: 2px dashed #00e676; border-radius: 10px; font-size: 12px; font-weight: bold; cursor: pointer; text-align: center; background: rgba(0,0,0,0.3); }
-.dea-pad-placed { background: #00c853 !important; border-style: solid; color: white; }
-.btn-shock { background: #ff1744; color: white; font-size: 18px; font-weight: 900; display: none; width: 100%; animation: blink-shock 0.5s infinite alternate; }
-@keyframes blink-shock { from { box-shadow: 0 0 5px #ff1744; } to { box-shadow: 0 0 20px #ff1744; transform: scale(1.02); } }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema ICQA - Task Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body>
+<body class="bg-gray-50 text-gray-800 font-sans antialiased">
 
-<div class="app-container" id="main-container">
-
-    <div class="config-row" id="global-config">
-        <button class="lang-btn" onclick="setLanguage('pt')">🇧🇷</button>
-        <button class="lang-btn" onclick="setLanguage('es')">🇪🇸</button>
-        <button class="theme-btn" onclick="toggleTheme()">🚑</button>
-        <input type="text" id="hero-name" class="name-input" value="Hero" onchange="saveName()">
-        <select id="diff-select" class="diff-select" onchange="setDifficulty()">
-            <option value="easy" id="opt-easy">Fácil</option>
-            <option value="medium" id="opt-medium" selected>Médio</option>
-            <option value="hard" id="opt-hard">Difícil</option>
-        </select>
-    </div>
-
-    <div id="screen-menu" class="screen active-screen">
-        <div style="margin-top: 10px;">
-            <span style="font-size: 45px;">🚑</span>
-            <h1 id="menu-title">SOS HERO</h1>
-            <p id="menu-subtitle">O aplicativo definitivo que salva vidas</p>
+    <header class="bg-yellow-500 shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 flex justify-between items-center h-16">
+            <div class="flex items-center space-x-2 text-blue-900 font-bold text-xl">
+                <i data-lucide="clipboard-check"></i>
+                <span>Meli ICQA Portal</span>
+            </div>
+            <nav class="flex space-x-1 bg-yellow-600/30 p-1 rounded-lg">
+                <button onclick="switchTab('conferencia')" id="btn-conferencia" class="tab-btn px-4 py-2 rounded-md text-sm font-medium transition bg-blue-900 text-white shadow">
+                    Conferência
+                </button>
+                <button onclick="switchTab('auditoria')" id="btn-auditoria" class="tab-btn px-4 py-2 rounded-md text-sm font-medium transition text-blue-900 hover:bg-yellow-400">
+                    Auditoria Suporte
+                </button>
+                <button onclick="switchTab('dashboard')" id="btn-dashboard" class="tab-btn px-4 py-2 rounded-md text-sm font-medium transition text-blue-900 hover:bg-yellow-400">
+                    Dashboard Supervisor
+                </button>
+            </nav>
         </div>
+    </header>
 
-        <div class="ranking-container">
-            <span id="rank-label" style="font-size:12px; font-weight:bold;">Ranking: ...</span>
-            <div class="rank-bar"><div id="rank-fill" class="rank-fill"></div></div>
-        </div>
+    <main class="max-w-7xl mx-auto px-4 py-8">
 
-        <div style="margin-top: 20px;">
-            <button class="btn-menu-play" id="btn-menu-play" onclick="changeScreen('screen-game')">🎮 QUIZ DE SIMULAÇÃO</button>
-            <button class="btn-menu-games" id="btn-menu-games" onclick="changeScreen('screen-games-menu')">🕹️ CENTRAL DE MINI-JOGOS</button>
-            <button class="btn-menu-sos" id="btn-menu-sos" onclick="changeScreen('screen-sos')">🚨 GUIA SOS / VOZ</button>
-        </div>
-        <p style="margin-top: auto; font-size: 10px; opacity: 0.5;">SOS HERO Pro Pack v7.9</p>
-    </div>
+        <section id="tab-conferencia" class="tab-content block">
+            <div class="max-w-2xl mx-auto bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                <div class="flex items-center space-x-3 mb-6 border-b pb-4">
+                    <div class="bg-blue-100 p-2 rounded-lg text-blue-900"><i data-lucide="map-pin"></i></div>
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-900">Nova Conferência ICQA</h2>
+                        <p class="text-xs text-gray-500">Insira os dados coletados diretamente no endereço</p>
+                    </div>
+                </div>
 
-    <div id="screen-games-menu" class="screen">
-        <h1 id="games-menu-title">🕹️ MINI-JOGOS</h1>
-        <div class="medal-box">
-            <span id="medal-rcp" class="medal">❤️</span><span id="medal-tinder" class="medal">🛡️</span>
-            <span id="medal-heimlich" class="medal">🥖</span><span id="medal-maleta" class="medal">💼</span>
-            <span id="medal-avc" class="medal">🧠</span><span id="medal-triage" class="medal">🔀</span>
-            <span id="medal-fever" class="medal">🧊</span><span id="medal-sprain" class="medal">🦵</span>
-            <span id="medal-dea" class="medal">⚡</span><span id="medal-chem" class="medal">🧪</span>
-            <span id="medal-fract" class="medal">🦴</span><span id="medal-eye" class="medal">👁️</span>
-        </div>
-        <div class="games-grid">
-            <div class="game-card" onclick="startRhythmGame()"><span>❤️</span><strong id="g1-title">Ritmo RCP</strong></div>
-            <div class="game-card" onclick="startTinderGame()"><span>🔥</span><strong id="g2-title">Certo ou Mito</strong></div>
-            <div class="game-card" onclick="startChokeGame()"><span>🥖</span><strong id="g3-title">Heimlich</strong></div>
-            <div class="game-card" onclick="startMaletaGame()"><span>💼</span><strong id="g4-title">Montar Maleta</strong></div>
-            <div class="game-card" onclick="startAvcGame()"><span>🧠</span><strong id="g5-title">Olho Clínico AVC</strong></div>
-            <div class="game-card" onclick="startTriageGame()"><span>🔀</span><strong id="g8-title">Triagem de Crise</strong></div>
-            <div class="game-card" onclick="startFeverGame()"><span>🧊</span><strong id="g9-title">Febre Alta</strong></div>
-            <div class="game-card" onclick="startSprainGame()"><span>🦵</span><strong id="g12-title">Tornozelo Torcido</strong></div>
-            <div class="game-card" onclick="startDeaGame()"><span>⚡</span><strong id="g13-title">Operação DEA</strong></div>
-            <div class="game-card" onclick="startChemGame()"><span>🧪</span><strong id="g15-title">Química na Pele</strong></div>
-            <div class="game-card" onclick="startFractGame()"><span>🦴</span><strong id="g16-title">Tala de Fratura</strong></div>
-            <div class="game-card" onclick="startEyeGame()"><span>👁️</span><strong id="g17-title">Cisco no Olho</strong></div>
-        </div>
-        <button class="btn-back btn-global-back" onclick="changeScreen('screen-menu')">↩ Voltar</button>
-    </div>
+                <form id="form-conferencia" onsubmit="salvarConferencia(event)" class="space-y-5">
+                    <div>
+                        <label class="block text-xs font-semibold uppercase text-gray-500 mb-1">MZ</label>
+                        <input type="text" id="conf-mz" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm" placeholder="Ex: MZ-04">
+                    </div>
 
-    <div id="screen-rhythm-game" class="screen">
-        <h1 id="g1-header">❤️ RITMO RCP</h1>
-        <p id="rcp-subtitle" style="font-size:11px; color:#00e676; font-weight:bold;">🎵 Siga o compasso de Stayin' Alive!</p>
-        <div id="rhythm-feedback" style="font-size:16px; font-weight:bold; height:24px; margin-bottom:5px; color:#ffeb3b;">...</div>
-        <div id="rhythm-target" onclick="processRhythmClick()" style="width:95px; height:95px; background:#ff1744; border-radius:50%; margin: 15px auto; display:flex; align-items:center; justify-content:center; font-size:32px; cursor:pointer; border: 5px solid white;">❤️</div>
-        <div id="rhythm-score" style="font-size:16px; font-weight:bold;">0 / 20</div>
-        <button class="btn-back btn-global-back" onclick="stopRhythmGame()">↩ Voltar</button>
-    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Meli</label>
+                        <input type="text" id="conf-meli" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm" placeholder="Ex: MELI-12345">
+                    </div>
 
-    <div id="screen-choke-game" class="screen">
-        <h1 id="g3-header">🥖 MANOBRA HEIMLICH</h1>
-        <p id="choke-scen">Vítima engasgada! Pressione o abdômen repetidamente!</p>
-        <div class="game-canvas">
-            <span id="choke-victim" style="font-size:60px; user-select:none;">🤢</span>
-            <span id="choke-food" style="font-size:24px; position:absolute; top:45px; transition: all 0.3s;">🥩</span>
-        </div>
-        <button onclick="applyHeimlichThrust()" style="background:#ff9100; color:white; padding:15px; font-size:16px;">🔺 MANOBRA (PUSH)</button>
-        <button class="btn-back btn-global-back" onclick="changeScreen('screen-games-menu')">↩ Voltar</button>
-    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Quantidade</label>
+                        <input type="number" id="conf-quantidade" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm" placeholder="Ex: 15">
+                    </div>
 
-    <div id="screen-dea-game" class="screen">
-        <h1 id="g13-header">⚡ OPERAÇÃO DEA</h1>
-        <p id="dea-scen">...</p>
-        <div class="progress-container-game" id="dea-load-box" style="display:none; margin-bottom:6px;"><div id="dea-bar" class="progress-fill-game" style="background:linear-gradient(90deg, #ff9100, #ff1744);"></div></div>
-        <div class="game-canvas" style="flex-direction:row; justify-content:space-around; align-items:center;">
-            <div id="pad-right" class="dea-pad" onclick="placeDeaPad('right')">↗️ Clavícula Dir.</div>
-            <div id="dea-body" style="font-size:60px; user-select:none; transition: transform 0.2s;">🧍</div>
-            <div id="pad-left" class="dea-pad" onclick="placeDeaPad('left')">↙️ Costela Esq.</div>
-        </div>
-        <button id="btn-dea-shock" class="btn-shock" onclick="triggerDeaShock()">⚡ ENVIAR CHOQUE!</button>
-        <button class="btn-back btn-global-back" onclick="resetDeaIntervals(); changeScreen('screen-games-menu')">↩ Voltar</button>
-    </div>
+                    <div class="bg-gray-50 p-4 rounded-xl border">
+                        <label class="block text-sm font-bold text-gray-800 mb-3">Físico está de acordo com o sistêmico?</label>
+                        <div class="flex space-x-6">
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="radio" name="conf-acordo" value="sim" checked onclick="toggleDivergencia(false)" class="w-4 h-4 text-blue-600 focus:ring-blue-500">
+                                <span class="text-sm font-medium text-gray-700"> Sim</span>
+                            </label>
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="radio" name="conf-acordo" value="nao" onclick="toggleDivergencia(true)" class="w-4 h-4 text-blue-600 focus:ring-blue-500">
+                                <span class="text-sm font-medium text-gray-700"> Não</span>
+                            </label>
+                        </div>
+                    </div>
 
-    <div id="screen-chem-game" class="screen">
-        <h1 id="g15-header">🧪 QUÍMICA NA PELE</h1>
-        <div class="game-canvas"><span style="font-size:50px;">🦾</span><span style="font-size:30px; position:absolute; color:#ff1744;">🟣</span></div>
-        <p id="lbl-chem-scen">Ferimento com química ácida. O que fazer?</p>
-        <div style="display:flex; gap:5px;">
-            <button onclick="triggerErrorShake()" style="background:#c62828; color:white; margin:0; flex:1;">🧣 Passar Pano</button>
-            <button onclick="applyChemSucc()" style="background:#00c853; color:white; margin:0; flex:1;">🚰 Lavar com Água</button>
-        </div>
-        <button class="btn-back btn-global-back" onclick="changeScreen('screen-games-menu')">↩ Voltar</button>
-    </div>
+                    <div id="secao-divergencia" class="hidden space-y-4 border-l-4 border-red-500 pl-4 bg-red-50/50 p-4 rounded-r-xl">
+                        <div>
+                            <label class="block text-sm font-bold text-gray-800 mb-2">Foi realizado Found?</label>
+                            <div class="flex space-x-6">
+                                <label class="flex items-center space-x-2 cursor-pointer">
+                                    <input type="radio" name="conf-found" value="sim" onclick="toggleCamposFound(true)" class="w-4 h-4 text-red-600 focus:ring-red-500">
+                                    <span class="text-sm font-medium text-gray-700"> Sim</span>
+                                </label>
+                                <label class="flex items-center space-x-2 cursor-pointer">
+                                    <input type="radio" name="conf-found" value="nao" checked onclick="toggleCamposFound(false)" class="w-4 h-4 text-red-600 focus:ring-red-500">
+                                    <span class="text-sm font-medium text-gray-700"> Não</span>
+                                </label>
+                            </div>
+                        </div>
 
-    <div id="screen-fract-game" class="screen">
-        <h1 id="g16-header">🦴 TALA DE FRATURA</h1>
-        <div class="game-canvas"><span style="font-size:50px;">🦴</span></div>
-        <p id="lbl-fract-scen">Suspeita de osso quebrado na perna. Monte uma tala:</p>
-        <div style="display:flex; flex-direction:column; gap:5px;">
-            <button onclick="triggerErrorShake()" style="background:#c62828; color:white;"> Puxar Membro Torcido</button>
-            <button onclick="applyFractSucc()" style="background:#00c853; color:white;"> Imobilizar com Faixas e Papelão</button>
-        </div>
-        <button class="btn-back btn-global-back" onclick="changeScreen('screen-games-menu')">↩ Voltar</button>
-    </div>
+                        <div id="secao-campos-found" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-4 bg-white p-3 rounded-lg border border-red-200">
+                            <div>
+                                <label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Data</label>
+                                <input type="date" id="conf-data-found" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 outline-none text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Horário</label>
+                                <input type="time" id="conf-horario-found" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 outline-none text-sm">
+                            </div>
+                        </div>
+                    </div>
 
-    <div id="screen-eye-game" class="screen">
-        <h1 id="g17-header">👁️ CISCO NO OLHO</h1>
-        <div class="game-canvas"><span style="font-size:60px;">👁️</span><span style="font-size:14px; position:absolute; left:48%;">⚫</span></div>
-        <p id="lbl-eye-scen">Cisco incômodo preso na córnea. Qual a ação?</p>
-        <div style="display:flex; gap:5px;">
-            <button onclick="triggerErrorShake();" style="background:#c62828; color:white; margin:0; flex:1;">🫵 Coçar com Força</button>
-            <button onclick="washEyeCisco()" style="background:#00c853; color:white; margin:0; flex:1;">💧 Lavar com Soro Fisiológico</button>
-        </div>
-        <button class="btn-back btn-global-back" onclick="changeScreen('screen-games-menu')">↩ Voltar</button>
-    </div>
+                    <button type="submit" class="w-full bg-blue-900 text-white font-semibold py-3 rounded-xl shadow hover:bg-blue-950 transition flex justify-center items-center space-x-2">
+                        <i data-lucide="send" class="w-4 h-4"></i>
+                        <span>Salvar e Enviar Task</span>
+                    </button>
+                </form>
+            </div>
+        </section>
 
-    <div id="screen-tinder-game" class="screen">
-        <h1 id="g2-header">🔥 CERTO OU MITO?</h1>
-        <div class="tinder-box"><div id="tinder-card" class="tinder-card"><span style="font-size:35px;">🛡️</span><b id="tinder-text" style="font-size:13px;">...</b></div></div>
-        <div class="tinder-buttons"><button class="btn-tinder-left" onclick="swipeTinder(false)">❌</button><button class="btn-tinder-right" onclick="swipeTinder(true)">🟢</button></div>
-        <div id="tinder-score-display" style="font-weight:bold; margin-top:5px;">Questão: 1/10</div>
-        <button class="btn-back btn-global-back" onclick="changeScreen('screen-games-menu')">↩ Voltar</button>
-    </div>
 
-    <div id="screen-maleta-game" class="screen">
-        <h1 id="g4-header">💼 MONTE A MALETA</h1>
-        <p>Selecione apenas os itens corretos para salvar vidas:</p>
-        <div id="maleta-container" class="maleta-list"></div>
-        <button onclick="concludeMaleta()" id="btn-maleta-eval" style="background:#00c853; color:white; margin-top:10px;">🎒 Avaliar Kit</button>
-        <button class="btn-back btn-global-back" onclick="changeScreen('screen-games-menu')">↩ Voltar</button>
-    </div>
+        <section id="tab-auditoria" class="tab-content hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="lg:col-span-1 bg-white rounded-xl shadow-sm border p-4">
+                    <h3 class="font-bold text-gray-900 mb-3 flex items-center space-x-2">
+                        <i data-lucide="list" class="text-blue-900 w-5 h-5"></i>
+                        <span>Casos para Auditar</span>
+                    </h3>
+                    <div id="lista-casos-auditoria" class="space-y-2 max-h-[500px] overflow-y-auto">
+                        </div>
+                </div>
 
-    <div id="screen-fever-game" class="screen">
-        <h1 id="g9-header">🧊 CONTROLAR FEBRE</h1>
-        <div style="font-size:40px; margin:5px;">👶</div>
-        <div class="progress-container-game"><div id="fever-bar" class="progress-fill-game"></div></div>
-        <div id="fever-status" style="font-size:18px; font-weight:bold; color:#ff5252;">39.5 °C</div>
-        <div style="display:flex; gap:5px;"><button onclick="applyFeverAction(false)" style="background:#c62828; color:white; flex:1; margin:0;">🧴 Álcool</button><button onclick="applyFeverAction(true)" style="background:#00c853; color:white; flex:1; margin:0;">🧽 Pano Úmido</button></div>
-        <button class="btn-back btn-global-back" onclick="clearInterval(feverInterval); changeScreen('screen-games-menu')">↩ Voltar</button>
-    </div>
+                <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border p-6 hidden" id="card-formulario-auditoria">
+                    <div class="flex justify-between items-start border-b pb-4 mb-4">
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-900">Auditoria da Tratativa do Suporte</h2>
+                            <p class="text-xs text-gray-500">Validação final do processo de investigação pelo ICQA</p>
+                        </div>
+                        <span id="auditoria-tag-id" class="bg-blue-100 text-blue-900 text-xs font-bold px-2.5 py-1 rounded"></span>
+                    </div>
 
-    <div id="screen-sprain-game" class="screen">
-        <h1 id="g12-header">💖 TORNOZELO TORCIDO</h1>
-        <div style="font-size:35px;">   🦶</div>
-        <div class="progress-container-game"><div id="sprain-bar" class="progress-fill-game" style="width:75%;"></div></div>
-        <div style="display:flex; gap:5px;"><button onclick="clickSprainTool(1)" style="background:#ff9100; color:white; flex:1; margin:0;">🧣 Pano</button><button onclick="clickSprainTool(2)" style="background:#00c853; color:white; flex:1; margin:0;">🧊 Gelo</button></div>
-        <button class="btn-back btn-global-back" onclick="changeScreen('screen-games-menu')">↩ Voltar</button>
-    </div>
+                    <div class="bg-gray-50 p-4 rounded-xl border mb-5 grid grid-cols-2 gap-4 text-sm">
+                        <p><span class="font-semibold text-gray-500">Meli:</span> <span id="auditoria-info-meli" class="font-medium text-gray-900"></span></p>
+                        <p><span class="font-semibold text-gray-500">MZ:</span> <span id="auditoria-info-mz" class="font-medium text-gray-900"></span></p>
+                    </div>
 
-    <div id="screen-avc-game" class="screen">
-        <h1 id="g5-header">🧠 OLHO CLÍNICO AVC</h1>
-        <p style="font-weight:bold;"><span id="lbl-time">Tempo:</span> <span id="avc-timer" style="color:#ff5252; font-size:16px;">14</span>s</p>
-        <div class="game-canvas" id="avc-canvas" style="height:120px; background:rgba(0,0,0,0.5);"></div>
-        <button class="btn-back btn-global-back" onclick="clearInterval(avcInterval); changeScreen('screen-games-menu')">↩ Voltar</button>
-    </div>
+                    <form id="form-auditoria" onsubmit="salvarAuditoria(event)" class="space-y-6">
+                        <input type="hidden" id="auditoria-task-id">
+                        
+                        <div>
+                            <label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Caso analisado (Meli ID)</label>
+                            <input type="text" id="aud-meli" required class="w-full max-w-xs px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm" placeholder="Ex: MELI-98765">
+                        </div>
 
-    <div id="screen-triage-game" class="screen">
-        <h1 id="g8-header">🔀 TRIAGEM DE CRISE</h1>
-        <p id="triage-main-q" style="font-weight:bold; margin-bottom:10px;">...</p>
-        <div style="display:flex; flex-direction:column; gap:8px;" id="triage-options"></div>
-        <button class="btn-back btn-global-back" onclick="changeScreen('screen-games-menu')">↩ Voltar</button>
-    </div>
+                        <div class="bg-gray-50 p-4 rounded-xl border">
+                            <label class="block text-sm font-bold text-gray-800 mb-3">Suporte realizou a investigação conforme fluxo?</label>
+                            <div class="flex space-x-6">
+                                <label class="flex items-center space-x-2 cursor-pointer">
+                                    <input type="radio" name="aud-fluxo" value="sim" checked class="w-4 h-4 text-blue-600 focus:ring-blue-500">
+                                    <span class="text-sm font-medium text-gray-700"> Sim</span>
+                                </label>
+                                <label class="flex items-center space-x-2 cursor-pointer">
+                                    <input type="radio" name="aud-fluxo" value="nao" class="w-4 h-4 text-blue-600 focus:ring-blue-500">
+                                    <span class="text-sm font-medium text-gray-700"> Não</span>
+                                </label>
+                            </div>
+                        </div>
 
-    <div id="screen-game" class="screen">
-        <div class="quiz-status-bar"><span id="quiz-status">Questão 1</span><span id="quiz-timer-display" style="color:#ff5252;">⏳ 20s</span></div>
-        <h2 id="question" style="font-size:14px; margin:8px 0; min-height:45px;"></h2>
-        <div id="answers" style="flex-grow: 1; overflow-y: auto;"></div>
-        <button id="next" class="btn-next-quiz" onclick="nextQuestion()">Avançar ➔</button>
-        <div id="score-text" style="margin: 5px 0; font-weight:bold;">0</div>
-        <button class="btn-back btn-global-back" onclick="stopQuizGame()">↩ Menu</button>
-    </div>
+                        <div>
+                            <label class="block text-sm font-bold text-gray-800 mb-3">Checklist de Verificação</label>
+                            <div class="space-y-2 bg-white border p-4 rounded-xl shadow-inner">
+                                <label class="flex items-center space-x-3 cursor-pointer p-1 hover:bg-gray-50 rounded">
+                                    <input type="checkbox" id="check-wms" class="w-4 h-4 rounded text-blue-600 focus:ring-blue-500">
+                                    <span class="text-sm text-gray-700"> Conferiu WMS</span>
+                                </label>
+                                <label class="flex items-center space-x-3 cursor-pointer p-1 hover:bg-gray-50 rounded">
+                                    <input type="checkbox" id="check-shipping" class="w-4 h-4 rounded text-blue-600 focus:ring-blue-500">
+                                    <span class="text-sm text-gray-700"> Conferiu Shipping</span>
+                                </label>
+                                <label class="flex items-center space-x-3 cursor-pointer p-1 hover:bg-gray-50 rounded">
+                                    <input type="checkbox" id="check-troca" class="w-4 h-4 rounded text-blue-600 focus:ring-blue-500">
+                                    <span class="text-sm text-gray-700"> Validou possível troca</span>
+                                </label>
+                                <label class="flex items-center space-x-3 cursor-pointer p-1 hover:bg-gray-50 rounded">
+                                    <input type="checkbox" id="check-raiz" class="w-4 h-4 rounded text-blue-600 focus:ring-blue-500">
+                                    <span class="text-sm text-gray-700"> Registrou causa raiz</span>
+                                </label>
+                            </div>
+                        </div>
 
-    <div id="screen-sos" class="screen">
-        <h1>🚨 SOS GUIDE</h1>
-        <input type="text" id="sos-search" class="search-input" placeholder="🔍 Buscar procedimento..." oninput="filterSOSGuide()">
-        <div class="guide-list" id="guide-container"></div>
-        <button class="btn-back btn-global-back" onclick="changeScreen('screen-menu')">↩ Voltar</button>
-    </div>
+                        <div class="flex space-x-3">
+                            <button type="submit" onclick="definirResultadoAuditoria('Conforme')" class="flex-1 bg-emerald-600 text-white font-semibold py-3 rounded-xl hover:bg-emerald-700 transition shadow flex justify-center items-center space-x-2">
+                                <i data-lucide="check-circle" class="w-4 h-4"></i>
+                                <span>Conforme</span>
+                            </button>
+                            <button type="submit" onclick="definirResultadoAuditoria('Necessita correção')" class="flex-1 bg-amber-500 text-white font-semibold py-3 rounded-xl hover:bg-amber-600 transition shadow flex justify-center items-center space-x-2">
+                                <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+                                <span>Necessita Correção</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
 
-</div>
+                <div class="lg:col-span-2 bg-gray-100 rounded-xl border border-dashed flex flex-col justify-center items-center p-12 text-center text-gray-500" id="card-auditoria-vazio">
+                    <i data-lucide="arrow-left-right" class="w-12 h-12 mb-2 text-gray-400"></i>
+                    <p class="font-medium">Selecione um caso na lista ao lado para realizar a auditoria.</p>
+                </div>
+            </div>
+        </section>
 
-<script>
-let currentLang = 'pt'; let currentDiff = 'medium';
-let currentQuestionIndex = 0; let score = 0;
-let quizTimerInterval; let quizTimeLeft = 20;
-let activeQuizDeck = [];
-let feverInterval;
 
-const langData = {
-    pt: {
-        menuTitle: "SOS HERO", menuSubtitle: "O aplicativo definitivo que salva vidas",
-        btnPlay: "🎮 QUIZ DE SIMULAÇÃO", btnGames: "🕹️ CENTRAL DE MINI-JOGOS", btnSos: "🚨 GUIA SOS / VOZ",
-        back: "↩ Voltar", easy: "Fácil", medium: "Médio", hard: "Difícil", score: "Pontos: ",
-        gMenuTitle: "🕹️ MINI-JOGOS", g1: "Ritmo RCP", g2: "Certo ou Mito", g3: "Heimlich", g4: "Montar Maleta", g5: "Olho Clínico AVC", g8: "Triagem de Crise",
-        g9: "Febre Alta", g12: "Tornozelo Torcido", g13: "Operação DEA", g15: "Química na Pele", g16: "Tala de Fratura", g17: "Cisco no Olho",
-        chokeObstr: "Vias aéreas obstruídas! Pressione!", chokeSucc: " Alimento expelido!", chokeBtn: "🔺 MANOBRA",
-        lblTime: "Tempo: ", avcSave: "Salvos: ", rcpMelody: "🎵 Siga o compasso de Stayin' Alive!", btnNextText: "Avançar ➔",
-        maletaEval: "🎒 Avaliar Kit", r0: "Estudante Curioso", r1: "Socorrista Júnior", r2: "Herói Resgatista", r3: "Paramédico Lendário",
-        triageQ: "Quem você deve atender EM PRIMEIRO LUGAR no acidente?",
-        triageA: "Vítima A: Chorando alto com braço quebrado.", triageB: "Vítima B: Desmaiada e sem respirar.",
-        triageErrA: "⚠️ Errado! Quem grita está respirando. Foque no silêncio.", triageSucc: "🏅 Perfeito! Parada respiratória silenciosa é prioridade máxima.",
-        quizHeader: "Questão ", deaScen1: "Passo 1: Instale as pás adesivas nos locais corretos do tórax!", deaScen2: "Passo 2: Analisando ritmo cardíaco... MANTENHA-SE AFASTADO!", deaScen3: "Passo 3: Carregando energia... CARGA PRONTA! AFASTESE E ATIRE!", deaSucc: "DEA Operado com sucesso! Ritmo cardíaco restabelecido temporariamente.",
-        gBox1T: "🚑 Engasgo 🫁", gBox1D: "Em adultos, aplique a Manobra de Heimlich empurrando a boca do estômago para dentro e para cima. Se perder a consciência, inicie massagem cardíaca.",
-        gBox2T: "👶 Bebês engasgados 🍼", gBox2D: "Coloque o bebê de bruços no seu braço inclinado para baixo e aplique 5 batidas firmes nas costas. Vire-o e faça 5 compressões no peito.",
-        gBox3T: "🫀 Infarto Clínico 🚨", gBox3D: "Sintomas: dor forte e aperto no peito que irradia para o braço esquerdo, suor frio e náusea. Chame imediatamente o SAMU (192) e acalme a vítima.",
-        gBox4T: "🧠 AVC (Derrame) ⚡", gBox4D: "Identifique com o teste SAMU: Sorriso (um lado cai), Abraço (perda de força em um braço), Música (fala confusa). Havendo um sinal, ligue 192.",
-        gBox5T: "🔥 Queimaduras 🧊", gBox5D: "Lave imediatamente o local apenas com água fria corrente por 10 a 15 minutos. Nunca passe pasta de dente, pomadas ou manteiga na ferida.",
-        gBox6T: "🌪️ Crise Convulsiva 🛌", gBox6D: "Proteja a cabeça da vítima com algo macio, afaste objetos perigosos ao redor e vire-a de lado para não engasgar. Nunca segure a língua.",
-        gBox7T: "🩸 Hemorragias 🩹", gBox7D: "Estanque o sangue fazendo compressão direta sobre o ferimento usando um pano limpo. Se for um membro e o sangramento for massivo, use torniquete acima.",
-        gBox8T: "🔌 Choque Elétrico 🔌", gBox8D: "Never toque na vítima enquanto ela estiver grudada na energia. Desligue imediatamente o disjuntor geral antes de prestar os cuidados básicos."
-    },
-    es: {
-        menuTitle: "SOS HERO", menuSubtitle: "La app definitiva para salvar vidas",
-        btnPlay: "🎮 TRIVIA DE SIMULACIÓN", btnGames: "🕹️ CENTRAL DE MINI-JUEGOS", btnSos: "🚨 GUIA SOS / VOZ",
-        back: "↩ Volver", easy: "Fácil", medium: "Medio", hard: "Difícil", score: "Puntos: ",
-        gMenuTitle: "¡MINI-JUEGOS!", g1: "Ritmo RCP", g2: "Hecho o Mito", g3: "Heimlich", g4: "Armar Maletín", g5: "Ojo Clínico ACV", g8: "Triaje de Crisis",
-        g9: "Fiebre Alta", g12: "Tobillo Torcido", g13: "Operación DEA", g15: "Química Piel", g16: "Tala Fractura", g17: "Cisco Ojo",
-        lblTime: "Tiempo: ", avcSave: "Salvados: ", rcpMelody: "🎵 ¡Siga el ritmo de Stayin' Alive!", btnNextText: "Avanzar ➔",
-        maletaEval: "🎒 Evaluar", r0: "Estudiante", r1: "Socorrista Jr", r2: "Héroe", r3: "Paramédico",
-        triageQ: "Quién atender primero?", triageA: "Víctima A: Llorando fuerte.", triageB: "Víctima B: Desmayada.",
-        triageErrA: "⚠️ ¡Incorrecto!", triageSucc: "🏅 ¡Perfecto!", quizHeader: "🎮 MISIÓN ",
-        deaScen1: "¡Paso 1: Coloque los parches!", deaScen2: "¡Paso 2: Analizando!", deaScen3: "¡Paso 3: Cargando... FUEGO!", deaSucc: "¡Éxito!",
-        gBox1T: "🥖 Atragantamiento 🔊", gBox1D: "Presione el abdomen.", gBox2T: "👶 Bebés 🔊", gBox2D: "5 golpes en la espalda.",
-        gBox3T: "🫀 Infarto 🔊", gBox3D: "Dolor de pecho. Llame urgencias.", gBox4T: "🧠 ACV 🔊", gBox4D: "Pídale que Sonría.",
-        gBox5T: "🔥 Quemaduras 🧊", gBox5D: "Lave con agua.", gBox6T: "🌪️ Convulsión 🛌", gBox6D: "Proteja la cabeza.",
-        gBox7T: "🩸 Hemorragias 🩹", gBox7D: "Presione la herida.", gBox8T: "🔌 Choque 🔌", gBox8D: "Corte la energía."
-    }
-};
+        <section id="tab-dashboard" class="tab-content hidden">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+                <div class="bg-white p-5 rounded-xl border shadow-sm flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-bold uppercase text-gray-400 tracking-wider">Volume Total</p>
+                        <h3 class="text-3xl font-black text-gray-900 mt-1" id="dash-total">0</h3>
+                        <p class="text-xs text-gray-500 mt-1">Total de análises geradas</p>
+                    </div>
+                    <div class="bg-blue-100 p-3 rounded-xl text-blue-900"><i data-lucide="layers"></i></div>
+                </div>
 
-function triggerErrorShake() {
-    soundError(); if(navigator.vibrate) navigator.vibrate([100, 50, 100]);
-    const container = document.getElementById("main-container");
-    if(container) container.classList.add("shake-effect"); setTimeout(() => { if(container) container.classList.remove("shake-effect"); }, 300);
-}
-function spawnConfetti() {
-    soundSuccess(); if(navigator.vibrate) navigator.vibrate(250);
-    updateRankDisplay();
-}
+                <div class="bg-white p-5 rounded-xl border shadow-sm">
+                    <p class="text-xs font-bold uppercase text-gray-400 tracking-wider mb-2">Físico x Sistêmico</p>
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="flex items-center text-emerald-600 font-medium"><i data-lucide="check" class="w-4 h-4 mr-1"></i> OK</span>
+                            <span class="font-bold text-gray-900" id="dash-ok">0</span>
+                        </div>
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="flex items-center text-red-500 font-medium"><i data-lucide="x" class="w-4 h-4 mr-1"></i> Divergência</span>
+                            <span class="font-bold text-gray-900" id="dash-divergencia">0</span>
+                        </div>
+                    </div>
+                </div>
 
-function saveName() { localStorage.setItem('hero_name', document.getElementById("hero-name").value); updateRankDisplay(); }
-function loadProfile() { document.getElementById("hero-name").value = localStorage.getItem('hero_name') || "Hero"; updateRankDisplay(); }
+                <div class="bg-white p-5 rounded-xl border shadow-sm">
+                    <p class="text-xs font-bold uppercase text-gray-400 tracking-wider mb-2">Resultado de Found (Achados)</p>
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="text-gray-600 font-medium"> Encontrados</span>
+                            <span class="font-bold text-gray-900" id="dash-found-sim">0</span>
+                        </div>
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="text-gray-600 font-medium"> Não Encontrados</span>
+                            <span class="font-bold text-gray-900" id="dash-found-nao">0</span>
+                        </div>
+                    </div>
+                </div>
 
-function updateRankDisplay() {
-    const mIds = ['rcp', 'tinder', 'heimlich', 'maleta', 'avc', 'triage', 'fever', 'sprain', 'dea', 'chem', 'fract', 'eye'];
-    let count = 0; mIds.forEach(id => { if(localStorage.getItem('m_'+id) === 'true') count++; });
-    let percent = (count / 12) * 100; document.getElementById("rank-fill").style.width = percent + "%";
-    let txt = langData[currentLang].r0; if(count >= 3) txt = langData[currentLang].r1; if(count >= 7) txt = langData[currentLang].r2; if(count === 12) txt = langData[currentLang].r3;
-    document.getElementById("rank-label").innerHTML = `${document.getElementById("hero-name").value} - ${txt} (${count}/12)`;
-}
+                <div class="bg-white p-5 rounded-xl border shadow-sm">
+                    <p class="text-xs font-bold uppercase text-gray-400 tracking-wider mb-2">Qualidade do Suporte</p>
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="flex items-center text-emerald-600 font-medium"><i data-lucide="shield-check" class="w-4 h-4 mr-1"></i> Conforme</span>
+                            <span class="font-bold text-gray-900" id="dash-aud-conforme">0</span>
+                        </div>
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="flex items-center text-amber-500 font-medium"><i data-lucide="refresh-cw" class="w-4 h-4 mr-1"></i> Não Conforme</span>
+                            <span class="font-bold text-gray-900" id="dash-aud-correcao">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-function toggleTheme() { document.body.classList.toggle("night-mode"); playTone(550, 'sine', 0.05); }
+            <div class="bg-white rounded-xl shadow-sm border overflow-hidden">
+                <div class="p-4 border-b bg-gray-50 flex justify-between items-center">
+                    <h3 class="font-bold text-gray-900">Monitoramento Geral de Tasks</h3>
+                    <span class="text-xs bg-gray-200 text-gray-700 px-2 py-1 rounded font-medium">Atualizado em Tempo Real</span>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-sm">
+                        <thead>
+                            <tr class="bg-gray-100/70 border-b text-gray-500 text-xs font-bold uppercase tracking-wider">
+                                <th class="p-3">ID</th>
+                                <th class="p-3">MZ</th>
+                                <th class="p-3">Meli</th>
+                                <th class="p-3">Quantidade</th>
+                                <th class="p-3">Status Físico</th>
+                                <th class="p-3">Found?</th>
+                                <th class="p-3">Resultado Auditoria</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabela-dashboard-corpo" class="divide-y">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
 
-function setLanguage(lang) {
-    currentLang = lang; const l = langData[lang];
-    document.getElementById("menu-title").innerHTML = l.menuTitle; document.getElementById("menu-subtitle").innerHTML = l.menuSubtitle;
-    document.getElementById("btn-menu-play").innerHTML = l.btnPlay; document.getElementById("btn-menu-games").innerHTML = l.btnGames; document.getElementById("btn-menu-sos").innerHTML = l.btnSos;
-    document.querySelectorAll(".btn-global-back").forEach(b => b.innerHTML = l.back);
-    document.getElementById("opt-easy").innerHTML = l.easy; document.getElementById("opt-medium").innerHTML = l.medium; document.getElementById("opt-hard").innerHTML = l.hard;
-    document.getElementById("games-menu-title").innerHTML = l.gMenuTitle;
-    document.getElementById("g1-title").innerHTML = l.g1; document.getElementById("g1-header").innerHTML = "❤️ " + l.g1; document.getElementById("rcp-subtitle").innerHTML = l.rcpMelody;
-    document.getElementById("g2-title").innerHTML = l.g2; document.getElementById("g2-header").innerHTML = "🔥 " + l.g2;
-    document.getElementById("g3-title").innerHTML = l.g3; document.getElementById("g3-header").innerHTML = "🥖 " + l.g3;
-    document.getElementById("g4-title").innerHTML = l.g4; document.getElementById("g4-header").innerHTML = "💼 " + l.g4;
-    document.getElementById("g5-title").innerHTML = l.g5; document.getElementById("g5-header").innerHTML = "🧠 " + l.g5;
-    document.getElementById("g8-title").innerHTML = l.g8; document.getElementById("g8-header").innerHTML = "🔀 " + l.g8;
-    document.getElementById("g9-title").innerHTML = l.g9; document.getElementById("g9-header").innerHTML = "🧊 " + l.g9;
-    document.getElementById("g12-title").innerHTML = l.g12; document.getElementById("g12-header").innerHTML = "💖 " + l.g12;
-    document.getElementById("g13-title").innerHTML = l.g13; document.getElementById("g13-header").innerHTML = "⚡ " + l.g13;
-    document.getElementById("g15-title").innerHTML = l.g15; document.getElementById("g15-header").innerHTML = "🧪 " + l.g15;
-    document.getElementById("g16-title").innerHTML = l.g16; document.getElementById("g16-header").innerHTML = "🦴 " + l.g16;
-    document.getElementById("g17-title").innerHTML = l.g17; document.getElementById("g17-header").innerHTML = "👁️ " + l.g17;
-    document.getElementById("triage-main-q").innerHTML = l.triageQ;
-    document.getElementById("next").innerHTML = l.btnNextText;
-    buildSOSGuide(); setupTriage(); updateRankDisplay();
-}
+    </main>
 
-function buildSOSGuide() {
-    const l = langData[currentLang];
-    document.getElementById("guide-container").innerHTML = `
-        <div class="guide-box" onclick="speakSOS('${l.gBox1D}')"><h3>${l.gBox1T}</h3><p>${l.gBox1D}</p></div>
-        <div class="guide-box" onclick="speakSOS('${l.gBox2D}')"><h3>${l.gBox2T}</h3><p>${l.gBox2D}</p></div>
-        <div class="guide-box" onclick="speakSOS('${l.gBox3D}')"><h3>${l.gBox3T}</h3><p>${l.gBox3D}</p></div>
-        <div class="guide-box" onclick="speakSOS('${l.gBox4D}')"><h3>${l.gBox4T}</h3><p>${l.gBox4D}</p></div>
-        <div class="guide-box" onclick="speakSOS('${l.gBox5D}')"><h3>${l.gBox5T}</h3><p>${l.gBox5D}</p></div>
-        <div class="guide-box" onclick="speakSOS('${l.gBox6D}')"><h3>${l.gBox6T}</h3><p>${l.gBox6D}</p></div>
-        <div class="guide-box" onclick="speakSOS('${l.gBox7D}')"><h3>${l.gBox7T}</h3><p>${l.gBox7D}</p></div>
-        <div class="guide-box" onclick="speakSOS('${l.gBox8D}')"><h3>${l.gBox8T}</h3><p>${l.gBox8D}</p></div>
-    `;
-}
+    <script>
+        // Banco de dados simulado na memória do navegador (Adaptado para a nova estrutura)
+        let bancoTasks = [
+            { id: 1, mz: "MZ-01", meli: "MELI-48291", quantidade: 10, deAcordo: true, foiFound: "-", dataFound: "", horarioFound: "", statusAuditoria: "Sem Divergência", meliId: "-", checklistOk: true },
+            { id: 2, mz: "MZ-03", meli: "MELI-88421", quantidade: 5, deAcordo: false, foiFound: "sim", dataFound: "2026-06-27", horarioFound: "10:15", statusAuditoria: "Aguardando Auditoria", meliId: "", checklistOk: false },
+            { id: 3, mz: "MZ-02", meli: "MELI-10293", quantidade: 1, deAcordo: false, foiFound: "nao", dataFound: "", horarioFound: "", statusAuditoria: "Aguardando Auditoria", meliId: "", checklistOk: false }
+        ];
 
-function filterSOSGuide() {
-    const query = document.getElementById("sos-search").value.toLowerCase();
-    document.querySelectorAll(".guide-box").forEach(box => { box.style.display = box.innerText.toLowerCase().includes(query) ? "block" : "none"; });
-}
+        let resultadoAuditoriaSelecionado = "";
 
-function setDifficulty() { currentDiff = document.getElementById("diff-select").value; }
-
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-function playTone(freq, type, duration) {
-    try {
-        const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
-        osc.type = type; osc.frequency.value = freq; gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration);
-        osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + duration);
-    } catch(e){}
-}
-function soundSuccess() { playTone(587, 'sine', 0.1); }
-function soundError() { playTone(140, 'triangle', 0.2); }
-
-// --- CONTROLES DE ATIVAÇÃO DOS MINI JOGOS ---
-function startChemGame() { changeScreen('screen-chem-game'); }
-function startFractGame() { changeScreen('screen-fract-game'); }
-function startEyeGame() { changeScreen('screen-eye-game'); }
-function startTriageGame() { changeScreen('screen-triage-game'); }
-
-// --- RCP ---
-function startRhythmGame() { rhythmClicks = 0; lastTime = 0; melodyIndex = 0; changeScreen('screen-rhythm-game'); metronomeInterval = setInterval(() => { playTone(stayinAliveMelody[melodyIndex % stayinAliveMelody.length], 'sine', 0.08); melodyIndex++; }, 545); }
-function processRhythmClick() {
-    const now = Date.now();
-    if (lastTime !== 0) {
-        const bpm = 60 / ((now - lastTime) / 1000); let margin = currentDiff === 'easy' ? 40 : (currentDiff === 'hard' ? 12 : 22);
-        if (bpm >= (110 - margin) && bpm <= (110 + margin)) { document.getElementById("rhythm-feedback").innerHTML = "🟢 OK!"; rhythmClicks++; soundSuccess(); } 
-        else { document.getElementById("rhythm-feedback").innerHTML = "⚠️ TIMING"; triggerErrorShake(); }
-    }
-    lastTime = now; document.getElementById("rhythm-score").innerHTML = `${rhythmClicks} / 20`;
-    if(rhythmClicks >= 20) { clearInterval(metronomeInterval); localStorage.setItem('m_rcp', 'true'); spawnConfetti(); changeScreen('screen-games-menu'); }
-}
-function stopRhythmGame() { clearInterval(metronomeInterval); changeScreen('screen-games-menu'); }
-
-// --- HEIMLICH ---
-let heimlichCount = 0;
-function startChokeGame() { heimlichCount = 0; document.getElementById("choke-victim").innerHTML = "🤢"; document.getElementById("choke-food").style.top = "45px"; changeScreen('screen-choke-game'); }
-function applyHeimlichThrust() { heimlichCount++; playTone(440, 'sine', 0.05); if (heimlichCount >= 5) { document.getElementById("choke-victim").innerHTML = "😀"; document.getElementById("choke-food").style.top = "-60px"; localStorage.setItem('m_heimlich', 'true'); spawnConfetti(); setTimeout(() => changeScreen('screen-games-menu'), 600); } }
-
-// --- DEA ---
-let deaPlacedRight = false, deaPlacedLeft = false;
-let deaChargeInterval = null; let deaChargeProgress = 0;
-function startDeaGame() {
-    resetDeaIntervals();
-    deaPlacedRight = false; deaPlacedLeft = false;
-    document.getElementById("pad-right").className = "dea-pad"; document.getElementById("pad-left").className = "dea-pad";
-    document.getElementById("btn-dea-shock").style.display = "none";
-    document.getElementById("dea-load-box").style.display = "none";
-    document.getElementById("dea-body").className = "";
-    document.getElementById("dea-scen").innerHTML = langData[currentLang].deaScen1;
-    changeScreen('screen-dea-game');
-}
-function placeDeaPad(side) {
-    if(side === 'right' && !deaPlacedRight) { deaPlacedRight = true; document.getElementById("pad-right").classList.add("dea-pad-placed"); soundSuccess(); }
-    if(side === 'left' && !deaPlacedLeft) { deaPlacedLeft = true; document.getElementById("pad-left").classList.add("dea-pad-placed"); soundSuccess(); }
-    if(deaPlacedRight && deaPlacedLeft) {
-        document.getElementById("dea-scen").innerHTML = langData[currentLang].deaScen2; playTone(350, 'sine', 1.0);
-        setTimeout(startDeaChargingSequence, 1400);
-    }
-}
-function startDeaChargingSequence() {
-    deaChargeProgress = 0;
-    document.getElementById("dea-load-box").style.display = "block";
-    document.getElementById("dea-scen").innerHTML = langData[currentLang].deaScen3;
-    let frequencyBase = 440;
-    deaChargeInterval = setInterval(() => {
-        deaChargeProgress += 5;
-        document.getElementById("dea-bar").style.width = deaChargeProgress + "%";
-        frequencyBase += 25;
-        playTone(frequencyBase, 'sine', 0.05);
-        if(navigator.vibrate) navigator.vibrate(30);
-        if(deaChargeProgress >= 100) { clearInterval(deaChargeInterval); document.getElementById("btn-dea-shock").style.display = "block"; }
-    }, 100);
-}
-function triggerDeaShock() {
-    document.getElementById("btn-dea-shock").style.display = "none";
-    document.getElementById("dea-load-box").style.display = "none";
-    document.getElementById("main-container").classList.add("flash-effect");
-    setTimeout(() => document.getElementById("main-container").classList.remove("flash-effect"), 250);
-    const patientBody = document.getElementById("dea-body");
-    patientBody.classList.add("shock-jump");
-    playTone(150, 'sawtooth', 0.6);
-    if(navigator.vibrate) navigator.vibrate([300, 100, 200]);
-    setTimeout(() => {
-        patientBody.classList.remove("shock-jump");
-        localStorage.setItem('m_dea', 'true'); spawnConfetti();
-        alert(langData[currentLang].deaSucc);
-        changeScreen('screen-games-menu');
-    }, 600);
-}
-function resetDeaIntervals() { clearInterval(deaChargeInterval); }
-
-function applyChemSucc() { localStorage.setItem('m_chem', 'true'); spawnConfetti(); changeScreen('screen-games-menu'); }
-function applyFractSucc() { localStorage.setItem('m_fract', 'true'); spawnConfetti(); changeScreen('screen-games-menu'); }
-function washEyeCisco() { localStorage.setItem('m_eye', 'true'); spawnConfetti(); changeScreen('screen-games-menu'); }
-
-// --- TINDER (10 QUESTÕES) ---
-let tinderIndex = 0, tinderScore = 0;
-const tinderDeck = [
-    { text: "Colocar gelo direto na queimadura alivia sem danificar a pele.", isCorrect: false },
-    { text: "Elevar as pernas de alguém que desmaiou ajuda a recuperar o fluxo sanguíneo.", isCorrect: true },
-    { text: "Passar borra de café ou açúcar ajuda a estancar hemorragias com segurança.", isCorrect: false },
-    { text: "Jogar água fria em fogo gerado por pane elétrica causa uma explosão.", isCorrect: true },
-    { text: "Segurar firme ou puxar a língua de quem está convulsionando evita que ela engasgue.", isCorrect: false },
-    { text: "Lavar os olhos continuamente por 15 minutos após respingos químicos é o correto.", isCorrect: true },
-    { text: "Em caso de entorse, aplicar gelo direto na pele sem proteção de tecido queima o local.", isCorrect: true },
-    { text: "Se um objeto pontiagudo penetrar o corpo, devemos arrancá-lo o mais rápido possível.", isCorrect: false },
-    { text: "Quem está gritando alto em um acidente está respirando e tem passagem de ar.", isCorrect: true },
-    { text: "Forçar o vômito após ingerir soda cáustica ou cloro limpa o estômago com segurança.", isCorrect: false }
-];
-function startTinderGame() { tinderIndex = 0; tinderScore = 0; updateTinderCard(); changeScreen('screen-tinder-game'); }
-function updateTinderCard() {
-    document.getElementById("tinder-score-display").innerHTML = `Questão: ${tinderIndex + 1} / ${tinderDeck.length}`;
-    if(tinderIndex >= tinderDeck.length) {
-        if(tinderScore >= 700) { localStorage.setItem('m_tinder', 'true'); spawnConfetti(); alert("🏅 Incrível! Você domina os mitos e verdades!"); }
-        else { alert("Treinamento finalizado! Revise as instruções para pontuar mais."); }
-        changeScreen('screen-games-menu'); return;
-    }
-    document.getElementById("tinder-text").innerHTML = tinderDeck[tinderIndex].text;
-}
-function swipeTinder(choice) { if(choice === tinderDeck[tinderIndex].isCorrect) { tinderScore += 100; soundSuccess(); } else { tinderScore -= 50; triggerErrorShake(); } tinderIndex++; updateTinderCard(); }
-
-// --- MALETA (6 ITENS) ---
-const itemsDatabase = [
-    { name: "🩹 Gaze Estéril", isRight: true },
-    { name: "☕ Pó de Café", isRight: false },
-    { name: "🧴 Soro Fisiológico", isRight: true },
-    { name: "🩹 Fita Micropore", isRight: true },
-    { name: "🧈 Manteiga", isRight: false },
-    { name: "🧪 Pasta de Dente", isRight: false }
-];
-function startMaletaGame() {
-    const container = document.getElementById("maleta-container"); container.innerHTML = "";
-    itemsDatabase.forEach((item, idx) => {
-        const div = document.createElement("div"); div.className = "item-checkbox"; div.innerHTML = item.name;
-        div.onclick = () => div.classList.toggle("item-selected"); container.appendChild(div);
-    });
-    changeScreen('screen-maleta-game');
-}
-function concludeMaleta() {
-    let cards = document.querySelectorAll(".item-checkbox"); let success = true;
-    cards.forEach((card, idx) => {
-        let isSel = card.classList.contains("item-selected");
-        if((itemsDatabase[idx].isRight && !isSel) || (!itemsDatabase[idx].isRight && isSel)) success = false;
-    });
-    if(success) { localStorage.setItem('m_maleta', 'true'); spawnConfetti(); alert("🏅 Kit perfeito! Maleta montada com sucesso!"); }
-    else { triggerErrorShake(); alert("❌ Itens incorretos ou perigosos adicionados. Tente novamente!"); }
-    changeScreen('screen-games-menu');
-}
-
-// --- OUTROS JOGOS ---
-let avcInterval, avcTimeLeft = 14, avcHits = 0;
-function startAvcGame() { avcTimeLeft = 14; avcHits = 0; changeScreen('screen-avc-game'); spawnAvcFace(); avcInterval = setInterval(() => { avcTimeLeft--; document.getElementById("avc-timer").innerHTML = avcTimeLeft; if(avcTimeLeft <= 0) { clearInterval(avcInterval); changeScreen('screen-games-menu'); } }, 1000); }
-function spawnAvcFace() { const canvas = document.getElementById("avc-canvas"); canvas.innerHTML = ""; const isSym = Math.random() > 0.4; const face = document.createElement("div"); face.className = "avc-face"; face.innerHTML = isSym ? "🥴" : "😀"; face.style.left = "42%"; face.style.top = "25%"; face.onclick = () => { if(isSym) { avcHits++; if(avcHits >= 5) { clearInterval(avcInterval); localStorage.setItem('m_avc', 'true'); spawnConfetti(); changeScreen('screen-games-menu'); } else spawnAvcFace(); } else triggerErrorShake(); }; canvas.appendChild(face); }
-
-let feverVal = 39.5;
-function startFeverGame() { feverVal = 39.5; changeScreen('screen-fever-game'); feverInterval = setInterval(() => { feverVal += 0.1; document.getElementById("fever-status").innerHTML = feverVal.toFixed(1) + " °C"; if(feverVal >= 41) { clearInterval(feverInterval); changeScreen('screen-games-menu'); } }, 1000); }
-function applyFeverAction(isRight) { if(isRight) { feverVal -= 0.9; if(feverVal <= 37.2) { clearInterval(feverInterval); localStorage.setItem('m_fever', 'true'); spawnConfetti(); changeScreen('screen-games-menu'); } } else triggerErrorShake(); }
-
-let sprainState = 0;
-function startSprainGame() { sprainState = 0; changeScreen('screen-sprain-game'); }
-function clickSprainTool(t) { if(t === 1) sprainState = 1; if(t === 2) { if(sprainState === 1) { localStorage.setItem('m_sprain', 'true'); spawnConfetti(); changeScreen('screen-games-menu'); } else triggerErrorShake(); } }
-
-function setupTriage() {
-    const opt = document.getElementById("triage-options"); const l = langData[currentLang];
-    if(opt) { opt.innerHTML = `<button onclick="alert('${l.triageErrA}'); triggerErrorShake(); changeScreen('screen-games-menu')">${l.triageA}</button><button onclick="localStorage.setItem('m_triage', 'true'); spawnConfetti(); alert('${l.triageSucc}'); changeScreen('screen-games-menu')">${l.triageB}</button>`; }
-}
-
-function speakSOS(t) { window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = 'pt-BR'; window.speechSynthesis.speak(u); }
-
-// --- BANCO DE PERGUNTAS (20 PERGUNTAS) ---
-const fullQuizDatabase = {
-    pt: [
-        { question: "Uma pessoa engasgou e NÃO consegue emitir som ou tossir. O que fazer?", answers: [{text: "Fazer Manobra de Heimlich", correct: true}, {text: "Dar água ou bater nas costas em pé", correct: false}] },
-        { question: "Dor forte no peito e braço esquerdo dormente indica suspeita de:", answers: [{text: "Infarto do Miocárdio", correct: true}, {text: "Crise de labirintite", correct: false}] },
-        { question: "Qual a frequência ideal de compressões por minuto na massagem cardíaca (RCP)?", answers: [{text: "Entre 100 e 120 por minuto", correct: true}, {text: "Cerca de 60 por minuto", correct: false}] },
-        { question: "O que significa a sigla médica SAMU?", answers: [{text: "Serviço de Atendimento Móvel de Urgência", correct: true}, {text: "Sistema de Assistência Médica", correct: false}] },
-        { question: "Qual the telefone oficial de emergência do Corpo de Bombeiros no Brasil?", answers: [{text: "193", correct: true}, {text: "190", correct: false}] },
-        { question: "Em engasgo de bebê menor de 1 ano que não consegue chorar, qual a ação?", answers: [{text: "5 batidas firmes nas costas inclinado de bruços", correct: true}, {text: "Sacudir pelas pernas", correct: false}] },
-        { question: "Alguém cortou a mão e está sangrando muito. Como agir inicialmente?", answers: [{text: "Comprimir com pano limpo e firme", correct: true}, {text: "Colocar pó de café ou açúcar", correct: false}] },
-        { question: "Sintoma clássico de AVC observado ao pedir para a pessoa sorrir:", answers: [{text: "Um lado do rosto ou boca fica caído/torto", correct: true}, {text: "Dor de dente aguda", correct: false}] },
-        { question: "Ao presenciar alguém sofrendo choque elétrico em uma tomada ativa:", answers: [{text: "Desligar o disjuntor geral imediatamente", correct: true}, {text: "Puxar a vítima diretamente", correct: false}] },
-        { question: "Uma pessoa desmaiou, mas está respirando normal. Qual a melhor conduta?", answers: [{text: "Deitá-la de costas e elevar as pernas a 30cm", correct: true}, {text: "Sentá-la e jogar água fria", correct: false}] },
-        { question: "O que NUNCA se deve fazer em caso de queimaduras térmicas na pele?", answers: [{text: "Passar pasta de dente, pomadas caseiras ou manteiga", correct: true}, {text: "Lavar com água corrente fria", correct: false}] },
-        { question: "Vítima com suspeita de fratura fechada na perna. O que fazer?", answers: [{text: "Imobilizar o membro na posição atual", correct: true}, {text: "Puxar o pé para alinhar", correct: false}] },
-        { question: "Pessoa foi picada por uma cobra venenosa na trilha. Qual a conduta?", answers: [{text: "Lavar com água/sabão e manter em repouso", correct: true}, {text: "Cortar e sugar o veneno com a boca", correct: false}] },
-        { question: "Vítima com um pedaço de vidro cravado na perna. Como agir?", answers: [{text: "NÃO remover o objeto e imobilizá-lo", correct: true}, {text: "Arrancar o vidro rapidamente", correct: false}] },
-        { question: "O que fazer diante de uma pessoa em plena crise convulsiva?", answers: [{text: "Proteger a cabeça e virá-la de lado", correct: true}, {text: "Segurar a língua com uma colher", correct: false}] },
-        { question: "Em caso de insolação grave, qual o primeiro cuidado?", answers: [{text: "Levar para local fresco e usar panos úmidos", correct: true}, {text: "Dar uma dose de bebida alcoólica", correct: false}] },
-        { question: "Criança ingeriu produto de limpeza químico corrosivo por acidente:", answers: [{text: "Não provocar vômito e buscar socorro médico", correct: true}, {text: "Forçar o vômito para expelir", correct: false}] },
-        { question: "Nariz de uma criança começou a sangrar muito. Qual a posição correta?", answers: [{text: "Inclinar a cabeça para frente e pressionar", correct: true}, {text: "Inclinar a cabeça totalmente para trás", correct: false}] },
-        { question: "Produto químico de limpeza espirrou direto nos olhos. O que fazer?", answers: [{text: "Lavar com água corrente por 15 a 20 minutos", correct: true}, {text: "Fechar os olhos e vendar firme", correct: false}] },
-        { question: "Vítima caiu de grande altura e reclama de dor na coluna:", answers: [{text: "NÃO remover o objeto e chamar o resgate", correct: true}, {text: "Ajudar a levantar e andar", correct: false}] }
-    ],
-    en: [
-        { question: "Choking victim CANNOT make any sound. What to do?", answers: [{text: "Heimlich Maneuver", correct: true}, {text: "Give water", correct: false}] }
-    ],
-    es: [
-        { question: "Víctima atragantada que NO emite sonido. Qué hacer?", answers: [{text: "Maniobra de Heimlich", correct: true}, {text: "Dar agua", correct: false}] }
-    ]
-};
-
-function prepareAndShuffleQuiz() {
-    let sourceDeck = fullQuizDatabase[currentLang] || fullQuizDatabase['pt']; activeQuizDeck = [...sourceDeck];
-    if(currentLang === 'pt') {
-        for (let i = activeQuizDeck.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1)); [activeQuizDeck[i], activeQuizDeck[j]] = [activeQuizDeck[j], activeQuizDeck[i]];
-        }
-    }
-}
-
-function startQuizTimer() {
-    clearInterval(quizTimerInterval); quizTimeLeft = 20; document.getElementById("quiz-timer-display").innerHTML = `⏳ ${quizTimeLeft}s`;
-    quizTimerInterval = setInterval(() => { quizTimeLeft--; document.getElementById("quiz-timer-display").innerHTML = `⏳ ${quizTimeLeft}s`; if(quizTimeLeft <= 0) { clearInterval(quizTimerInterval); handleQuizError(); } }, 1000);
-}
-
-function loadQuestion() {
-    if (currentQuestionIndex >= activeQuizDeck.length) { stopQuizGame(); return; }
-    const q = activeQuizDeck[currentQuestionIndex];
-    document.getElementById("quiz-status").innerHTML = `Questão ${currentQuestionIndex + 1} / ${activeQuizDeck.length}`;
-    document.getElementById("question").innerHTML = q.question; document.getElementById("next").style.display = "none";
-    
-    const ansDiv = document.getElementById("answers"); ansDiv.innerHTML = "";
-    q.answers.forEach(a => {
-        const b = document.createElement("button"); b.innerHTML = a.text;
-        b.onclick = () => {
-            clearInterval(quizTimerInterval); document.querySelectorAll("#answers button").forEach(btn => btn.disabled = true);
-            if(a.correct) { b.className = "correct"; score += 100; soundSuccess(); } 
-            else { b.className = "wrong"; triggerErrorShake(); }
-            document.getElementById("next").style.display = "block";
+        // Inicialização de ícones e dados na tela
+        window.onload = function() {
+            lucide.createIcons();
+            atualizarListasETabelas();
+            atualizarDashboard();
         };
-        ansDiv.appendChild(b);
-    });
-    document.getElementById("score-text").innerHTML = langData[currentLang].score + score;
-}
 
-function handleQuizError() { triggerErrorShake(); document.getElementById("next").style.display = "block"; }
-function nextQuestion() { currentQuestionIndex++; if(currentQuestionIndex >= activeQuizDeck.length) { alert("Treinamento finalizado!"); stopQuizGame(); } else { loadQuestion(); startQuizTimer(); } }
-function stopQuizGame() { clearInterval(quizTimerInterval); changeScreen('screen-menu'); }
+        // Alternância entre abas
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
 
-function changeScreen(id) {
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active-screen'));
-    const target = document.getElementById(id);
-    if(target) target.classList.add('active-screen');
-    if(id === 'screen-games-menu') loadMedals();
-    if(id === 'screen-game') { score = 0; currentQuestionIndex = 0; prepareAndShuffleQuiz(); loadQuestion(); startQuizTimer(); }
-}
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-blue-900', 'text-white', 'shadow');
+                btn.classList.add('text-blue-900', 'hover:bg-yellow-400');
+            });
 
-function loadProfile() { document.getElementById("hero-name").value = localStorage.getItem('hero_name') || "Hero"; updateRankDisplay(); }
-loadProfile(); setLanguage('pt');
-</script>
+            const activeBtn = document.getElementById(`btn-${tabName}`);
+            activeBtn.classList.remove('text-blue-900', 'hover:bg-yellow-400');
+            activeBtn.classList.add('bg-blue-900', 'text-white', 'shadow');
+        }
 
+        // Lógica condicional (Exibir ou ocultar se Divergência = Não)
+        function toggleDivergencia(mostrar) {
+            const secao = document.getElementById('secao-divergencia');
+            if (mostrar) {
+                secao.classList.remove('hidden');
+            } else {
+                secao.classList.add('hidden');
+            }
+        }
+
+        // Lógica condicional (Exibir ou ocultar se Found = Sim)
+        function toggleCamposFound(mostrar) {
+            const secaoFound = document.getElementById('secao-campos-found');
+            if (mostrar) {
+                secaoFound.classList.remove('hidden');
+            } else {
+                secaoFound.classList.add('hidden');
+                document.getElementById('conf-data-found').value = "";
+                document.getElementById('conf-horario-found').value = "";
+            }
+        }
+
+        // Ação de Salvar Formulário da Tela 1
+        function salvarConferencia(event) {
+            event.preventDefault();
+
+            const deAcordo = document.querySelector('input[name="conf-acordo"]:checked').value === 'sim';
+            let foiFound = "-";
+            let dataFound = "";
+            let horarioFound = "";
+            let statusAud = "Sem Divergência";
+
+            if (!deAcordo) {
+                foiFound = document.querySelector('input[name="conf-found"]:checked').value;
+                dataFound = document.getElementById('conf-data-found').value;
+                horarioFound = document.getElementById('conf-horario-found').value;
+                statusAud = "Aguardando Auditoria";
+            }
+
+            const novaTask = {
+                id: bancoTasks.length + 1,
+                mz: document.getElementById('conf-mz').value,
+                meli: document.getElementById('conf-meli').value,
+                quantidade: parseInt(document.getElementById('conf-quantidade').value),
+                deAcordo: deAcordo,
+                foiFound: foiFound,
+                dataFound: dataFound,
+                horarioFound: horarioFound,
+                statusAuditoria: statusAud,
+                meliId: "-",
+                checklistOk: false
+            };
+
+            bancoTasks.push(novaTask);
+            alert("Conferência salva com sucesso no sistema!");
+            
+            // Limpa formulário e reseta estados visuais
+            document.getElementById('form-conferencia').reset();
+            toggleDivergencia(false);
+            toggleCamposFound(false);
+
+            // Atualiza o app
+            atualizarListasETabelas();
+            atualizarDashboard();
+            switchTab('dashboard'); 
+        }
+
+        // Atualiza as estruturas visuais do app
+        function atualizarListasETabelas() {
+            const listaAuditoria = document.getElementById('lista-casos-auditoria');
+            listaAuditoria.innerHTML = "";
+
+            const pendentes = bancoTasks.filter(t => t.statusAuditoria === "Aguardando Auditoria");
+
+            if(pendentes.length === 0) {
+                listaAuditoria.innerHTML = `<p class="text-xs text-gray-400 text-center py-4">Nenhum caso pendente de auditoria.</p>`;
+            } else {
+                pendentes.forEach(task => {
+                    listaAuditoria.innerHTML += `
+                        <div onclick="abrirFormularioAuditoria(${task.id})" class="p-3 border rounded-lg hover:border-blue-900 hover:bg-blue-50/50 cursor-pointer transition text-left">
+                            <div class="flex justify-between items-center">
+                                <span class="font-bold text-xs text-gray-400">ID #${task.id}</span>
+                                <span class="text-[10px] bg-red-100 text-red-700 font-bold px-1.5 py-0.5 rounded">Divergente</span>
+                            </div>
+                            <p class="font-semibold text-sm text-gray-800 mt-1">Meli: ${task.meli}</p>
+                            <p class="text-xs text-gray-500">MZ: ${task.mz} | Qtd: ${task.quantidade}</p>
+                        </div>
+                    `;
+                });
+            }
+
+            const tabelaCorpo = document.getElementById('tabela-dashboard-corpo');
+            tabelaCorpo.innerHTML = "";
+
+            bancoTasks.forEach(task => {
+                let badgeFisico = task.deAcordo ? `<span class="bg-emerald-100 text-emerald-800 text-xs px-2 py-0.5 rounded font-medium"> OK</span>` : `<span class="bg-red-100 text-red-800 text-xs px-2 py-0.5 rounded font-medium"> Divergente</span>`;
+                let badgeFound = "-";
+                if(task.foiFound === "sim") badgeFound = `<span class="text-emerald-600 font-medium text-xs">Sim (${task.dataFound} ${task.horarioFound})</span>`;
+                if(task.foiFound === "nao") badgeFound = `<span class="text-red-500 font-medium text-xs">Não</span>`;
+
+                let badgeResultado = `<span class="text-gray-400 text-xs">Aguardando</span>`;
+                if(task.statusAuditoria === "Sem Divergência") badgeResultado = `<span class="text-emerald-600 text-xs font-semibold"> Sem divergência</span>`;
+                if(task.statusAuditoria === "Conforme") badgeResultado = `<span class="text-emerald-700 bg-emerald-50 px-2 py-1 border border-emerald-200 rounded text-xs font-bold"> Conforme</span>`;
+                if(task.statusAuditoria === "Necessita correção") badgeResultado = `<span class="text-amber-700 bg-amber-50 px-2 py-1 border border-amber-200 rounded text-xs font-bold"> Necessita Correção</span>`;
+
+                tabelaCorpo.innerHTML += `
+                    <tr class="hover:bg-gray-50/80 transition text-gray-700">
+                        <td class="p-3 font-bold text-gray-400">#${task.id}</td>
+                        <td class="p-3 font-semibold text-gray-900">${task.mz}</td>
+                        <td class="p-3 text-sm font-medium text-gray-800">${task.meli}</td>
+                        <td class="p-3 text-xs">${task.quantidade}</td>
+                        <td class="p-3">${badgeFisico}</td>
+                        <td class="p-3">${badgeFound}</td>
+                        <td class="p-3">${badgeResultado}</td>
+                    </tr>
+                `;
+            });
+            lucide.createIcons();
+        }
+
+        // Carrega dados da task selecionada na auditoria
+        function abrirFormularioAuditoria(id) {
+            const task = bancoTasks.find(t => t.id === id);
+            if(!task) return;
+
+            document.getElementById('card-auditoria-vazio').classList.add('hidden');
+            document.getElementById('card-formulario-auditoria').classList.remove('hidden');
+
+            document.getElementById('auditoria-task-id').value = task.id;
+            document.getElementById('auditoria-tag-id').innerText = `ID #${task.id}`;
+            document.getElementById('auditoria-info-meli').innerText = task.meli;
+            document.getElementById('auditoria-info-mz').innerText = task.mz;
+            
+            document.getElementById('form-auditoria').reset();
+        }
+
+        function definirResultadoAuditoria(resultado) {
+            resultadoAuditoriaSelecionado = resultado;
+        }
+
+        function salvarAuditoria(event) {
+            event.preventDefault();
+            const id = parseInt(document.getElementById('auditoria-task-id').value);
+            const idx = bancoTasks.findIndex(t => t.id === id);
+
+            if(idx !== -1) {
+                bancoTasks[idx].statusAuditoria = resultadoAuditoriaSelecionado;
+                bancoTasks[idx].meliId = document.getElementById('aud-meli').value;
+                bancoTasks[idx].checklistOk = true; 
+               
+                alert(`Auditoria finalizada como: ${resultadoAuditoriaSelecionado}`);
+               
+                document.getElementById('card-formulario-auditoria').classList.add('hidden');
+                document.getElementById('card-auditoria-vazio').classList.remove('hidden');
+               
+                atualizarListasETabelas();
+                atualizarDashboard();
+            }
+        }
+
+        // Calcula indicadores estatísticos
+        function atualizarDashboard() {
+            const total = bancoTasks.length;
+            const ok = bancoTasks.filter(t => t.deAcordo).length;
+            const divergencias = bancoTasks.filter(t => !t.deAcordo).length;
+            
+            const foundSim = bancoTasks.filter(t => t.foiFound === 'sim').length;
+            const foundNao = bancoTasks.filter(t => t.foiFound === 'nao').length;
+
+            const conforme = bancoTasks.filter(t => t.statusAuditoria === 'Conforme').length;
+            const correcao = bancoTasks.filter(t => t.statusAuditoria === 'Necessita correção').length;
+
+            document.getElementById('dash-total').innerText = total;
+            document.getElementById('dash-ok').innerText = ok;
+            document.getElementById('dash-divergencia').innerText = divergencias;
+            document.getElementById('dash-found-sim').innerText = foundSim;
+            document.getElementById('dash-found-nao').innerText = foundNao;
+            document.getElementById('dash-aud-conforme').innerText = conforme;
+            document.getElementById('dash-aud-correcao').innerText = correcao;
+        }
+    </script>
 </body>
 </html>
