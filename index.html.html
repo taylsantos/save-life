@@ -303,7 +303,7 @@ button:active { transform: scale(0.97); }
     </div>
 
     <div id="screen-game" class="screen">
-        <div class="quiz-status-bar"><span id="quiz-status-title">Missão</span><span id="quiz-timer-display" style="color:#ff5252;">⏳ 20s</span></div>
+        <div class="quiz-status-bar"><span id="quiz-status">Questão 1</span><span id="quiz-timer-display" style="color:#ff5252;">⏳ 20s</span></div>
         <h2 id="question" style="font-size:14px; margin:8px 0; min-height:45px;"></h2>
         <div id="answers" style="flex-grow: 1; overflow-y: auto;"></div>
         <button id="next" class="btn-next-quiz" onclick="nextQuestion()">Avançar ➔</button>
@@ -348,7 +348,7 @@ const langData = {
         gBox5T: "🔥 Queimaduras 🧊", gBox5D: "Lave imediatamente o local apenas com água fria corrente por 10 a 15 minutos. Nunca passe pasta de dente, pomadas ou manteiga na ferida.",
         gBox6T: "🌪️ Crise Convulsiva 🛌", gBox6D: "Proteja a cabeça da vítima com algo macio, afaste objetos perigosos ao redor e vire-a de lado para não engasgar. Nunca segure a língua.",
         gBox7T: "🩸 Hemorragias 🩹", gBox7D: "Estanque o sangue fazendo compressão direta sobre o ferimento usando um pano limpo. Se for um membro e o sangramento for massivo, use torniquete acima.",
-        gBox8T: "🔌 Choque Elétrico 🔌", gBox8D: "Nunca toque na vítima enquanto ela estiver grudada na energia. Desligue imediatamente o disjuntor geral antes de prestar os cuidados básicos."
+        gBox8T: "🔌 Choque Elétrico 🔌", gBox8D: "Never toque na vítima enquanto ela estiver grudada na energia. Desligue imediatamente o disjuntor geral antes de prestar os cuidados básicos."
     },
     es: {
         menuTitle: "SOS HERO", menuSubtitle: "La app definitiva para salvar vidas",
@@ -448,10 +448,11 @@ function playTone(freq, type, duration) {
 function soundSuccess() { playTone(587, 'sine', 0.1); }
 function soundError() { playTone(140, 'triangle', 0.2); }
 
-// --- ATIVAÇÃO DE TELAS ---
+// --- CONTROLES DE ATIVAÇÃO DOS MINI JOGOS ---
 function startChemGame() { changeScreen('screen-chem-game'); }
 function startFractGame() { changeScreen('screen-fract-game'); }
 function startEyeGame() { changeScreen('screen-eye-game'); }
+function startTriageGame() { changeScreen('screen-triage-game'); }
 
 // --- RCP ---
 function startRhythmGame() { rhythmClicks = 0; lastTime = 0; melodyIndex = 0; changeScreen('screen-rhythm-game'); metronomeInterval = setInterval(() => { playTone(stayinAliveMelody[melodyIndex % stayinAliveMelody.length], 'sine', 0.08); melodyIndex++; }, 545); }
@@ -529,7 +530,7 @@ function applyChemSucc() { localStorage.setItem('m_chem', 'true'); spawnConfetti
 function applyFractSucc() { localStorage.setItem('m_fract', 'true'); spawnConfetti(); changeScreen('screen-games-menu'); }
 function washEyeCisco() { localStorage.setItem('m_eye', 'true'); spawnConfetti(); changeScreen('screen-games-menu'); }
 
-// --- MITO OU VERDADE (10 QUESTÕES) ---
+// --- TINDER (10 QUESTÕES) ---
 let tinderIndex = 0, tinderScore = 0;
 const tinderDeck = [
     { text: "Colocar gelo direto na queimadura alivia sem danificar a pele.", isCorrect: false },
@@ -601,21 +602,23 @@ function setupTriage() {
     if(opt) { opt.innerHTML = `<button onclick="alert('${l.triageErrA}'); triggerErrorShake(); changeScreen('screen-games-menu')">${l.triageA}</button><button onclick="localStorage.setItem('m_triage', 'true'); spawnConfetti(); alert('${l.triageSucc}'); changeScreen('screen-games-menu')">${l.triageB}</button>`; }
 }
 
-// --- QUIZ MOTOR ---
+function speakSOS(t) { window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = 'pt-BR'; window.speechSynthesis.speak(u); }
+
+// --- BANCO DE PERGUNTAS (20 PERGUNTAS) ---
 const fullQuizDatabase = {
     pt: [
         { question: "Uma pessoa engasgou e NÃO consegue emitir som ou tossir. O que fazer?", answers: [{text: "Fazer Manobra de Heimlich", correct: true}, {text: "Dar água ou bater nas costas em pé", correct: false}] },
         { question: "Dor forte no peito e braço esquerdo dormente indica suspeita de:", answers: [{text: "Infarto do Miocárdio", correct: true}, {text: "Crise de labirintite", correct: false}] },
         { question: "Qual a frequência ideal de compressões por minuto na massagem cardíaca (RCP)?", answers: [{text: "Entre 100 e 120 por minuto", correct: true}, {text: "Cerca de 60 por minuto", correct: false}] },
         { question: "O que significa a sigla médica SAMU?", answers: [{text: "Serviço de Atendimento Móvel de Urgência", correct: true}, {text: "Sistema de Assistência Médica", correct: false}] },
-        { question: "Qual o telefone oficial de emergência do Corpo de Bombeiros no Brasil?", answers: [{text: "193", correct: true}, {text: "190", correct: false}] },
+        { question: "Qual the telefone oficial de emergência do Corpo de Bombeiros no Brasil?", answers: [{text: "193", correct: true}, {text: "190", correct: false}] },
         { question: "Em engasgo de bebê menor de 1 ano que não consegue chorar, qual a ação?", answers: [{text: "5 batidas firmes nas costas inclinado de bruços", correct: true}, {text: "Sacudir pelas pernas", correct: false}] },
         { question: "Alguém cortou a mão e está sangrando muito. Como agir inicialmente?", answers: [{text: "Comprimir com pano limpo e firme", correct: true}, {text: "Colocar pó de café ou açúcar", correct: false}] },
         { question: "Sintoma clássico de AVC observado ao pedir para a pessoa sorrir:", answers: [{text: "Um lado do rosto ou boca fica caído/torto", correct: true}, {text: "Dor de dente aguda", correct: false}] },
         { question: "Ao presenciar alguém sofrendo choque elétrico em uma tomada ativa:", answers: [{text: "Desligar o disjuntor geral imediatamente", correct: true}, {text: "Puxar a vítima diretamente", correct: false}] },
         { question: "Uma pessoa desmaiou, mas está respirando normal. Qual a melhor conduta?", answers: [{text: "Deitá-la de costas e elevar as pernas a 30cm", correct: true}, {text: "Sentá-la e jogar água fria", correct: false}] },
         { question: "O que NUNCA se deve fazer em caso de queimaduras térmicas na pele?", answers: [{text: "Passar pasta de dente, pomadas caseiras ou manteiga", correct: true}, {text: "Lavar com água corrente fria", correct: false}] },
-        { question: "Vítima com suspeita de fratura fechada na perna. O que fazer?", answers: [{text: "Imobilizar o membro na posição atual", correct: true}, {text: "Puxar o foot para alinhar", correct: false}] },
+        { question: "Vítima com suspeita de fratura fechada na perna. O que fazer?", answers: [{text: "Imobilizar o membro na posição atual", correct: true}, {text: "Puxar o pé para alinhar", correct: false}] },
         { question: "Pessoa foi picada por uma cobra venenosa na trilha. Qual a conduta?", answers: [{text: "Lavar com água/sabão e manter em repouso", correct: true}, {text: "Cortar e sugar o veneno com a boca", correct: false}] },
         { question: "Vítima com um pedaço de vidro cravado na perna. Como agir?", answers: [{text: "NÃO remover o objeto e imobilizá-lo", correct: true}, {text: "Arrancar o vidro rapidamente", correct: false}] },
         { question: "O que fazer diante de uma pessoa em plena crise convulsiva?", answers: [{text: "Proteger a cabeça e virá-la de lado", correct: true}, {text: "Segurar a língua com uma colher", correct: false}] },
@@ -625,8 +628,11 @@ const fullQuizDatabase = {
         { question: "Produto químico de limpeza espirrou direto nos olhos. O que fazer?", answers: [{text: "Lavar com água corrente por 15 a 20 minutos", correct: true}, {text: "Fechar os olhos e vendar firme", correct: false}] },
         { question: "Vítima caiu de grande altura e reclama de dor na coluna:", answers: [{text: "NÃO remover o objeto e chamar o resgate", correct: true}, {text: "Ajudar a levantar e andar", correct: false}] }
     ],
+    en: [
+        { question: "Choking victim CANNOT make any sound. What to do?", answers: [{text: "Heimlich Maneuver", correct: true}, {text: "Give water", correct: false}] }
+    ],
     es: [
-        { question: "¿Víctima atragantada que NO emite sonido. Qué hacer?", answers: [{text: "Maniobra de Heimlich", correct: true}, {text: "Dar agua", correct: false}] }
+        { question: "Víctima atragantada que NO emite sonido. Qué hacer?", answers: [{text: "Maniobra de Heimlich", correct: true}, {text: "Dar agua", correct: false}] }
     ]
 };
 
@@ -647,7 +653,7 @@ function startQuizTimer() {
 function loadQuestion() {
     if (currentQuestionIndex >= activeQuizDeck.length) { stopQuizGame(); return; }
     const q = activeQuizDeck[currentQuestionIndex];
-    document.getElementById("quiz-header").innerHTML = `Questão ${currentQuestionIndex + 1} / ${activeQuizDeck.length}`;
+    document.getElementById("quiz-status").innerHTML = `Questão ${currentQuestionIndex + 1} / ${activeQuizDeck.length}`;
     document.getElementById("question").innerHTML = q.question; document.getElementById("next").style.display = "none";
     
     const ansDiv = document.getElementById("answers"); ansDiv.innerHTML = "";
