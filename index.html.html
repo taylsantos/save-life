@@ -93,6 +93,15 @@ button:active { transform: scale(0.97); }
 .bounce-animation { font-size: 42px; animation: wave 0.4s infinite alternate; }
 @keyframes wave { from { transform: translateY(0); } to { transform: translateY(-6px); } }
 
+/* Animação Contração do Choque */
+@keyframes rcp-shock-jump {
+    0% { transform: translateY(0) scale(1); }
+    20% { transform: translateY(-35px) scaleY(1.2); }
+    50% { transform: translateY(-35px) scale(1); }
+    100% { transform: translateY(0) scale(1); }
+}
+.shock-jump { animation: rcp-shock-jump 0.5s ease-out 1; }
+
 .tinder-box { flex-grow: 1; display: flex; align-items: center; justify-content: center; position: relative; width: 100%; }
 .tinder-card { width: 88%; height: 130px; background: linear-gradient(135deg, #ff007f, #7928ca); border-radius: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 15px; box-sizing: border-box; position: absolute; box-shadow: 0 8px 20px rgba(0,0,0,0.3); transition: transform 0.3s ease, opacity 0.3s ease; border: 3px solid transparent; }
 .tinder-buttons { display: flex; justify-content: center; gap: 30px; }
@@ -104,7 +113,7 @@ button:active { transform: scale(0.97); }
 .item-selected { background: linear-gradient(135deg, #ff9100, #ff6d00) !important; border: 1px solid white; }
 
 .progress-container-game { width: 100%; background: rgba(255,255,255,0.15); height: 16px; border-radius: 8px; overflow: hidden; margin-bottom: 12px; }
-.progress-fill-game { width: 50%; height: 100%; background: linear-gradient(90deg, #ff5252, #ff1744); transition: all 0.2s ease; }
+.progress-fill-game { width: 0%; height: 100%; background: linear-gradient(90deg, #ff5252, #ff1744); transition: all 0.1s linear; }
 
 .quiz-status-bar { display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.2); padding: 5px 12px; border-radius: 10px; margin-bottom: 5px; font-size: 13px; font-weight: bold; }
 .guide-list { overflow-y: auto; flex-grow: 1; padding-right: 2px; }
@@ -193,13 +202,14 @@ button:active { transform: scale(0.97); }
     <div id="screen-dea-game" class="screen">
         <h1 id="g13-header">⚡ OPERAÇÃO DEA</h1>
         <p id="dea-scen">...</p>
+        <div class="progress-container-game" id="dea-load-box" style="display:none; margin-bottom:6px;"><div id="dea-bar" class="progress-fill-game" style="background:linear-gradient(90deg, #ff9100, #ff1744);"></div></div>
         <div class="game-canvas" style="flex-direction:row; justify-content:space-around; align-items:center;">
             <div id="pad-right" class="dea-pad" onclick="placeDeaPad('right')">↗️ Clavícula Dir.</div>
-            <div style="font-size:60px; user-select:none;">🧍</div>
+            <div id="dea-body" style="font-size:60px; user-select:none; transition: transform 0.2s;">🧍</div>
             <div id="pad-left" class="dea-pad" onclick="placeDeaPad('left')">↙️ Costela Esq.</div>
         </div>
         <button id="btn-dea-shock" class="btn-shock" onclick="triggerDeaShock()">⚡ ENVIAR CHOQUE!</button>
-        <button class="btn-back btn-global-back" onclick="changeScreen('screen-games-menu')">↩ Voltar</button>
+        <button class="btn-back btn-global-back" onclick="resetDeaIntervals(); changeScreen('screen-games-menu')">↩ Voltar</button>
     </div>
 
     <div id="screen-chem-game" class="screen">
@@ -302,6 +312,7 @@ button:active { transform: scale(0.97); }
 let currentLang = 'pt'; let currentDiff = 'medium';
 let currentQuestionIndex = 0; let score = 0;
 let quizTimerInterval; let quizTimeLeft = 20;
+let activeQuizDeck = [];
 
 const langData = {
     pt: {
@@ -310,12 +321,13 @@ const langData = {
         back: "↩ Voltar", easy: "Fácil", medium: "Médio", hard: "Difícil", score: "Pontos: ",
         gMenuTitle: "🕹️ MINI-JOGOS", g1: "Ritmo RCP", g2: "Certo ou Mito", g3: "Heimlich", g4: "Montar Maleta", g5: "Olho Clínico AVC", g8: "Triagem de Crise",
         g9: "Febre Alta", g12: "Tornozelo Torcido", g13: "Operação DEA", g15: "Química na Pele", g16: "Tala de Fratura", g17: "Cisco no Olho",
+        chokeObstr: "Vias aéreas obstruídas! Pressione!", chokeSucc: " Alimento expelido!", chokeBtn: "🔺 MANOBRA",
         lblTime: "Tempo: ", avcSave: "Salvos: ", rcpMelody: "🎵 Siga o compasso de Stayin' Alive!", btnNextText: "Avançar ➔",
         maletaEval: "🎒 Avaliar Kit", r0: "Estudante Curioso", r1: "Socorrista Júnior", r2: "Herói Resgatista", r3: "Paramédico Lendário",
         triageQ: "Quem você deve atender EM PRIMEIRO LUGAR no acidente?",
         triageA: "Vítima A: Chorando alto com braço quebrado.", triageB: "Vítima B: Desmaiada e sem respirar.",
         triageErrA: "⚠️ Errado! Quem grita está respirando. Foque no silêncio.", triageSucc: "🏅 Perfeito! Parada respiratória silenciosa é prioridade máxima.",
-        quizHeader: "🎮 MISSÃO ", deaScen1: "Passo 1: Instale as pás adesivas nos locais corretos do tórax!", deaScen2: "Passo 2: Analisando ritmo... MANTENHA-SE AFASTADO!", deaScen3: "Passo 3: Choque RECOMENDADO! Pressione o botão agora!", deaSucc: "DEA Operado com sucesso! Ritmo cardíaco restabelecido temporariamente.",
+        quizHeader: "🎮 MISSÃO ", deaScen1: "Passo 1: Instale as pás adesivas nos locais corretos do tórax!", deaScen2: "Passo 2: Analisando ritmo cardíaco... MANTENHA-SE AFASTADO!", deaScen3: "Passo 3: Carregando energia... CARGA PRONTA! AFANSTE-SE E ATIRE!", deaSucc: "DEA Operado com sucesso! Ritmo cardíaco restabelecido temporariamente.",
         gBox1T: "🚑 Engasgo 🫁", gBox1D: "Em adultos, aplique a Manobra de Heimlich empurrando a boca do estômago para dentro e para cima. Se perder a consciência, inicie massagem cardíaca.",
         gBox2T: "👶 Bebês engasgados 🍼", gBox2D: "Coloque o bebê de bruços no seu braço inclinado para baixo e aplique 5 batidas firmes nas costas. Vire-o e faça 5 compressões no peito.",
         gBox3T: "🫀 Infarto Clínico 🚨", gBox3D: "Sintomas: dor forte e aperto no peito que irradia para o braço esquerdo, suor frio e náusea. Chame imediatamente o SAMU (192) e acalme a vítima.",
@@ -335,7 +347,7 @@ const langData = {
         maletaEval: "🎒 Evaluar", r0: "Estudiante", r1: "Socorrista Jr", r2: "Héroe", r3: "Paramédico",
         triageQ: "¿A quién atender primero?", triageA: "Víctima A: Llorando fuerte.", triageB: "Víctima B: Desmayada.",
         triageErrA: "⚠️ ¡Incorrecto!", triageSucc: "🏅 ¡Perfecto!", quizHeader: "🎮 MISIÓN ",
-        deaScen1: "¡Paso 1: Coloque los parches!", deaScen2: "¡Paso 2: Analizando!", deaScen3: "¡Paso 3: Descarga!", deaSucc: "¡Éxito!",
+        deaScen1: "¡Paso 1: Coloque los parches!", deaScen2: "¡Paso 2: Analizando!", deaScen3: "¡Paso 3: Cargando... FUEGO!", deaSucc: "¡Éxito!",
         gBox1T: "🥖 Atragantamiento 🔊", gBox1D: "Presione el abdomen.", gBox2T: "👶 Bebés 🔊", gBox2D: "5 golpes en la espalda.",
         gBox3T: "🫀 Infarto 🔊", gBox3D: "Dolor de pecho. Llame urgencias.", gBox4T: "🧠 ACV 🔊", gBox4D: "Pídale que Sonría.",
         gBox5T: "🔥 Quemaduras 🧊", gBox5D: "Lave con agua.", gBox6T: "🌪️ Convulsión 🛌", gBox6D: "Proteja la cabeza.",
@@ -373,7 +385,6 @@ function setLanguage(lang) {
     document.querySelectorAll(".btn-global-back").forEach(b => b.innerHTML = l.back);
     document.getElementById("opt-easy").innerHTML = l.easy; document.getElementById("opt-medium").innerHTML = l.medium; document.getElementById("opt-hard").innerHTML = l.hard;
     document.getElementById("games-menu-title").innerHTML = l.gMenuTitle;
-    document.getElementById("next").innerHTML = l.btnNextText;
     document.getElementById("g1-title").innerHTML = l.g1; document.getElementById("g1-header").innerHTML = "❤️ " + l.g1; document.getElementById("rcp-subtitle").innerHTML = l.rcpMelody;
     document.getElementById("g2-title").innerHTML = l.g2; document.getElementById("g2-header").innerHTML = "🔥 " + l.g2;
     document.getElementById("g3-title").innerHTML = l.g3; document.getElementById("g3-header").innerHTML = "🥖 " + l.g3;
@@ -387,6 +398,7 @@ function setLanguage(lang) {
     document.getElementById("g16-title").innerHTML = l.g16; document.getElementById("g16-header").innerHTML = "🦴 " + l.g16;
     document.getElementById("g17-title").innerHTML = l.g17; document.getElementById("g17-header").innerHTML = "👁️ " + l.g17;
     document.getElementById("triage-main-q").innerHTML = l.triageQ;
+    document.getElementById("next").innerHTML = l.btnNextText;
     buildSOSGuide(); setupTriage(); updateRankDisplay();
 }
 
@@ -436,7 +448,7 @@ function loadMedals() {
     updateRankDisplay();
 }
 
-// --- JOGOS ---
+// --- MECÂNICAS DE MINI-JOGOS ---
 let rhythmClicks = 0, lastTime = 0, metronomeInterval, melodyIndex = 0;
 const stayinAliveMelody = [293.66, 293.66, 293.66, 293.66, 261.63, 293.66, 349.23, 293.66]; 
 function startRhythmGame() { rhythmClicks = 0; lastTime = 0; melodyIndex = 0; changeScreen('screen-rhythm-game'); metronomeInterval = setInterval(() => { playTone(stayinAliveMelody[melodyIndex % stayinAliveMelody.length], 'sine', 0.08); melodyIndex++; }, 545); }
@@ -452,21 +464,64 @@ function processRhythmClick() {
 }
 function stopRhythmGame() { clearInterval(metronomeInterval); changeScreen('screen-games-menu'); }
 
+// --- MOTOR DEA APRIMORADO ---
 let deaPlacedRight = false, deaPlacedLeft = false;
-function startDeaGame() { deaPlacedRight = false; deaPlacedLeft = false; document.getElementById("pad-right").className = "dea-pad"; document.getElementById("pad-left").className = "dea-pad"; document.getElementById("btn-dea-shock").style.display = "none"; document.getElementById("dea-scen").innerHTML = langData[currentLang].deaScen1; changeScreen('screen-dea-game'); }
+let deaChargeInterval = null; let deaChargeProgress = 0;
+function startDeaGame() {
+    resetDeaIntervals();
+    deaPlacedRight = false; deaPlacedLeft = false;
+    document.getElementById("pad-right").className = "dea-pad"; document.getElementById("pad-left").className = "dea-pad";
+    document.getElementById("btn-dea-shock").style.display = "none";
+    document.getElementById("dea-load-box").style.display = "none";
+    document.getElementById("dea-body").className = "";
+    document.getElementById("dea-scen").innerHTML = langData[currentLang].deaScen1;
+    changeScreen('screen-dea-game');
+}
 function placeDeaPad(side) {
-    if(side === 'right') { deaPlacedRight = true; document.getElementById("pad-right").classList.add("dea-pad-placed"); }
-    if(side === 'left') { deaPlacedLeft = true; document.getElementById("pad-left").classList.add("dea-pad-placed"); }
-    soundSuccess();
+    if(side === 'right' && !deaPlacedRight) { deaPlacedRight = true; document.getElementById("pad-right").classList.add("dea-pad-placed"); soundSuccess(); }
+    if(side === 'left' && !deaPlacedLeft) { deaPlacedLeft = true; document.getElementById("pad-left").classList.add("dea-pad-placed"); soundSuccess(); }
     if(deaPlacedRight && deaPlacedLeft) {
-        document.getElementById("dea-scen").innerHTML = langData[currentLang].deaScen2; playTone(400, 'sine', 1.2);
-        setTimeout(() => { document.getElementById("dea-scen").innerHTML = langData[currentLang].deaScen3; document.getElementById("btn-dea-shock").style.display = "block"; }, 1500);
+        document.getElementById("dea-scen").innerHTML = langData[currentLang].deaScen2; playTone(350, 'sine', 1.0);
+        setTimeout(startDeaChargingSequence, 1400);
     }
 }
-function triggerDeaShock() {
-    document.getElementById("main-container").classList.add("flash-effect"); setTimeout(() => document.getElementById("main-container").classList.remove("flash-effect"), 250);
-    localStorage.setItem('m_dea', 'true'); spawnConfetti(); alert(langData[currentLang].deaSucc); changeScreen('screen-games-menu');
+function startDeaChargingSequence() {
+    deaChargeProgress = 0;
+    document.getElementById("dea-load-box").style.display = "block";
+    document.getElementById("dea-scen").innerHTML = langData[currentLang].deaScen3;
+    let frequencyBase = 440;
+    deaChargeInterval = setInterval(() => {
+        deaChargeProgress += 5;
+        document.getElementById("dea-bar").style.width = deaChargeProgress + "%";
+        // Som subindo de tom progressivamente (Efeito Realista de Carga)
+        frequencyBase += 25;
+        playTone(frequencyBase, 'sine', 0.05);
+        if(navigator.vibrate) navigator.vibrate(30);
+        if(deaChargeProgress >= 100) {
+            clearInterval(deaChargeInterval);
+            document.getElementById("btn-dea-shock").style.display = "block";
+        }
+    }, 100);
 }
+function triggerDeaShock() {
+    document.getElementById("btn-dea-shock").style.display = "none";
+    document.getElementById("dea-load-box").style.display = "none";
+    // Flash de Choque
+    document.getElementById("main-container").classList.add("flash-effect");
+    setTimeout(() => document.getElementById("main-container").classList.remove("flash-effect"), 250);
+    // Salto de Contração Muscular Muscular (CSS Jump)
+    const patientBody = document.getElementById("dea-body");
+    patientBody.classList.add("shock-jump");
+    playTone(150, 'sawtooth', 0.6);
+    if(navigator.vibrate) navigator.vibrate([300, 100, 200]);
+    setTimeout(() => {
+        patientBody.classList.remove("shock-jump");
+        localStorage.setItem('m_dea', 'true'); spawnConfetti();
+        alert(langData[currentLang].deaSucc);
+        changeScreen('screen-games-menu');
+    }, 600);
+}
+function resetDeaIntervals() { clearInterval(deaChargeInterval); }
 
 function applyChemSucc() { localStorage.setItem('m_chem', 'true'); spawnConfetti(); changeScreen('screen-games-menu'); }
 function applyFractSucc() { localStorage.setItem('m_fract', 'true'); spawnConfetti(); changeScreen('screen-games-menu'); }
@@ -506,9 +561,7 @@ function setupTriage() {
     if(opt) { opt.innerHTML = `<button onclick="alert('${l.triageErrA}'); triggerErrorShake(); changeScreen('screen-games-menu')">${l.triageA}</button><button onclick="localStorage.setItem('m_triage', 'true'); spawnConfetti(); alert('${l.triageSucc}'); changeScreen('screen-games-menu')">${l.triageB}</button>`; }
 }
 
-function speakSOS(t) { window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = currentLang === 'es' ? 'es-ES' : 'pt-BR'; window.speechSynthesis.speak(u); }
-
-// --- BANCO DE 20 PERGUNTAS ---
+// --- MOTOR DE QUIZ DE 20 QUESTÕES ---
 const fullQuizDatabase = {
     pt: [
         { question: "Uma pessoa engasgou e NÃO consegue emitir som ou tossir. O que fazer?", answers: [{text: "Fazer Manobra de Heimlich", correct: true}, {text: "Dar água ou bater nas costas em pé", correct: false}] },
@@ -533,7 +586,7 @@ const fullQuizDatabase = {
         { question: "Vítima caiu de grande altura e reclama de dor na coluna:", answers: [{text: "NÃO movimentar a pessoa e chamar o resgate", correct: true}, {text: "Ajudar a levantar e andar", correct: false}] }
     ],
     es: [
-        { question: "¿Vítima atragantada que NO emite sonido. Qué hacer?", answers: [{text: "Maniobra de Heimlich", correct: true}, {text: "Dar agua", correct: false}] }
+        { question: "¿Víctima atragantada que NO emite sonido. Qué hacer?", answers: [{text: "Maniobra de Heimlich", correct: true}, {text: "Dar agua", correct: false}] }
     ]
 };
 
@@ -554,7 +607,7 @@ function startQuizTimer() {
 function loadQuestion() {
     if (currentQuestionIndex >= activeQuizDeck.length) { stopQuizGame(); return; }
     const q = activeQuizDeck[currentQuestionIndex];
-    document.getElementById("quiz-status").innerHTML = `Questão ${currentQuestionIndex + 1} / ${activeQuizDeck.length}`;
+    document.getElementById("quiz-header").innerHTML = `Questão ${currentQuestionIndex + 1} / ${activeQuizDeck.length}`;
     document.getElementById("question").innerHTML = q.question; document.getElementById("next").style.display = "none";
     
     const ansDiv = document.getElementById("answers"); ansDiv.innerHTML = "";
