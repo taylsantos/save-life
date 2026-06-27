@@ -200,7 +200,7 @@ button:active { transform: scale(0.97); }
 
     <div id="screen-choke-game" class="screen">
         <h1 id="g3-header">🥖 MANOBRA HEIMLICH</h1>
-        <p id="choke-scen">Vítima engasgada e sufocando! Pressione o abdômen repetidamente!</p>
+        <p id="choke-scen">Vítima engasgada! Pressione o abdômen repetidamente!</p>
         <div class="game-canvas">
             <span id="choke-victim" style="font-size:60px; user-select:none;">🤢</span>
             <span id="choke-food" style="font-size:24px; position:absolute; top:45px; transition: all 0.3s;">🥩</span>
@@ -236,10 +236,10 @@ button:active { transform: scale(0.97); }
     <div id="screen-fract-game" class="screen">
         <h1 id="g16-header">🦴 TALA DE FRATURA</h1>
         <div class="game-canvas"><span style="font-size:50px;">🦴</span></div>
-        <p id="lbl-fract-scen">Monte uma tala improvisada com os objetos certos:</p>
+        <p id="lbl-fract-scen">Suspeita de osso quebrado na perna. Monte uma tala:</p>
         <div style="display:flex; flex-direction:column; gap:5px;">
-            <button onclick="triggerErrorShake()" style="background:#c62828; color:white;">Puxar o Osso</button>
-            <button onclick="applyFractSucc()" style="background:#00c853; color:white;">Amarrar Papelão e Faixa</button>
+            <button onclick="triggerErrorShake()" style="background:#c62828; color:white;"> Puxar Membro Torcido</button>
+            <button onclick="applyFractSucc()" style="background:#00c853; color:white;"> Imobilizar com Faixas e Papelão</button>
         </div>
         <button class="btn-back btn-global-back" onclick="changeScreen('screen-games-menu')">↩ Voltar</button>
     </div>
@@ -247,23 +247,25 @@ button:active { transform: scale(0.97); }
     <div id="screen-eye-game" class="screen">
         <h1 id="g17-header">👁️ CISCO NO OLHO</h1>
         <div class="game-canvas"><span style="font-size:60px;">👁️</span><span style="font-size:14px; position:absolute; left:48%;">⚫</span></div>
-        <p id="lbl-eye-scen">Cisco incômodo no olho. Qual a ação protetora?</p>
+        <p id="lbl-eye-scen">Cisco incômodo preso na córnea. Qual a ação?</p>
         <div style="display:flex; gap:5px;">
-            <button onclick="triggerErrorShake();" style="background:#c62828; color:white; margin:0; flex:1;">🫵 Coçar Forte</button>
-            <button onclick="washEyeCisco()" style="background:#00c853; color:white; margin:0; flex:1;">💧 Lavar com Soro</button>
+            <button onclick="triggerErrorShake();" style="background:#c62828; color:white; margin:0; flex:1;">🫵 Coçar com Força</button>
+            <button onclick="washEyeCisco()" style="background:#00c853; color:white; margin:0; flex:1;">💧 Lavar com Soro Fisiológico</button>
         </div>
         <button class="btn-back btn-global-back" onclick="changeScreen('screen-games-menu')">↩ Voltar</button>
     </div>
 
     <div id="screen-tinder-game" class="screen">
         <h1 id="g2-header">🔥 CERTO OU MITO?</h1>
-        <div class="tinder-box"><div id="tinder-card" class="tinder-card"><span style="font-size:35px;">🩹</span><b id="tinder-text" style="font-size:13px;">...</b></div></div>
+        <div class="tinder-box"><div id="tinder-card" class="tinder-card"><span style="font-size:35px;">🛡️</span><b id="tinder-text" style="font-size:13px;">...</b></div></div>
         <div class="tinder-buttons"><button class="btn-tinder-left" onclick="swipeTinder(false)">❌</button><button class="btn-tinder-right" onclick="swipeTinder(true)">🟢</button></div>
+        <div id="tinder-score-display" style="font-weight:bold; margin-top:5px;">Questão: 1/10</div>
         <button class="btn-back btn-global-back" onclick="changeScreen('screen-games-menu')">↩ Voltar</button>
     </div>
 
     <div id="screen-maleta-game" class="screen">
         <h1 id="g4-header">💼 MONTE A MALETA</h1>
+        <p>Selecione apenas os itens corretos para salvar vidas:</p>
         <div id="maleta-container" class="maleta-list"></div>
         <button onclick="concludeMaleta()" id="btn-maleta-eval" style="background:#00c853; color:white; margin-top:10px;">🎒 Avaliar Kit</button>
         <button class="btn-back btn-global-back" onclick="changeScreen('screen-games-menu')">↩ Voltar</button>
@@ -301,7 +303,7 @@ button:active { transform: scale(0.97); }
     </div>
 
     <div id="screen-game" class="screen">
-        <div class="quiz-status-bar"><span id="quiz-status">Questão 1</span><span id="quiz-timer-display" style="color:#ff5252;">⏳ 20s</span></div>
+        <div class="quiz-status-bar"><span id="quiz-status-title">Missão</span><span id="quiz-timer-display" style="color:#ff5252;">⏳ 20s</span></div>
         <h2 id="question" style="font-size:14px; margin:8px 0; min-height:45px;"></h2>
         <div id="answers" style="flex-grow: 1; overflow-y: auto;"></div>
         <button id="next" class="btn-next-quiz" onclick="nextQuestion()">Avançar ➔</button>
@@ -338,13 +340,13 @@ const langData = {
         triageQ: "Quem você deve atender EM PRIMEIRO LUGAR no acidente?",
         triageA: "Vítima A: Chorando alto com braço quebrado.", triageB: "Vítima B: Desmaiada e sem respirar.",
         triageErrA: "⚠️ Errado! Quem grita está respirando. Foque no silêncio.", triageSucc: "🏅 Perfeito! Parada respiratória silenciosa é prioridade máxima.",
-        quizHeader: "🎮 MISSÃO ", deaScen1: "Passo 1: Instale as pás adesivas nos locais corretos do tórax!", deaScen2: "Passo 2: Analisando ritmo cardíaco... MANTENHA-SE AFASTADO!", deaScen3: "Passo 3: Carregando energia... CARGA PRONTA! AFANSTE-SE E ATIRE!", deaSucc: "DEA Operado com sucesso! Ritmo cardíaco restabelecido temporariamente.",
+        quizHeader: "Questão ", deaScen1: "Passo 1: Instale as pás adesivas nos locais corretos do tórax!", deaScen2: "Passo 2: Analisando ritmo cardíaco... MANTENHA-SE AFASTADO!", deaScen3: "Passo 3: Carregando energia... CARGA PRONTA! AFASTESE E ATIRE!", deaSucc: "DEA Operado com sucesso! Ritmo cardíaco restabelecido temporariamente.",
         gBox1T: "🚑 Engasgo 🫁", gBox1D: "Em adultos, aplique a Manobra de Heimlich empurrando a boca do estômago para dentro e para cima. Se perder a consciência, inicie massagem cardíaca.",
         gBox2T: "👶 Bebês engasgados 🍼", gBox2D: "Coloque o bebê de bruços no seu braço inclinado para baixo e aplique 5 batidas firmes nas costas. Vire-o e faça 5 compressões no peito.",
         gBox3T: "🫀 Infarto Clínico 🚨", gBox3D: "Sintomas: dor forte e aperto no peito que irradia para o braço esquerdo, suor frio e náusea. Chame imediatamente o SAMU (192) e acalme a vítima.",
         gBox4T: "🧠 AVC (Derrame) ⚡", gBox4D: "Identifique com o teste SAMU: Sorriso (um lado cai), Abraço (perda de força em um braço), Música (fala confusa). Havendo um sinal, ligue 192.",
         gBox5T: "🔥 Queimaduras 🧊", gBox5D: "Lave imediatamente o local apenas com água fria corrente por 10 a 15 minutos. Nunca passe pasta de dente, pomadas ou manteiga na ferida.",
-        gBox6T: "🌪️ Crise Convulsiva 🛌", gBox6D: "Proteja a cabeça da vítima com algo macio, afaste objetos perigosos au redor e vire-a de lado para não engasgar. Nunca segure a língua.",
+        gBox6T: "🌪️ Crise Convulsiva 🛌", gBox6D: "Proteja a cabeça da vítima com algo macio, afaste objetos perigosos ao redor e vire-a de lado para não engasgar. Nunca segure a língua.",
         gBox7T: "🩸 Hemorragias 🩹", gBox7D: "Estanque o sangue fazendo compressão direta sobre o ferimento usando um pano limpo. Se for um membro e o sangramento for massivo, use torniquete acima.",
         gBox8T: "🔌 Choque Elétrico 🔌", gBox8D: "Nunca toque na vítima enquanto ela estiver grudada na energia. Desligue imediatamente o disjuntor geral antes de prestar os cuidados básicos."
     },
@@ -446,22 +448,10 @@ function playTone(freq, type, duration) {
 function soundSuccess() { playTone(587, 'sine', 0.1); }
 function soundError() { playTone(140, 'triangle', 0.2); }
 
-function changeScreen(id) {
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active-screen'));
-    const target = document.getElementById(id);
-    if(target) target.classList.add('active-screen');
-    if(id === 'screen-games-menu') loadMedals();
-    if(id === 'screen-game') { score = 0; currentQuestionIndex = 0; prepareAndShuffleQuiz(); loadQuestion(); startQuizTimer(); }
-}
-
-function loadMedals() {
-    const mIds = ['rcp', 'tinder', 'heimlich', 'maleta', 'avc', 'triage', 'fever', 'sprain', 'dea', 'chem', 'fract', 'eye'];
-    mIds.forEach(id => { 
-        const el = document.getElementById('medal-'+id);
-        if(el && localStorage.getItem('m_'+id) === 'true') el.classList.add('medal-unlocked'); 
-    });
-    updateRankDisplay();
-}
+// --- ATIVAÇÃO DE TELAS ---
+function startChemGame() { changeScreen('screen-chem-game'); }
+function startFractGame() { changeScreen('screen-fract-game'); }
+function startEyeGame() { changeScreen('screen-eye-game'); }
 
 // --- RCP ---
 function startRhythmGame() { rhythmClicks = 0; lastTime = 0; melodyIndex = 0; changeScreen('screen-rhythm-game'); metronomeInterval = setInterval(() => { playTone(stayinAliveMelody[melodyIndex % stayinAliveMelody.length], 'sine', 0.08); melodyIndex++; }, 545); }
@@ -482,7 +472,7 @@ let heimlichCount = 0;
 function startChokeGame() { heimlichCount = 0; document.getElementById("choke-victim").innerHTML = "🤢"; document.getElementById("choke-food").style.top = "45px"; changeScreen('screen-choke-game'); }
 function applyHeimlichThrust() { heimlichCount++; playTone(440, 'sine', 0.05); if (heimlichCount >= 5) { document.getElementById("choke-victim").innerHTML = "😀"; document.getElementById("choke-food").style.top = "-60px"; localStorage.setItem('m_heimlich', 'true'); spawnConfetti(); setTimeout(() => changeScreen('screen-games-menu'), 600); } }
 
-// --- DEA UPGRADED ---
+// --- DEA ---
 let deaPlacedRight = false, deaPlacedLeft = false;
 let deaChargeInterval = null; let deaChargeProgress = 0;
 function startDeaGame() {
@@ -539,19 +529,61 @@ function applyChemSucc() { localStorage.setItem('m_chem', 'true'); spawnConfetti
 function applyFractSucc() { localStorage.setItem('m_fract', 'true'); spawnConfetti(); changeScreen('screen-games-menu'); }
 function washEyeCisco() { localStorage.setItem('m_eye', 'true'); spawnConfetti(); changeScreen('screen-games-menu'); }
 
+// --- MITO OU VERDADE (10 QUESTÕES) ---
 let tinderIndex = 0, tinderScore = 0;
-const tinderDeck = [ { text: "Colocar gelo direto na queimadura", isCorrect: false }, { text: "Elevar pernas em desmaio", isCorrect: true } ];
+const tinderDeck = [
+    { text: "Colocar gelo direto na queimadura alivia sem danificar a pele.", isCorrect: false },
+    { text: "Elevar as pernas de alguém que desmaiou ajuda a recuperar o fluxo sanguíneo.", isCorrect: true },
+    { text: "Passar borra de café ou açúcar ajuda a estancar hemorragias com segurança.", isCorrect: false },
+    { text: "Jogar água fria em fogo gerado por pane elétrica causa uma explosão.", isCorrect: true },
+    { text: "Segurar firme ou puxar a língua de quem está convulsionando evita que ela engasgue.", isCorrect: false },
+    { text: "Lavar os olhos continuamente por 15 minutos após respingos químicos é o correto.", isCorrect: true },
+    { text: "Em caso de entorse, aplicar gelo direto na pele sem proteção de tecido queima o local.", isCorrect: true },
+    { text: "Se um objeto pontiagudo penetrar o corpo, devemos arrancá-lo o mais rápido possível.", isCorrect: false },
+    { text: "Quem está gritando alto em um acidente está respirando e tem passagem de ar.", isCorrect: true },
+    { text: "Forçar o vômito após ingerir soda cáustica ou cloro limpa o estômago com segurança.", isCorrect: false }
+];
 function startTinderGame() { tinderIndex = 0; tinderScore = 0; updateTinderCard(); changeScreen('screen-tinder-game'); }
 function updateTinderCard() {
-    if(tinderIndex >= tinderDeck.length) { if(tinderScore >= 100) { localStorage.setItem('m_tinder', 'true'); spawnConfetti(); } changeScreen('screen-games-menu'); return; }
+    document.getElementById("tinder-score-display").innerHTML = `Questão: ${tinderIndex + 1} / ${tinderDeck.length}`;
+    if(tinderIndex >= tinderDeck.length) {
+        if(tinderScore >= 700) { localStorage.setItem('m_tinder', 'true'); spawnConfetti(); alert("🏅 Incrível! Você domina os mitos e verdades!"); }
+        else { alert("Treinamento finalizado! Revise as instruções para pontuar mais."); }
+        changeScreen('screen-games-menu'); return;
+    }
     document.getElementById("tinder-text").innerHTML = tinderDeck[tinderIndex].text;
 }
 function swipeTinder(choice) { if(choice === tinderDeck[tinderIndex].isCorrect) { tinderScore += 100; soundSuccess(); } else { tinderScore -= 50; triggerErrorShake(); } tinderIndex++; updateTinderCard(); }
 
-const itemsDatabase = [ { name: "Gaze Estéril" }, { name: "Pó de Café" } ];
-function startMaletaGame() { const container = document.getElementById("maleta-container"); container.innerHTML = ""; itemsDatabase.forEach(item => { const div = document.createElement("div"); div.className = "item-checkbox"; div.innerHTML = item.name; div.onclick = () => div.classList.toggle("item-selected"); container.appendChild(div); }); changeScreen('screen-maleta-game'); }
-function concludeMaleta() { localStorage.setItem('m_maleta', 'true'); spawnConfetti(); changeScreen('screen-games-menu'); }
+// --- MALETA (6 ITENS) ---
+const itemsDatabase = [
+    { name: "🩹 Gaze Estéril", isRight: true },
+    { name: "☕ Pó de Café", isRight: false },
+    { name: "🧴 Soro Fisiológico", isRight: true },
+    { name: "🩹 Fita Micropore", isRight: true },
+    { name: "🧈 Manteiga", isRight: false },
+    { name: "🧪 Pasta de Dente", isRight: false }
+];
+function startMaletaGame() {
+    const container = document.getElementById("maleta-container"); container.innerHTML = "";
+    itemsDatabase.forEach((item, idx) => {
+        const div = document.createElement("div"); div.className = "item-checkbox"; div.innerHTML = item.name;
+        div.onclick = () => div.classList.toggle("item-selected"); container.appendChild(div);
+    });
+    changeScreen('screen-maleta-game');
+}
+function concludeMaleta() {
+    let cards = document.querySelectorAll(".item-checkbox"); let success = true;
+    cards.forEach((card, idx) => {
+        let isSel = card.classList.contains("item-selected");
+        if((itemsDatabase[idx].isRight && !isSel) || (!itemsDatabase[idx].isRight && isSel)) success = false;
+    });
+    if(success) { localStorage.setItem('m_maleta', 'true'); spawnConfetti(); alert("🏅 Kit perfeito! Maleta montada com sucesso!"); }
+    else { triggerErrorShake(); alert("❌ Itens incorretos ou perigosos adicionados. Tente novamente!"); }
+    changeScreen('screen-games-menu');
+}
 
+// --- OUTROS JOGOS ---
 let avcInterval, avcTimeLeft = 14, avcHits = 0;
 function startAvcGame() { avcTimeLeft = 14; avcHits = 0; changeScreen('screen-avc-game'); spawnAvcFace(); avcInterval = setInterval(() => { avcTimeLeft--; document.getElementById("avc-timer").innerHTML = avcTimeLeft; if(avcTimeLeft <= 0) { clearInterval(avcInterval); changeScreen('screen-games-menu'); } }, 1000); }
 function spawnAvcFace() { const canvas = document.getElementById("avc-canvas"); canvas.innerHTML = ""; const isSym = Math.random() > 0.4; const face = document.createElement("div"); face.className = "avc-face"; face.innerHTML = isSym ? "🥴" : "😀"; face.style.left = "42%"; face.style.top = "25%"; face.onclick = () => { if(isSym) { avcHits++; if(avcHits >= 5) { clearInterval(avcInterval); localStorage.setItem('m_avc', 'true'); spawnConfetti(); changeScreen('screen-games-menu'); } else spawnAvcFace(); } else triggerErrorShake(); }; canvas.appendChild(face); }
@@ -569,9 +601,7 @@ function setupTriage() {
     if(opt) { opt.innerHTML = `<button onclick="alert('${l.triageErrA}'); triggerErrorShake(); changeScreen('screen-games-menu')">${l.triageA}</button><button onclick="localStorage.setItem('m_triage', 'true'); spawnConfetti(); alert('${l.triageSucc}'); changeScreen('screen-games-menu')">${l.triageB}</button>`; }
 }
 
-function speakSOS(t) { window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = 'pt-BR'; window.speechSynthesis.speak(u); }
-
-// --- BANCO DE PERGUNTAS ---
+// --- QUIZ MOTOR ---
 const fullQuizDatabase = {
     pt: [
         { question: "Uma pessoa engasgou e NÃO consegue emitir som ou tossir. O que fazer?", answers: [{text: "Fazer Manobra de Heimlich", correct: true}, {text: "Dar água ou bater nas costas em pé", correct: false}] },
@@ -585,7 +615,7 @@ const fullQuizDatabase = {
         { question: "Ao presenciar alguém sofrendo choque elétrico em uma tomada ativa:", answers: [{text: "Desligar o disjuntor geral imediatamente", correct: true}, {text: "Puxar a vítima diretamente", correct: false}] },
         { question: "Uma pessoa desmaiou, mas está respirando normal. Qual a melhor conduta?", answers: [{text: "Deitá-la de costas e elevar as pernas a 30cm", correct: true}, {text: "Sentá-la e jogar água fria", correct: false}] },
         { question: "O que NUNCA se deve fazer em caso de queimaduras térmicas na pele?", answers: [{text: "Passar pasta de dente, pomadas caseiras ou manteiga", correct: true}, {text: "Lavar com água corrente fria", correct: false}] },
-        { question: "Vítima com suspeita de fratura fechada na perna. O que fazer?", answers: [{text: "Imobilizar o membro na posição atual", correct: true}, {text: "Puxar o pé para alinhar", correct: false}] },
+        { question: "Vítima com suspeita de fratura fechada na perna. O que fazer?", answers: [{text: "Imobilizar o membro na posição atual", correct: true}, {text: "Puxar o foot para alinhar", correct: false}] },
         { question: "Pessoa foi picada por uma cobra venenosa na trilha. Qual a conduta?", answers: [{text: "Lavar com água/sabão e manter em repouso", correct: true}, {text: "Cortar e sugar o veneno com a boca", correct: false}] },
         { question: "Vítima com um pedaço de vidro cravado na perna. Como agir?", answers: [{text: "NÃO remover o objeto e imobilizá-lo", correct: true}, {text: "Arrancar o vidro rapidamente", correct: false}] },
         { question: "O que fazer diante de uma pessoa em plena crise convulsiva?", answers: [{text: "Proteger a cabeça e virá-la de lado", correct: true}, {text: "Segurar a língua com uma colher", correct: false}] },
@@ -593,10 +623,7 @@ const fullQuizDatabase = {
         { question: "Criança ingeriu produto de limpeza químico corrosivo por acidente:", answers: [{text: "Não provocar vômito e buscar socorro médico", correct: true}, {text: "Forçar o vômito para expelir", correct: false}] },
         { question: "Nariz de uma criança começou a sangrar muito. Qual a posição correta?", answers: [{text: "Inclinar a cabeça para frente e pressionar", correct: true}, {text: "Inclinar a cabeça totalmente para trás", correct: false}] },
         { question: "Produto químico de limpeza espirrou direto nos olhos. O que fazer?", answers: [{text: "Lavar com água corrente por 15 a 20 minutos", correct: true}, {text: "Fechar os olhos e vendar firme", correct: false}] },
-        { question: "Vítima caiu de grande altura e reclama de dor na coluna:", answers: [{text: "NÃO movimentar a pessoa e chamar o resgate", correct: true}, {text: "Ajudar a levantar e andar", correct: false}] }
-    ],
-    en: [
-        { question: "Choking victim CANNOT make any sound. What to do?", answers: [{text: "Heimlich Maneuver", correct: true}, {text: "Give water", correct: false}] }
+        { question: "Vítima caiu de grande altura e reclama de dor na coluna:", answers: [{text: "NÃO remover o objeto e chamar o resgate", correct: true}, {text: "Ajudar a levantar e andar", correct: false}] }
     ],
     es: [
         { question: "¿Víctima atragantada que NO emite sonido. Qué hacer?", answers: [{text: "Maniobra de Heimlich", correct: true}, {text: "Dar agua", correct: false}] }
@@ -641,6 +668,15 @@ function handleQuizError() { triggerErrorShake(); document.getElementById("next"
 function nextQuestion() { currentQuestionIndex++; if(currentQuestionIndex >= activeQuizDeck.length) { alert("Treinamento finalizado!"); stopQuizGame(); } else { loadQuestion(); startQuizTimer(); } }
 function stopQuizGame() { clearInterval(quizTimerInterval); changeScreen('screen-menu'); }
 
+function changeScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active-screen'));
+    const target = document.getElementById(id);
+    if(target) target.classList.add('active-screen');
+    if(id === 'screen-games-menu') loadMedals();
+    if(id === 'screen-game') { score = 0; currentQuestionIndex = 0; prepareAndShuffleQuiz(); loadQuestion(); startQuizTimer(); }
+}
+
+function loadProfile() { document.getElementById("hero-name").value = localStorage.getItem('hero_name') || "Hero"; updateRankDisplay(); }
 loadProfile(); setLanguage('pt');
 </script>
 
