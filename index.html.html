@@ -69,7 +69,6 @@ button:active { transform: scale(0.97); }
 .btn-back { background: rgba(255,255,255,0.15); color: white; margin-top: auto; padding: 10px; border: 1px solid rgba(255,255,255,0.1); }
 .btn-next-quiz { background: #ff9100; color: white; display: none; padding: 14px; border-radius: 14px; font-weight: bold; box-shadow: 0 4px 12px rgba(255,145,0,0.3); margin: 8px 0; }
 
-/* Injeções de feedback visual */
 button.correct { background: #00c853 !important; color: white !important; }
 button.wrong { background: #ff1744 !important; color: white !important; }
 
@@ -95,8 +94,6 @@ button.wrong { background: #ff1744 !important; color: white !important; }
 
 .game-canvas { background: rgba(0,0,0,0.45); border-radius: 18px; padding: 12px; margin: 8px 0; position: relative; height: 130px; display: flex; align-items: center; justify-content: center; box-sizing: border-box; border: 1px solid rgba(255,255,255,0.08); overflow: hidden; }
 .avc-face { font-size: 44px; pointer-events: auto; cursor: pointer; position: absolute; user-select: none; }
-.bounce-animation { font-size: 42px; animation: wave 0.4s infinite alternate; }
-@keyframes wave { from { transform: translateY(0); } to { transform: translateY(-6px); } }
 
 .rcp-scene { position: relative; width: 160px; height: 100px; display: flex; align-items: flex-end; justify-content: center; }
 .rcp-patient { font-size: 55px; transform: rotate(-90deg); position: absolute; left: 20px; bottom: -15px; user-select: none; }
@@ -104,23 +101,20 @@ button.wrong { background: #ff1744 !important; color: white !important; }
 .compress-hand { transform: translateY(18px) scaleY(0.9); }
 
 .bystander-crowd { position: absolute; width: 100%; height: 100%; left: 0; top: 0; pointer-events: none; }
-.bystander { font-size: 24px; position: absolute; pointer-events: auto; cursor: pointer; animation: wave 0.3s infinite alternate; transition: opacity 0.2s ease, transform 0.2s ease; }
+.bystander { font-size: 24px; position: absolute; pointer-events: auto; cursor: pointer; transition: opacity 0.2s ease, transform 0.2s ease; }
 .bystander:active { transform: scale(0.8); }
 
-@keyframes shock-jump-anim {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.2) translateY(-8px); color: #ffeb3b; }
-}
+@keyframes shock-jump-anim { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2) translateY(-8px); color: #ffeb3b; } }
 .shock-jump { animation: shock-jump-anim 0.3s ease 2; }
 
 .tinder-box { flex-grow: 1; display: flex; align-items: center; justify-content: center; position: relative; width: 100%; }
-.tinder-card { width: 88%; height: 130px; background: linear-gradient(135deg, #ff007f, #7928ca); border-radius: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 15px; box-sizing: border-box; position: absolute; box-shadow: 0 8px 20px rgba(0,0,0,0.3); transition: transform 0.3s ease, opacity 0.3s ease; border: 3px solid transparent; }
+.tinder-card { width: 88%; height: 130px; background: linear-gradient(135deg, #ff007f, #7928ca); border-radius: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 15px; box-sizing: border-box; position: absolute; box-shadow: 0 8px 20px rgba(0,0,0,0.3); border: 3px solid transparent; }
 .tinder-buttons { display: flex; justify-content: center; gap: 30px; }
 .btn-tinder-left { background: #d32f2f; color: white; font-size: 18px; border-radius: 50%; width: 45px; height: 45px; padding:0; }
 .btn-tinder-right { background: #388e3c; color: white; font-size: 18px; border-radius: 50%; width: 45px; height: 45px; padding:0; }
 
-.maleta-list { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; overflow-y: auto; max-height: 140px; width: 100%; }
-.item-checkbox { background: rgba(255,255,255,0.12); padding: 10px; border-radius: 12px; cursor: pointer; font-size: 11px; font-weight: bold; }
+.maleta-list { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; overflow-y: auto; max-height: 160px; width: 100%; padding-right: 2px; }
+.item-checkbox { background: rgba(255,255,255,0.12); padding: 10px; border-radius: 12px; cursor: pointer; font-size: 11px; font-weight: bold; text-align: center; }
 .item-selected { background: linear-gradient(135deg, #ff9100, #ff6d00) !important; border: 1px solid white; }
 
 .progress-container-game { width: 100%; background: rgba(255,255,255,0.15); height: 16px; border-radius: 8px; overflow: hidden; margin-bottom: 12px; }
@@ -130,12 +124,11 @@ button.wrong { background: #ff1744 !important; color: white !important; }
 .quiz-scoreboard { display: flex; justify-content: space-around; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 12px; margin: 5px 0; font-size: 12px; font-weight: bold; }
 .leaderboard-list { background: rgba(0,0,0,0.4); padding: 15px; border-radius: 20px; text-align: left; overflow-y: auto; flex-grow: 1; margin-bottom: 10px; }
 .leaderboard-item { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 14px; font-weight: bold; }
-.leaderboard-item:last-child { border: none; }
 
-.guide-list { display: flex; flex-direction: column; gap: 8px; overflow-y: auto; flex-grow: 1; }
-.guide-box { background: rgba(0,0,0,0.3); padding: 10px; border-radius: 14px; text-align: left; border: 1px solid rgba(255,255,255,0.05); cursor: pointer; }
+.guide-list { display: flex; flex-direction: column; gap: 8px; overflow-y: auto; flex-grow: 1; max-height: 70vh; padding-right: 4px; }
+.guide-box { background: rgba(0,0,0,0.3); padding: 12px; border-radius: 14px; text-align: left; border: 1px solid rgba(255,255,255,0.05); cursor: pointer; }
 .guide-box h3 { margin: 0 0 4px 0; font-size: 14px; color: #00e676; }
-.guide-box p { margin: 0; font-size: 11px; opacity: 0.8; }
+.guide-box p { margin: 0; font-size: 11px; opacity: 0.8; line-height: 1.3; }
 
 .dea-pad { width: 45%; padding: 10px; border: 2px dashed #00e676; border-radius: 10px; font-size: 12px; font-weight: bold; cursor: pointer; text-align: center; background: rgba(0,0,0,0.3); }
 .dea-pad-placed { background: #00c853 !important; border-style: solid; color: white; }
@@ -165,19 +158,17 @@ button.wrong { background: #ff1744 !important; color: white !important; }
             <h1 id="menu-title">SOS HERO</h1>
             <p id="menu-subtitle">O aplicativo definitivo que salva vidas</p>
         </div>
-
         <div class="ranking-container">
             <span id="rank-label" style="font-size:12px; font-weight:bold;">Ranking: ...</span>
             <div class="rank-bar"><div id="rank-fill" class="rank-fill"></div></div>
         </div>
-
         <div style="margin-top: 15px;">
             <button class="btn-menu-play" id="btn-menu-play">🎮 QUIZ DE SIMULAÇÃO</button>
             <button class="btn-menu-games" id="btn-menu-games">🕹️ CENTRAL DE MINI-JOGOS</button>
             <button class="btn-menu-sos" id="btn-menu-sos">🚨 GUIA SOS / VOZ</button>
             <button class="btn-menu-rank" id="btn-menu-rank" onclick="openLeaderboardScreen()">🏆 PLACAR DE JOGADORES</button>
         </div>
-        <p style="margin-top: auto; font-size: 10px; opacity: 0.5;">SOS HERO Pro Pack v9.0</p>
+        <p style="margin-top: auto; font-size: 10px; opacity: 0.5;">SOS HERO Pro Pack v10.0</p>
     </div>
 
     <div id="screen-leaderboard" class="screen">
@@ -290,7 +281,7 @@ button.wrong { background: #ff1744 !important; color: white !important; }
 
     <div id="screen-maleta-game" class="screen">
         <h1 id="g4-header">💼 MONTE A MALETA</h1>
-        <p>Selecione apenas os itens corretos para salvar vidas:</p>
+        <p style="font-size: 11px; margin-bottom: 8px;">Selecione apenas os insumos e ferramentas corretos:</p>
         <div id="maleta-container" class="maleta-list"></div>
         <button onclick="concludeMaleta()" id="btn-maleta-eval" style="background:#00c853; color:white; margin-top:10px;">🎒 Avaliar Kit</button>
         <button class="btn-back btn-global-back" onclick="changeScreen('screen-games-menu')">↩ Voltar</button>
@@ -332,7 +323,7 @@ button.wrong { background: #ff1744 !important; color: white !important; }
 
     <div id="screen-game" class="screen">
         <div class="quiz-status-bar"><span id="quiz-status">Questão 1</span><span id="quiz-timer-display" style="color:#ff5252;">⏳ 20s</span></div>
-        <h2 id="question" style="font-size:14px; margin:8px 0; min-height:45px;"></h2>
+        <h2 id="question" style="font-size:13px; margin:8px 0; min-height:45px; line-height: 1.3;"></h2>
         <div id="answers" style="flex-grow: 1; overflow-y: auto;"></div>
         <button id="next" class="btn-next-quiz" onclick="nextQuestion()">Avançar ➔</button>
         
@@ -341,7 +332,6 @@ button.wrong { background: #ff1744 !important; color: white !important; }
             <span id="quiz-misses-display" style="color:#ff5252;">🔴 Erros: 0</span>
             <span id="score-text" style="color:#ffeb3b;">✨ Pontos: 0</span>
         </div>
-        
         <button class="btn-back btn-global-back" onclick="stopQuizGame()">↩ Menu</button>
     </div>
 
@@ -361,7 +351,6 @@ let quizHits = 0; let quizMisses = 0;
 let quizTimerInterval; let quizTimeLeft = 20;
 let activeQuizDeck = [];
 
-// Declarações corretas do motor RCP
 let rhythmClicks = 0; let lastTime = 0; let melodyIndex = 0; let metronomeInterval = null;
 const stayinAliveMelody = [440, 440, 440, 349, 440, 523, 440];
 
@@ -423,8 +412,14 @@ function setupTriage() { triageCurrentStep = 0; }
 
 function buildSOSGuide() {
     document.getElementById("guide-container").innerHTML = `
-        <div class="guide-box" onclick="speakSOS('Em adultos, aplique a Manobra de Heimlich empurrando a boca do estômago para dentro e para cima.')"><h3>🚑 Engasgo 🫁</h3><p>Manobra de Heimlich em adultos.</p></div>
-        <div class="guide-box" onclick="speakSOS('Coloque o bebê de bruços no seu braço inclinado para baixo e aplique 5 batidas firmes nas costas.')"><h3>👶 Bebês engasgados 🍼</h3><p>Procedimento para menores de 1 ano.</p></div>
+        <div class="guide-box" onclick="speakSOS('Em adultos conscientes com obstrução total da via aérea, execute compressões abdominais firmes na boca do estômago, direcionando a força para dentro e para cima.')"><h3>🥖 Engasgo Adulto (Heimlich)</h3><p>Manobra compressiva subdiafragmática para desobstrução mecânica respiratória.</p></div>
+        <div class="guide-box" onclick="speakSOS('Em lactentes menores de um ano engasgados, posicione o bebê de bruços sobre seu antebraço inclinado para baixo. Desferir 5 pancadas com a palma da mão na região interescapular, vire o bebê de costas e faça 5 compressões torácicas.')"><h3>👶 Bebês Engasgados (Menor de 1 Ano)</h3><p>Protocolo alternado de tapas nas costas e compressões esofágicas.</p></div>
+        <div class="guide-box" onclick="speakSOS('Reconheça os sintomas pelo acrônimo SAMU. Sorriso torto, Abraço fraco, Música ou fala arrastada, Urgência no acionamento do resgate pelo telefone 192.')"><h3>🧠 Acidente Vascular Cerebral (AVC)</h3><p>Déficit neurológico focal agudo. Tempo é cérebro. Identifique os sinais rapidamente.</p></div>
+        <div class="guide-box" onclick="speakSOS('Se houver dor opressiva e retroesternal prolongada com irradiação para o membro superior esquerdo, mandíbula ou dorso, administre 2 comprimidos de ácido acetilsalicílico infantis se o paciente for orientado e não alérgico.')"><h3>🫀 Suspeita de Infarto (IAM)</h3><p>Isquemia miocárdica aguda. Mantenha o paciente calmo e sentado enquanto aguarda o resgate.</p></div>
+        <div class="guide-box" onclick="speakSOS('Durante uma crise convulsiva, proteja a cabeça da vítima contra impactos, lateralize o corpo para escoamento de secreções e nunca insira as mãos ou objetos dentro da boca.')"><h3>⚡ Crises Convulsivas</h3><p>Atividade elétrica cerebral anormal. Aguarde o término da crise cronometrando o tempo.</p></div>
+        <div class="guide-box" onclick="speakSOS('Em queimaduras térmicas de primeiro e segundo grau, irrigue imediatamente a lesão com água corrente limpa em temperatura ambiente por no mínimo 15 minutos. Não rompa bolhas.')"><h3>🔥 Queimaduras Térmicas</h3><p>Resfriamento tecidular emergencial. Nunca aplique pomadas, cremes dentais ou manteiga.</p></div>
+        <div class="guide-box" onclick="speakSOS('Se houver contato com substâncias ácidas ou alcalinas, lave exaustivamente com água corrente contínua por no mínimo 20 minutos. Remova roupas contaminadas sem rasgar sobre a pele.')"><h3>🧪 Queimaduras Químicas</h3><p>Diluição e descontaminação tópica ativa para conter a corrosão celular.</p></div>
+        <div class="guide-box" onclick="speakSOS('Em acidentes com animais peçonhentos, higienize o local afetado com água e sabão, mantenha o membro elevado e imóvel e transporte a vítima ao hospital de referência. Não faça torniquetes.')"><h3>🐍 Picadas de Animais Peçonhentos</h3><p>Envenenamento sistêmico agudo. Se possível, fotografe o animal causador do acidente.</p></div>
     `;
 }
 
@@ -485,11 +480,7 @@ function speakSOS(text) {
 }
 
 function toggleTheme() { document.body.classList.toggle("night-mode"); }
-
-function saveName() {
-    localStorage.setItem('hero_name', document.getElementById("hero-name").value);
-    updateRankDisplay();
-}
+function saveName() { localStorage.setItem('hero_name', document.getElementById("hero-name").value); updateRankDisplay(); }
 
 function updateRankDisplay() {
     let unlocked = 0;
@@ -501,33 +492,19 @@ function updateRankDisplay() {
 }
 
 function openLeaderboardScreen() {
-    const box = document.getElementById("leaderboard-box");
-    box.innerHTML = "";
+    const box = document.getElementById("leaderboard-box"); box.innerHTML = "";
     let currentHero = localStorage.getItem('hero_name') || "Hero";
-    let mockList = [
-        {name: "Capitão Resgate", pts: 1200},
-        {name: "Dra. Ana Silva", pts: 1000},
-        {name: currentHero, pts: score > 0 ? score : 400},
-        {name: "Socorrista Alfa", pts: 300}
-    ].sort((a,b) => b.pts - a.pts);
-
-    mockList.forEach((user, i) => {
-        box.innerHTML += `<div class="leaderboard-item"><span>${i+1}. ${user.name}</span><span>✨ ${user.pts}</span></div>`;
-    });
+    let mockList = [{name: "Capitão Resgate", pts: 2000}, {name: "Dra. Ana Silva", pts: 1800}, {name: currentHero, pts: score > 0 ? score : 400}, {name: "Socorrista Alfa", pts: 300}].sort((a,b) => b.pts - a.pts);
+    mockList.forEach((user, i) => { box.innerHTML += `<div class="leaderboard-item"><span>${i+1}. ${user.name}</span><span>✨ ${user.pts}</span></div>`; });
     changeScreen('screen-leaderboard');
 }
 
 function registerQuizScore(finalScore) {}
 
 // --- RCP ---
-function startRhythmGame() { 
-    rhythmClicks = 0; lastTime = 0; melodyIndex = 0; 
-    changeScreen('screen-rhythm-game'); 
-    metronomeInterval = setInterval(() => { playTone(stayinAliveMelody[melodyIndex % stayinAliveMelody.length], 'sine', 0.08); melodyIndex++; }, 545); 
-}
+function startRhythmGame() { rhythmClicks = 0; lastTime = 0; melodyIndex = 0; changeScreen('screen-rhythm-game'); metronomeInterval = setInterval(() => { playTone(stayinAliveMelody[melodyIndex % stayinAliveMelody.length], 'sine', 0.08); melodyIndex++; }, 545); }
 function processRhythmClick() {
-    const now = Date.now(); const hand = document.getElementById("rcp-h");
-    hand.classList.add("compress-hand"); setTimeout(() => hand.classList.remove("compress-hand"), 80);
+    const now = Date.now(); const hand = document.getElementById("rcp-h"); hand.classList.add("compress-hand"); setTimeout(() => hand.classList.remove("compress-hand"), 80);
     if (lastTime !== 0) {
         const bpm = 60 / ((now - lastTime) / 1000); let margin = currentDiff === 'easy' ? 40 : (currentDiff === 'hard' ? 12 : 22);
         if (bpm >= (110 - margin) && bpm <= (110 + margin)) { document.getElementById("rhythm-feedback").innerHTML = "🟢 OK!"; rhythmClicks++; soundSuccess(); } 
@@ -550,58 +527,44 @@ function startDeaGame() {
     document.getElementById("pad-right").className = "dea-pad"; document.getElementById("pad-left").className = "dea-pad";
     document.getElementById("btn-dea-shock").style.display = "none"; document.getElementById("dea-load-box").style.display = "none";
     document.getElementById("dea-crowd").innerHTML = ""; document.getElementById("dea-body").className = "";
-    document.getElementById("dea-scen").innerHTML = langData[currentLang].deaScen1;
-    changeScreen('screen-dea-game');
+    document.getElementById("dea-scen").innerHTML = langData[currentLang].deaScen1; changeScreen('screen-dea-game');
 }
 function placeDeaPad(side) {
     if(side === 'right' && !deaPlacedRight) { deaPlacedRight = true; document.getElementById("pad-right").classList.add("dea-pad-placed"); soundSuccess(); }
     if(side === 'left' && !deaPlacedLeft) { deaPlacedLeft = true; document.getElementById("pad-left").classList.add("dea-pad-placed"); soundSuccess(); }
-    if(deaPlacedRight && deaPlacedLeft) {
-        document.getElementById("dea-scen").innerHTML = langData[currentLang].deaScen2; playTone(350, 'sine', 1.0);
-        setTimeout(startDeaChargingSequence, 1400);
-    }
+    if(deaPlacedRight && deaPlacedLeft) { document.getElementById("dea-scen").innerHTML = langData[currentLang].deaScen2; playTone(350, 'sine', 1.0); setTimeout(startDeaChargingSequence, 1400); }
 }
 function startDeaChargingSequence() {
-    deaChargeProgress = 0; document.getElementById("dea-load-box").style.display = "block";
-    let frequencyBase = 440;
+    deaChargeProgress = 0; document.getElementById("dea-load-box").style.display = "block"; let frequencyBase = 440;
     deaChargeInterval = setInterval(() => {
-        deaChargeProgress += 5; document.getElementById("dea-bar").style.width = deaChargeProgress + "%";
-        frequencyBase += 22; playTone(frequencyBase, 'sine', 0.05);
+        deaChargeProgress += 5; document.getElementById("dea-bar").style.width = deaChargeProgress + "%"; frequencyBase += 22; playTone(frequencyBase, 'sine', 0.05);
         if(deaChargeProgress >= 100) { clearInterval(deaChargeInterval); spawnDeaBystanders(); }
     }, 100);
 }
 function spawnDeaBystanders() {
-    document.getElementById("dea-scen").innerHTML = langData[currentLang].deaScen3;
-    const crowd = document.getElementById("dea-crowd"); crowd.innerHTML = "";
-    const coords = [{t:15, l:15}, {t:10, l:72}, {t:75, l:20}, {t:80, l:68}]; deaBystandersCount = coords.length;
-    const icons = ["🏃‍♂️", "🧍‍♀️", "🏃‍♀️", "🧍‍♂️"];
+    document.getElementById("dea-scen").innerHTML = langData[currentLang].deaScen3; const crowd = document.getElementById("dea-crowd"); crowd.innerHTML = "";
+    const coords = [{t:15, l:15}, {t:10, l:72}, {t:75, l:20}, {t:80, l:68}]; deaBystandersCount = coords.length; const icons = ["🏃‍♂️", "🧍‍♀️", "🏃‍♀️", "🧍‍♂️"];
     coords.forEach((pos, i) => {
-        const span = document.createElement("span"); span.className = "bystander"; span.innerHTML = icons[i];
-        span.style.top = pos.t + "%"; span.style.left = pos.l + "%";
-        span.onclick = () => {
-            playTone(600, 'sine', 0.05); span.style.opacity = "0"; span.style.pointerEvents = "none";
-            deaBystandersCount--; if(deaBystandersCount <= 0) { document.getElementById("btn-dea-shock").style.display = "block"; }
-        };
+        const span = document.createElement("span"); span.className = "bystander"; span.innerHTML = icons[i]; span.style.top = pos.t + "%"; span.style.left = pos.l + "%";
+        span.onclick = () => { playTone(600, 'sine', 0.05); span.style.opacity = "0"; span.style.pointerEvents = "none"; deaBystandersCount--; if(deaBystandersCount <= 0) { document.getElementById("btn-dea-shock").style.display = "block"; } };
         crowd.appendChild(span);
     });
 }
 function triggerDeaShock() {
     document.getElementById("btn-dea-shock").style.display = "none"; document.getElementById("dea-load-box").style.display = "none";
     document.getElementById("main-container").classList.add("flash-effect"); setTimeout(() => document.getElementById("main-container").classList.remove("flash-effect"), 250);
-    const patientBody = document.getElementById("dea-body"); patientBody.classList.add("shock-jump");
-    playTone(150, 'sawtooth', 0.6);
+    const patientBody = document.getElementById("dea-body"); patientBody.classList.add("shock-jump"); playTone(150, 'sawtooth', 0.6);
     setTimeout(() => { patientBody.classList.remove("shock-jump"); localStorage.setItem('m_dea', 'true'); spawnConfetti(); alert(langData[currentLang].deaSucc); changeScreen('screen-games-menu'); }, 600);
 }
 function resetDeaIntervals() { clearInterval(deaChargeInterval); }
-
 function applyChemSucc() { localStorage.setItem('m_chem', 'true'); spawnConfetti(); changeScreen('screen-games-menu'); }
 
 // --- TALA DE FRATURA ---
 let fractCurrentStep = 0;
 const fullFractCases = [
-    { q: "Caso 1: Perna torta com dor extrema após queda, mas SEM rompimento da pele (Fratura Fechada):", options: [{t:"Imobilizar com papelão e faixas na posição atual", r:true}, {t:"Puxar a perna para alinhar o osso", r:false}], info: "Em fraturas fechadas, apenas imobilize! Nunca tente alinhar o osso." },
-    { q: "Caso 2: O osso quebrou, rompeu a pele e há forte sangramento ativo (Fratura Exposta):", options: [{t:"Cobrir com pano limpo para conter hemorragia", r:true}, {t:"Empurrar o osso para dentro antes da tala", r:false}], info: "Em fraturas expostas, sua prioridade máxima é conter o sangramento cobrindo o ferimento com panos limpos." },
-    { q: "Caso 3: Vítima caiu de telhado. Reclama de dor na cervical e perda de tato nas pernas:", options: [{t:"NÃO movimentar a vítima e aguardar o SAMU", r:true}, {t:"Ajudar a sentar e massagear", r:false}], info: "Suspeita de trauma na coluna: NÃO movimente o paciente para evitar paralisia!" }
+    { q: "Caso 1: Perna torta com dor extrema após queda, mas SEM rompimento da pele (Fratura Fechada):", options: [{t:"Imobilizar com papelão e faixas na posição atual", r:true}, {t:"Puxar a perna para alinhar o osso", r:false}] },
+    { q: "Caso 2: O osso quebrou, rompeu a pele e há forte sangramento ativo (Fratura Exposta):", options: [{t:"Cobrir com pano limpo para conter hemorragia", r:true}, {t:"Empurrar o osso para dentro antes da tala", r:false}] },
+    { q: "Caso 3: Vítima caiu de telhado. Reclama de dor na cervical e perda de tato nas pernas:", options: [{t:"NÃO movimentar a vítima e aguardar o SAMU", r:true}, {t:"Ajudar a sentar e massagear", r:false}] }
 ];
 function startFractGame() { fractCurrentStep = 0; loadFractCase(); changeScreen('screen-fract-game'); }
 function loadFractCase() {
@@ -661,16 +624,9 @@ let sprainStepIndex = 0;
 function startSprainGame() { sprainStepIndex = 1; document.getElementById("sprain-foot-emoji").style.transform = "rotate(0deg)"; loadSprainStep(); changeScreen('screen-sprain-game'); }
 function loadSprainStep() {
     const scen = document.getElementById("sprain-scen"); const opt = document.getElementById("sprain-options"); opt.innerHTML = "";
-    if(sprainStepIndex === 1) {
-        scen.innerHTML = "Passo 1: Vítima torceu o pé correndo. Qual a ação inicial?";
-        opt.innerHTML = `<button onclick="advanceSprain(1)">Imobilizar o pé e proibir de pisar</button><button onclick="triggerErrorShake()">Fazer caminhar para testar</button>`;
-    } else if(sprainStepIndex === 2) {
-        scen.innerHTML = "Passo 2: Aplicando o Gelo (Ice). Como agir com segurança?";
-        opt.innerHTML = `<button onclick="advanceSprain(2)">Envolver o gelo em pano antes de aplicar</button><button onclick="triggerErrorShake()">Colocar o gelo puro direto na pele</button>`;
-    } else if(sprainStepIndex === 3) {
-        scen.innerHTML = "Passo 3: Como reduzir o inchaço/edema de forma eficiente (Elevação)?";
-        opt.innerHTML = `<button onclick="advanceSprain(3)">Elevar a perna acima do nível do coração</button><button onclick="triggerErrorShake()">Deixar a perna esticada para baixo</button>`;
-    }
+    if(sprainStepIndex === 1) { scen.innerHTML = "Passo 1: Vítima torceu o pé correndo. Qual a ação inicial?"; opt.innerHTML = `<button onclick="advanceSprain(1)">Imobilizar o pé e proibir de pisar</button><button onclick="triggerErrorShake()">Fazer caminhar para testar</button>`; } 
+    else if(sprainStepIndex === 2) { scen.innerHTML = "Passo 2: Aplicando o Gelo. Como agir com segurança?"; opt.innerHTML = `<button onclick="advanceSprain(2)">Envolver o gelo em pano antes de aplicar</button><button onclick="triggerErrorShake()">Colocar o gelo puro direto na pele</button>`; } 
+    else if(sprainStepIndex === 3) { scen.innerHTML = "Passo 3: Como reduzir o inchaço/edema de forma eficiente?"; opt.innerHTML = `<button onclick="advanceSprain(3)">Elevar a perna acima do nível do coração</button><button onclick="triggerErrorShake()">Deixar a perna esticada para baixo</button>`; }
 }
 function advanceSprain(step) {
     soundSuccess();
@@ -679,7 +635,7 @@ function advanceSprain(step) {
     else if(step === 3) { localStorage.setItem('m_sprain', 'true'); spawnConfetti(); changeScreen('screen-games-menu'); }
 }
 
-// --- TINDER ---
+// --- MITO OU VERDADE (TINDER) ---
 let tinderIndex = 0, tinderScore = 0;
 const tinderDeck = [
     { text: "Colocar gelo direto na queimadura alivia sem danificar a pele.", isCorrect: false },
@@ -705,14 +661,20 @@ function updateTinderCard() {
 }
 function swipeTinder(choice) { if(choice === tinderDeck[tinderIndex].isCorrect) { tinderScore += 100; soundSuccess(); } else { tinderScore -= 50; triggerErrorShake(); } tinderIndex++; updateTinderCard(); }
 
-// --- MALETA ---
+// --- MONTAR MALETA (EXPANDIDO) ---
 const itemsDatabase = [
     { name: "🩹 Gaze Estéril", isRight: true },
     { name: "☕ Pó de Café", isRight: false },
     { name: "🧴 Soro Fisiológico", isRight: true },
     { name: "🩹 Fita Micropore", isRight: true },
     { name: "🧈 Manteiga", isRight: false },
-    { name: "🧪 Pasta de Dente", isRight: false }
+    { name: "🧪 Pasta de Dente", isRight: false },
+    { name: "🎗️ Torniquete Tático", isRight: true },
+    { name: "🤿 Máscara Pocket RCP", isRight: true },
+    { name: "✂️ Tesoura de Ponta Romba", isRight: true },
+    { name: "🧴 Álcool Gel 70% (Para feridas)", isRight: false },
+    { name: "🪵 Algodão Cru (Para queimar)", isRight: false },
+    { name: "🧤 Luvas de Procedimento", isRight: true }
 ];
 function startMaletaGame() {
     const container = document.getElementById("maleta-container"); container.innerHTML = "";
@@ -728,8 +690,8 @@ function concludeMaleta() {
         let isSel = card.classList.contains("item-selected");
         if((itemsDatabase[idx].isRight && !isSel) || (!itemsDatabase[idx].isRight && isSel)) success = false;
     });
-    if(success) { localStorage.setItem('m_maleta', 'true'); spawnConfetti(); alert("🏅 Maleta montada!"); }
-    else { triggerErrorShake(); }
+    if(success) { localStorage.setItem('m_maleta', 'true'); spawnConfetti(); alert("🏅 Maleta perfeitamente montada!"); }
+    else { triggerErrorShake(); alert("❌ Itens incorretos ou essenciais em falta! Lembre-se: nunca use paliativos caseiros (pó de café, pasta, manteiga) ou álcool direto em feridas abertas."); }
     changeScreen('screen-games-menu');
 }
 
@@ -748,11 +710,11 @@ function evalAvcVictory() { if(avcHits >= 5) { clearInterval(avcInterval); local
 // --- TRIAGEM DE CRISE ---
 let triageCurrentStep = 0;
 const fullTriageCases = [
-    { q: "Cenário 1: Quem você atende PRIMEIRO?", a: "Vítima A: Chorando alto com braço quebrado.", b: "Vítima B: Desmaiada e sem respirar.", right: "B", err: "Quem grita está respirando! Foque no silêncio.", succ: "Parada respiratória silenciosa é prioridade máxima." },
-    { q: "Cenário 2: Dois acidentes domésticos simultâneos!", a: "Vítima A: Engasgo total por pedaço de carne.", b: "Vítima B: Queimadura leve no armário gritando.", right: "A", err: "O engasgo total bloqueia o oxigênio e mata em minutos.", succ: "A asfixia mecânica é emergência absoluta." },
-    { q: "Cenário 3: Emergência industrial com cortes!", a: "Vítima A: Corte na coxa com sangue arterial jorrando.", b: "Vítima B: Corte leve na mão usando pano limpo.", right: "A", err: "Sangramento arterial esvazia o volume de sangue em minutos!", succ: "Hemorragias massivas precisam de contenção imediata." },
-    { q: "Cenário 4: Desmaios no meio da multidão!", a: "Vítima A: Desmaiado, pele fria e sem pulso detectável.", b: "Vítima B: Ofegante, chorando por crise de ansiedade.", right: "A", err: "A ausência de pulso indica parada cardíaca!", succ: "Parada cardiorrespiratória é prioridade número um." },
-    { q: "Cenário 5: Acidentes em ambiente rural!", a: "Vítima A: Picado por cobra com boca seca e tontura grave.", b: "Vítima B: Tornozelo muito inchado após queda.", right: "A", err: "O envenenamento por cobra ataca o sistema circulatório rapidamente.", succ: "Choques e toxinas sistêmicas passam à frente." }
+    { q: "Cenário 1: Quem você atende PRIMEIRO?", a: "Vítima A: Chorando alto com braço quebrado.", b: "Vítima B: Desmaiada e sem respirar.", right: "B", err: "Quem grita está respirando! Foque no silêncio." },
+    { q: "Cenário 2: Dois acidentes domésticos simultâneos!", a: "Vítima A: Engasgo total por pedaço de carne.", b: "Vítima B: Queimadura leve no armário gritando.", right: "A", err: "O engasgo total bloqueia o oxigênio e mata em minutos." },
+    { q: "Cenário 3: Emergência industrial com cortes!", a: "Vítima A: Corte na coxa com sangue arterial jorrando.", b: "Vítima B: Corte leve na mão usando pano limpo.", right: "A", err: "Sangramento arterial esvazia o volume de sangue em minutos!" },
+    { q: "Cenário 4: Desmaios no meio da multidão!", a: "Vítima A: Desmaiado, pele fria e sem pulso detectável.", b: "Vítima B: Ofegante, chorando por crise de ansiedade.", right: "A", err: "A ausência de pulso indica parada cardíaca!" },
+    { q: "Cenário 5: Acidentes em ambiente rural!", a: "Vítima A: Picado por cobra com boca seca e tontura grave.", b: "Vítima B: Tornozelo muito inchado após queda.", right: "A", err: "O envenenamento por cobra ataca o sistema circulatório rapidamente." }
 ];
 function startTriageGame() { triageCurrentStep = 0; loadTriageScenario(); changeScreen('screen-triage-game'); }
 function loadTriageScenario() {
@@ -768,25 +730,73 @@ function evaluateTriageAnswer(choice) {
     else { triggerErrorShake(); alert("❌ " + currentCase.err); triageCurrentStep = 0; loadTriageScenario(); }
 }
 
-// --- BANCO DE PERGUNTAS QUIZ ---
+// --- ENGINE SUPER QUIZ (20 PERGUNTAS POR NÍVEL) ---
 const fullQuizDatabase = {
     easy: [
         { question: "Qual o telefone oficial para acionar o Corpo de Bombeiros no Brasil?", answers: [{text: "193", correct: true}, {text: "190", correct: false}] },
         { question: "Para chamar o serviço de ambulância pública de urgência (SAMU), ligamos para:", answers: [{text: "192", correct: true}, {text: "199", correct: false}] },
-        { question: "Uma pessoa consciente desmaiou de repente no calor. Qual a primeira atitude?", answers: [{text: "Deitá-la de costas e elevar as pernas a 30cm", correct: true}, {text: "Jogar água no rosto dela", correct: false}] },
-        { question: "Onde deve ser aplicada a força na manobra de Heimlich em um adulto engasgado?", answers: [{text: "Na boca do estômago (abdômen), para dentro e para cima", correct: true}, {text: "Dando fortes tapas nas costas", correct: false}] }
+        { question: "Uma pessoa consciente desmaiou de repente no calor. Qual a primeira atitude?", answers: [{text: "Deitá-la de costas e elevar as pernas a 30cm", correct: true}, {text: "Jogar água fria diretamente no rosto dela", correct: false}] },
+        { question: "Onde deve ser aplicada a força na manobra de Heimlich em um adulto engasgado?", answers: [{text: "Na boca do estômago (abdômen), para dentro e para cima", correct: true}, {text: "Dando fortes tapas no meio das costas", correct: false}] },
+        { question: "Qual o número telefônico da Polícia Militar para situações de crimes ou segurança?", answers: [{text: "190", correct: true}, {text: "193", correct: false}] },
+        { question: "Ao ligar para o resgate de emergência, qual a primeira informação vital a fornecer?", answers: [{text: "O endereço exato e pontos de referência", correct: true}, {text: "O nome completo da mãe da vítima", correct: false}] },
+        { question: "O que deve ser feito inicialmente se uma pessoa sofrer uma queimadura de sol leve?", answers: [{text: "Resfriar com água corrente fria e hidratar a pele", correct: true}, {text: "Passar manteiga ou óleo de cozinha na pele", correct: false}] },
+        { question: "Qual a melhor posição para deixar uma pessoa que acabou de desmaiar mas já acordou?", answers: [{text: "Deitada de costas em local arejado", correct: true}, {text: "De pé caminhando para circular o sangue", correct: false}] },
+        { question: "O que você deve fazer se um cisco entrar no olho de alguém?", answers: [{text: "Lavar abundantemente com água limpa ou soro", correct: true}, {text: "Esfregar o olho com força usando os dedos", correct: false}] },
+        { question: "Qual o número emergencial da Defesa Civil no Brasil?", answers: [{text: "199", correct: true}, {text: "192", correct: false}] },
+        { question: "Se uma criança engasgar parcialmente mas continuar tossindo, qual a conduta?", answers: [{text: "Estimular a tosse natural e monitorar", correct: true}, {text: "Bater nas costas imediatamente sacudindo-a", correct: false}] },
+        { question: "O que significa a sigla RCP em primeiros socorros?", answers: [{text: "Ressuscitação Cardiorrespiratória", correct: true}, {text: "Retorno da Circulação Pulmonar", correct: false}] },
+        { question: "Se houver um pequeno corte superficial sangrando na mão, o que fazer?", answers: [{text: "Lavar com água e sabão e pressionar com pano limpo", correct: true}, {text: "Colocar pó de café sobre o corte", correct: false}] },
+        { question: "O que se deve evitar colocar em cima de uma ferida aberta?", answers: [{text: "Algodão desfiado comum ou pomadas caseiras", correct: true}, {text: "Gaze estéril limpa", correct: false}] },
+        { question: "Qual a utilidade primária de uma gaze de primeiros socorros?", answers: [{text: "Cobrir ferimentos protegendo contra contaminações", correct: true}, {text: "Amarrar ossos quebrados firmemente", correct: false}] },
+        { question: "Como se deve verificar rapidamente se uma pessoa desmaiada está respirando?", answers: [{text: "Olhar se o tórax se movimenta e ouvir o ar", correct: true}, {text: "Dar pequenos tapas no rosto dela chacoalhando", correct: false}] },
+        { question: "Em caso de tontura súbita provocada por queda de pressão arterial, o que ajuda?", answers: [{text: "Sentar-se e colocar a cabeça entre os joelhos ou deitar", correct: true}, {text: "Tomar um copo de leite fervendo", correct: false}] },
+        { question: "O que nunca deve ser feito com as bolhas causadas por queimaduras?", answers: [{text: "Estourá-las ou furá-las", correct: true}, {text: "Deixá-las intactas e protegidas", correct: false}] },
+        { question: "Se alguém morder a própria língua e sangrar de forma leve, o que ajuda?", answers: [{text: "Pressionar levemente com uma gaze limpa ou gelo", correct: true}, {text: "Colocar açúcar ou sal sobre a ferida", correct: false}] },
+        { question: "Qual a regra principal do socorrista ao abordar qualquer acidente?", answers: [{text: "Garantir a segurança do próprio socorrista primeiro", correct: true}, {text: "Tentar carregar as vítimas imediatamente", correct: false}] }
     ],
     medium: [
         { question: "Qual a frequência ideal de compressões por minuto que você deve aplicar na RCP?", answers: [{text: "Entre 100 e 120 compressões por minuto", correct: true}, {text: "Cerca de 50 compressões por minuto", correct: false}] },
-        { question: "Ao suspeitar de um AVC (Derrame), qual teste rápido você deve fazer com a vítima?", answers: [{text: "Pedir para ela dar um Sorriso e ver se o rosto entorta", correct: true}, {text: "Pedir para ela mexer os dedos dos pés", correct: false}] },
-        { question: "Pessoa reclama de dor forte em aperto no peito que irradia para o braço esquerdo. Suspeita de:", answers: [{text: "Infarto do Miocárdio", correct: true}, {text: "Crise de Labirintite", correct: false}] },
-        { question: "Ao presenciar um choque elétrico ativo em uma tomada de casa, como agir com segurança?", answers: [{text: "Desligar imediatamente o disjuntor geral de energia", correct: true}, {text: "Puxar a vítima pelos braços", correct: false}] }
+        { question: "Ao suspeitar de um AVC (Derrame), qual teste rápido você deve fazer com a vítima?", answers: [{text: "Pedir para ela dar um Sorriso e ver se o rosto entorta", correct: true}, {text: "Pedir para ela mexer os dedos dos pés ritmicamente", correct: false}] },
+        { question: "Pessoa reclama de dor forte em aperto no peito que irradia para o braço esquerdo. Suspeita de:", answers: [{text: "Infarto Agudo do Miocárdio", correct: true}, {text: "Crise aguda de Labirintite", correct: false}] },
+        { question: "Ao presenciar um choque elétrico ativo em uma tomada de casa, como agir com segurança?", answers: [{text: "Desligar imediatamente o disjuntor geral de energia", correct: true}, {text: "Puxar a vítima rapidamente pelos braços", correct: false}] },
+        { question: "Em um adulto em parada cardiorrespiratória (PCR), qual a profundidade correta das compressões?", answers: [{text: "De 5 a 6 centímetros", correct: true}, {text: "No máximo 2 centímetros", correct: false}] },
+        { question: "Qual a posição de segurança para uma vítima inconsciente que está respirando?", answers: [{text: "Lateralizada (Posição Lateral de Segurança)", correct: true}, {text: "De bruços com os braços para trás", correct: false}] },
+        { question: "O que caracteriza uma insolação grave que requer cuidados médicos?", answers: [{text: "Pele quente, seca, confusão mental e tontura", correct: true}, {text: "Erupções cutâneas leves e coceira", correct: false}] },
+        { question: "Qual a conduta imediata para uma hemorragia externa abundante em um membro?", answers: [{text: "Fazer pressão direta com panos limpos sobre a ferida", correct: true}, {text: "Colocar o membro para baixo e abanar", correct: false}] },
+        { question: "Durante uma crise convulsiva, o que é estritamente proibido fazer?", answers: [{text: "Colocar objetos na boca da vítima ou tentar segurar a língua", correct: true}, {text: "Lateralizar a cabeça da vítima", correct: false}] },
+        { question: "Como agir em caso de desmaio provocado por hipoglicemia em pessoa consciente?", answers: [{text: "Oferecer uma bebida açucarada ou água com açúcar", correct: true}, {text: "Aplicar insulina imediatamente", correct: false}] },
+        { question: "Qual o procedimento para tratar uma torção de tornozelo recente no protocolo clássico?", answers: [{text: "Repouso, aplicação de gelo protegido e elevação do membro", correct: true}, {text: "Massagear com pomada quente e forçar movimentos", correct: false}] },
+        { question: "Em um engasgo de bebê (lactente) inconsciente, qual a conduta correta?", answers: [{text: "Iniciar manobras de RCP (compressões torácicas)", correct: true}, {text: "Continuar batendo nas costas segurando pelos pés", correct: false}] },
+        { question: "Qual o sintoma clássico de uma hemorragia interna abdominal após trauma?", answers: [{text: "Abdômen rígido (em tábua), pulso rápido, palidez e suor frio", correct: true}, {text: "Febre alta e dores musculares nas costas", correct: false}] },
+        { question: "O que fazer se uma substância química ácida respingar na pele de alguém?", answers: [{text: "Lavar com água corrente em abundância por pelo menos 15 a 20 minutos", correct: true}, {text: "Aplicar uma substância básica como bicarbonato direto", correct: false}] },
+        { question: "Uma fratura em que o osso quebrado permanece sob a pele íntegra é chamada de:", answers: [{text: "Fratura Fechada", correct: true}, {text: "Fratura Exposta", correct: false}] },
+        { question: "Como proceder com um dente que foi arrancado por trauma (avulsão dentária)?", answers: [{text: "Conservá-lo em leite ou soro e procurar um dentista urgente", correct: true}, {text: "Lavar esfregando com escova e sabão", correct: false}] },
+        { question: "Qual o perigo imediato de uma queimadura de segundo grau que cobre todo o peito?", answers: [{text: "Choque hipovolêmico por perda de fluidos e infecção grave", correct: true}, {text: "Perda imediata da capacidade de digerir alimentos", correct: false}] },
+        { question: "Ao suspeitar que alguém ingeriu produto de limpeza corrosivo, deve-se:", answers: [{text: "Não provocar o vômito e encaminhar imediatamente ao pronto-socorro", correct: true}, {text: "Forçar a ingestão de bastante água morna com sal", correct: false}] },
+        { question: "Qual a proporção correta de compressões e ventilações na RCP em adultos com 1 socorrista?", answers: [{text: "30 compressões para 2 ventilações", correct: true}, {text: "15 compressões para 5 ventilações", correct: false}] },
+        { question: "Como reconhecer uma parada respiratória antes que vire parada cardíaca?", answers: [{text: "Ausência total de movimentos do tórax e cianose (lábios azuis)", correct: true}, {text: "Vítima respondendo a chamados com voz fraca", correct: false}] }
     ],
     hard: [
-        { question: "Diante de uma fratura exposta onde o osso rompeu a pele com hemorragia intensa, qual a conduta?", answers: [{text: "Conter o sangue com panos limpos, sem empurrar o osso", correct: true}, {text: "Forçar o osso de volta para dentro", correct: false}] },
-        { question: "Uma vítima caiu de uma árvore alta, está consciente mas não sente as pernas. Conduta correta:", answers: [{text: "NÃO movimentar a vítima sob hipótese alguma e chamar o resgate", correct: true}, {text: "Sentá-la para aguardar o socorro", correct: false}] },
-        { question: "Em caso de queimadura química nos olhos por produto corrosivo, qual o cuidado essencial?", answers: [{text: "Lavar continuamente com água corrente limpa por 15 a 20 minutos", correct: true}, {text: "Vendar o olho firmemente sem lavar", correct: false}] },
-        { question: "Vítima de acidente está com um estilhaço grande de vidro cravado no abdômen. O que fazer?", answers: [{text: "Não remover o objecto, protegê-lo e imobilizá-lo até o hospital", correct: true}, {text: "Arrancar o vidro o mais rápido possível", correct: false}] }
+        { question: "Protocolo Avançado: Diante de uma amputação traumática de membro, qual a conduta padrão ouro quanto ao torniquete?", answers: [{text: "Aplicar de 5 a 7 cm acima da lesão, anotar o horário exato e nunca afrouxar", correct: true}, {text: "Aplicar diretamente sobre a ferida e afrouxar a cada 15 minutos", correct: false}] },
+        { question: "No atendimento pré-hospitalar, uma vítima apresenta trauma de tórax aberto com som de sucção de ar. Conduta ideal:", answers: [{text: "Aplicar curativo de três pontas (curativo valvulado)", correct: true}, {text: "Ocluir totalmente a ferida com gesso ou bandagem impermeável rígida", correct: false}] },
+        { question: "Suspeita de Trauma Raquimedular (TRM): Paciente politraumatizado está em apneia e necessita de abertura de vias aéreas. Qual a manobra indicada?", answers: [{text: "Manobra de tração da mandíbula (Jaw-Thrust) sem extensão cervical", correct: true}, {text: "Manobra de inclinação da cabeça e elevação do queixo (Chin-Lift)", correct: false}] },
+        { question: "Ao operar um Desfibrilador Externo Automático (DEA), ele indica 'Choque Recomendado'. Qual a prioridade absoluta antes de pressionar o botão?", answers: [{text: "Garantir visualmente e verbalmente que NINGUÉM está tocando na vítima", correct: true}, {text: "Iniciar ventilações de resgate imediatamente em paralelo", correct: false}] },
+        { question: "Em um cenário de triagem de múltiplas vítimas (Método START), um paciente não respira mesmo após abertura de vias aéreas. Ele é classificado como:", answers: [{text: "Preto (Óbito / Sem prioridade de tratamento)", correct: true}, {text: "Vermelho (Imediato / Alta prioridade)", correct: false}] },
+        { question: "Queimadura química por Ácido Fluorídrico em ambiente de laboratório industrial exige neutralização tópica específica com:", answers: [{text: "Gel de Gluconato de Cálcio após lavagem exaustiva com água", correct: true}, {text: "Vinagre ou soluções altamente alcalinas concentradas", correct: false}] },
+        { question: "Um paciente em choque anafilático severo apresenta estridor laríngeo e colapso circulatório. A única intervenção imediata eficaz é:", answers: [{text: "Adrenalina (Epinefrina) por via intramuscular", correct: true}, {text: "Corticosteroide por via oral e compressas frias no pescoço", correct: false}] },
+        { question: "Como deve ser transportado um membro amputado até o hospital para tentativa de reimplante?", answers: [{text: "Envolto em gaze úmida, dentro de um saco plástico fechado, este imerso em água e gelo", correct: true}, {text: "Colocado direto em contato com cubos de gelo puro ou congelado", correct: false}] },
+        { question: "Vítima com queimadura de terceiro grau em toda a extensão perimetral do braço corre risco iminente de qual complicação isquêmica?", answers: [{text: "Síndrome Compartimental exigindo escarotomia de emergência", correct: true}, {text: "Acidente Vascular Cerebral embólico reflexo", correct: false}] },
+        { question: "Paciente hipotérmico grave encontrado em floresta está inconsciente. Qual o cuidado crítico ao movimentá-lo?", answers: [{text: "Movimentar com extremo cuidado para evitar induzir uma Fibrilação Ventricular", correct: true}, {text: "Fazer massagens vigorosas nos membros para forçar o aquecimento acelerado", correct: false}] },
+        { question: "O sinal de Battle (equimose na região mastóidea) e olhos de guaxinim indicam fortemente:", answers: [{text: "Fratura de base de crânio (Traumatismo Cranioencefálico Grave)", correct: true}, {text: "Hemorragia interna digestiva alta", correct: false}] },
+        { question: "Na triagem START, uma vítima respira a 28 incursões por minuto, tem pulso radial presente e obedece a ordens simples. Ela é rotulada como:", answers: [{text: "Amarela (Urgente / Retardada)", correct: true}, {text: "Vermelha (Imediata)", correct: false}] },
+        { question: "Em afogamentos, qual a sequência prioritária de RCP preconizada pelas diretrizes internacionais?", answers: [{text: "Iniciar por 5 ventilações de resgate seguidas de ciclo 30:2", correct: true}, {text: "Iniciar exclusivamente por compressões torácicas contínuas sem ar", correct: false}] },
+        { question: "Um objeto transfixou o tórax de um operário. Qual a conduta corretíssima no local?", answers: [{text: "Estabilizar o objeto na posição original usando curativos volumosos", correct: true}, {text: "Remover o objeto imediatamente para fechar o furo e evitar infecções", correct: false}] },
+        { question: "Qual o volume de compressão indicado na RCP de um adulto usando um reanimador manual (AMBU)?", answers: [{text: "Apenas o suficiente para promover a expansão visível do tórax", correct: true}, {text: "Esvaziar completamente a bolsa compressível de 2 litros a cada segundo", correct: false}] },
+        { question: "Vítima de esmagamento prolongado de membros inferiores corre alto risco de parada cardíaca pós-liberação devido a:", answers: [{text: "Síndrome de Esmagamento (Liberação maciça de potássio e mioglobina)", correct: true}, {text: "Hiperventilação psicogênica reflexa instantânea", correct: false}] },
+        { question: "A tríade de Cushing (hipertensão, bradicardia e alteração respiratória) sinaliza qual quadro de extrema gravidade?", answers: [{text: "Hipertensão Intracraniana severa com risco de herniação cerebral", correct: true}, {text: "Choque Neurogênico puro por transecção medular lombar", correct: false}] },
+        { question: "Em um pneumotórax hipertensivo pré-hospitalar, o sinal físico patognomônico tardio perceptível é:", answers: [{text: "Desvio da traqueia para o lado oposto ao da lesão e turgência jugular", correct: true}, {text: "Enfisema subcutâneo apenas na ponta dos dedos das mãos", correct: false}] },
+        { question: "O choque neurogênico, decorrente de trauma medular cervical alto, diferencia-se dos outros choques por apresentar:", answers: [{text: "Pele quente/rosada e bradicardia associada à hipotensão", correct: true}, {text: "Taquicardia extrema e pele fria e pegajosa clássica", correct: false}] },
+        { question: "Qual a manobra correta para desobstrução de via aérea em gestante consciente no terceiro trimestre?", answers: [{text: "Compressões torácicas na metade inferior do esterno (manobra modificada)", correct: true}, {text: "Compressões abdominais profundas comuns na boca do estômago", correct: false}] }
     ]
 };
 
@@ -810,7 +820,7 @@ function loadQuestion() {
     
     const ansDiv = document.getElementById("answers"); ansDiv.innerHTML = "";
     q.answers.forEach(a => {
-        const b = document.createElement("button"); b.innerHTML = a.text;
+        const b = document.createElement("button"); b.innerHTML = a.text; b.style.fontSize = "12px"; b.style.padding = "10px";
         b.onclick = () => {
             clearInterval(quizTimerInterval); document.querySelectorAll("#answers button").forEach(btn => btn.disabled = true);
             if(a.correct) { b.classList.add("correct"); score += 100; quizHits++; } else { b.classList.add("wrong"); triggerErrorShake(); quizMisses++; }
@@ -823,7 +833,7 @@ function loadQuestion() {
 }
 
 function handleQuizError() { quizMisses++; document.getElementById("quiz-misses-display").innerHTML = `🔴 Erros: ${quizMisses}`; triggerErrorShake(); document.getElementById("next").style.display = "block"; }
-function nextQuestion() { currentQuestionIndex++; if(currentQuestionIndex >= activeQuizDeck.length) { registerQuizScore(score); spawnConfetti(); alert(`Treinamento finalizado!`); stopQuizGame(); } else { loadQuestion(); startQuizTimer(); } }
+function nextQuestion() { currentQuestionIndex++; if(currentQuestionIndex >= activeQuizDeck.length) { registerQuizScore(score); spawnConfetti(); alert(`Treinamento Avançado Concluído com Sucesso! Sua pontuação final foi: ${score} pontos.`); stopQuizGame(); } else { loadQuestion(); startQuizTimer(); } }
 function stopQuizGame() { clearInterval(quizTimerInterval); changeScreen('screen-menu'); }
 
 function changeScreen(id) {
