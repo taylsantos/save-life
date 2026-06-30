@@ -65,6 +65,7 @@ button:active { transform: scale(0.97); }
 .btn-menu-play { background: #00c853; color: white; }
 .btn-menu-games { background: #ff007f; color: white; }
 .btn-menu-sos { background: #ff9100; color: white; }
+.btn-menu-rank { background: #2196f3; color: white; }
 .btn-back { background: rgba(255,255,255,0.15); color: white; margin-top: auto; padding: 10px; border: 1px solid rgba(255,255,255,0.1); }
 .btn-next-quiz { background: #ff9100; color: white; display: none; padding: 14px; border-radius: 14px; font-weight: bold; box-shadow: 0 4px 12px rgba(255,145,0,0.3); margin: 8px 0; }
 
@@ -93,14 +94,6 @@ button:active { transform: scale(0.97); }
 .bounce-animation { font-size: 42px; animation: wave 0.4s infinite alternate; }
 @keyframes wave { from { transform: translateY(0); } to { transform: translateY(-6px); } }
 
-@keyframes rcp-shock-jump {
-    0% { transform: translateY(0) scale(1); }
-    20% { transform: translateY(-35px) scaleY(1.2); }
-    50% { transform: translateY(-35px) scale(1); }
-    100% { transform: translateY(0) scale(1); }
-}
-.shock-jump { animation: rcp-shock-jump 0.5s ease-out 1; }
-
 .heimlich-scene { display: flex; align-items: flex-end; justify-content: center; position: relative; width: 140px; height: 110px; }
 .heimlich-hero { font-size: 50px; position: absolute; left: 35px; bottom: 0; z-index: 2; transition: transform 0.1s ease; user-select: none; }
 .heimlich-victim { font-size: 50px; position: absolute; left: 0; bottom: 0; z-index: 1; transition: transform 0.1s ease; user-select: none; }
@@ -123,10 +116,16 @@ button:active { transform: scale(0.97); }
 .progress-fill-game { width: 0%; height: 100%; background: linear-gradient(90deg, #ff5252, #ff1744); transition: all 0.1s linear; }
 
 .quiz-status-bar { display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.2); padding: 5px 12px; border-radius: 10px; margin-bottom: 5px; font-size: 13px; font-weight: bold; }
+.quiz-scoreboard { display: flex; justify-content: space-around; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 12px; margin: 5px 0; font-size: 12px; font-weight: bold; }
 .guide-list { overflow-y: auto; flex-grow: 1; padding-right: 2px; }
 .guide-box { background: rgba(0,0,0,0.3); padding: 10px; border-radius: 14px; text-align: left; margin-bottom: 6px; border-left: 4px solid #ff9100; cursor: pointer; }
 .correct { background: #2e7d32 !important; color: white !important; }
 .wrong { background: #c62828 !important; color: white !important; }
+
+/* Estilos Quadro de Líderes */
+.leaderboard-list { background: rgba(0,0,0,0.4); padding: 15px; border-radius: 20px; text-align: left; overflow-y: auto; flex-grow: 1; margin-bottom: 10px; }
+.leaderboard-item { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 14px; font-weight: bold; }
+.leaderboard-item:last-child { border: none; }
 
 .dea-pad { width: 45%; padding: 10px; border: 2px dashed #00e676; border-radius: 10px; font-size: 12px; font-weight: bold; cursor: pointer; text-align: center; background: rgba(0,0,0,0.3); }
 .dea-pad-placed { background: #00c853 !important; border-style: solid; color: white; }
@@ -162,12 +161,20 @@ button:active { transform: scale(0.97); }
             <div class="rank-bar"><div id="rank-fill" class="rank-fill"></div></div>
         </div>
 
-        <div style="margin-top: 20px;">
+        <div style="margin-top: 15px;">
             <button class="btn-menu-play" id="btn-menu-play" onclick="changeScreen('screen-game')">🎮 QUIZ DE SIMULAÇÃO</button>
             <button class="btn-menu-games" id="btn-menu-games" onclick="changeScreen('screen-games-menu')">🕹️ CENTRAL DE MINI-JOGOS</button>
             <button class="btn-menu-sos" id="btn-menu-sos" onclick="changeScreen('screen-sos')">🚨 GUIA SOS / VOZ</button>
+            <button class="btn-menu-rank" onclick="openLeaderboardScreen()">🏆 PLACAR DE JOGADORES</button>
         </div>
-        <p style="margin-top: auto; font-size: 10px; opacity: 0.5;">SOS HERO Pro Pack v8.2</p>
+        <p style="margin-top: auto; font-size: 10px; opacity: 0.5;">SOS HERO Pro Pack v8.5</p>
+    </div>
+
+    <div id="screen-leaderboard" class="screen">
+        <h1>🏆 SCORE GERAL</h1>
+        <p>Os melhores socorristas da rodada:</p>
+        <div class="leaderboard-list" id="leaderboard-box"></div>
+        <button class="btn-back btn-global-back" onclick="changeScreen('screen-menu')">↩ Voltar</button>
     </div>
 
     <div id="screen-games-menu" class="screen">
@@ -320,7 +327,13 @@ button:active { transform: scale(0.97); }
         <h2 id="question" style="font-size:14px; margin:8px 0; min-height:45px;"></h2>
         <div id="answers" style="flex-grow: 1; overflow-y: auto;"></div>
         <button id="next" class="btn-next-quiz" onclick="nextQuestion()">Avançar ➔</button>
-        <div id="score-text" style="margin: 5px 0; font-weight:bold;">0</div>
+        
+        <div class="quiz-scoreboard">
+            <span id="quiz-hits-display" style="color:#00e676;">🟢 Acertos: 0</span>
+            <span id="quiz-misses-display" style="color:#ff5252;">🔴 Erros: 0</span>
+            <span id="score-text" style="color:#ffeb3b;">✨ Pontos: 0</span>
+        </div>
+        
         <button class="btn-back btn-global-back" onclick="stopQuizGame()">↩ Menu</button>
     </div>
 
@@ -336,6 +349,7 @@ button:active { transform: scale(0.97); }
 <script>
 let currentLang = 'pt'; let currentDiff = 'medium';
 let currentQuestionIndex = 0; let score = 0;
+let quizHits = 0; let quizMisses = 0;
 let quizTimerInterval; let quizTimeLeft = 20;
 let activeQuizDeck = [];
 let feverInterval;
@@ -351,7 +365,7 @@ const langData = {
         lblTime: "Tempo: ", avcSave: "Salvos: ", rcpMelody: "🎵 Siga o compasso de Stayin' Alive!", btnNextText: "Avançar ➔",
         maletaEval: "🎒 Avaliar Kit", r0: "Estudante Curioso", r1: "Socorrista Júnior", r2: "Herói Resgatista", r3: "Paramédico Lendário",
         quizHeader: "Questão ", deaScen1: "Passo 1: Instale as pás adesivas nos locais corretos do tórax!", deaScen2: "Passo 2: Analisando ritmo cardíaco... MANTENHA-SE AFASTADO!", deaScen3: "Passo 3: Carregando energia... CARGA PRONTA! AFASTESE E ATIRE!", deaSucc: "DEA Operado com sucesso! Ritmo cardíaco restabelecido temporariamente.",
-        gBox1T: "🚑 Engasgo 🫁", gBox1D: "Em adultos, aplique a Manobra de Heimlich empurrando a boca do estômago para dentro e para cima. Se perder a consciência, inicie massagem cardíaca.",
+        gBox1T: "🚑 Engasgo 🫁", gBox1D: "Em donuts, aplique a Manobra de Heimlich empurrando a boca do estômago para dentro e para cima. Se perder a consciência, inicie massagem cardíaca.",
         gBox2T: "👶 Bebês engasgados 🍼", gBox2D: "Coloque o bebê de bruços no seu braço inclinado para baixo e aplique 5 batidas firmes nas costas. Vire-o e faça 5 compressões no peito.",
         gBox3T: "🫀 Infarto Clínico 🚨", gBox3D: "Sintomas: dor forte e aperto no peito que irradia para o braço esquerdo, suor frio e náusea. Chame imediatamente o SAMU (192) e acalme a vítima.",
         gBox4T: "🧠 AVC (Derrame) ⚡", gBox4D: "Identifique com o teste SAMU: Sorriso (um lado cai), Abraço (perda de força em um braço), Música (fala confusa). Havendo um sinal, ligue 192.",
@@ -420,8 +434,9 @@ function setLanguage(lang) {
     document.getElementById("g15-title").innerHTML = l.g15; document.getElementById("g15-header").innerHTML = "🧪 " + l.g15;
     document.getElementById("g16-title").innerHTML = l.g16; document.getElementById("g16-header").innerHTML = "🦴 " + l.g16;
     document.getElementById("g17-title").innerHTML = l.g17; document.getElementById("g17-header").innerHTML = "👁️ " + l.g17;
+    document.getElementById("triage-main-q").innerHTML = l.triageQ;
     document.getElementById("next").innerHTML = l.btnNextText;
-    buildSOSGuide(); updateRankDisplay();
+    buildSOSGuide(); setupTriage(); updateRankDisplay();
 }
 
 function buildSOSGuide() {
@@ -446,6 +461,7 @@ function filterSOSGuide() {
 function setDifficulty() { currentDiff = document.getElementById("diff-select").value; }
 
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+const stayinAliveMelody = [293.66, 293.66, 293.66, 293.66, 261.63, 293.66, 349.23, 293.66]; 
 function playTone(freq, type, duration) {
     try {
         const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
@@ -461,6 +477,30 @@ function soundError() { playTone(140, 'triangle', 0.2); }
 function startChemGame() { changeScreen('screen-chem-game'); }
 function startFractGame() { changeScreen('screen-fract-game'); }
 function startEyeGame() { changeScreen('screen-eye-game'); }
+
+// --- SCRIPT DO PLACAR DE LÍDERES (LEADERBOARD) ---
+function openLeaderboardScreen() {
+    changeScreen('screen-leaderboard');
+    const box = document.getElementById("leaderboard-box");
+    box.innerHTML = "";
+    let history = JSON.parse(localStorage.getItem('sos_hero_leaderboard')) || [];
+    if(history.length === 0) {
+        box.innerHTML = "<p style='text-align:center;opacity:0.6;'>Nenhum registro ainda. Conclua o Quiz!</p>";
+        return;
+    }
+    history.forEach((player, index) => {
+        let medal = index === 0 ? "🥇 " : (index === 1 ? "🥈 " : (index === 2 ? "🥉 " : `${index + 1}. `));
+        box.innerHTML += `<div class="leaderboard-item"><span>${medal}${player.name}</span><span>${player.points} pts</span></div>`;
+    });
+}
+function registerQuizScore(finalScore) {
+    let name = document.getElementById("hero-name").value || "Hero";
+    let history = JSON.parse(localStorage.getItem('sos_hero_leaderboard')) || [];
+    history.push({ name: name, points: finalScore });
+    history.sort((a, b) => b.points - a.points);
+    history = history.slice(0, 5); // Salva apenas o Top 5
+    localStorage.setItem('sos_hero_leaderboard', JSON.stringify(history));
+}
 
 // --- RCP ---
 function startRhythmGame() { 
@@ -612,7 +652,7 @@ function concludeMaleta() {
     changeScreen('screen-games-menu');
 }
 
-// --- JOGO 5: AVC ATUALIZADO (DIAGNÓSTICO NENHUM SINAL) ---
+// --- JOGO 5: AVC ---
 let avcInterval, avcTimeLeft = 14, avcHits = 0, avcCurrentIsSick = false;
 function startAvcGame() { avcTimeLeft = 14; avcHits = 0; document.getElementById("avc-score-counter").innerHTML = "0"; changeScreen('screen-avc-game'); spawnAvcFace(); clearInterval(avcInterval); avcInterval = setInterval(() => { avcTimeLeft--; document.getElementById("avc-timer").innerHTML = avcTimeLeft; if(avcTimeLeft <= 0) { clearInterval(avcInterval); alert("⏱️ O tempo acabou!"); changeScreen('screen-games-menu'); } }, 1000); }
 function spawnAvcFace() {
@@ -631,37 +671,45 @@ function clickAvcNextBtn() {
     else { triggerErrorShake(); }
 }
 function evalAvcVictory() {
-    if(avcHits >= 5) { clearInterval(avcInterval); localStorage.setItem('m_avc', 'true'); spawnConfetti(); alert("🏅 Perfeito! Olho clínico calibrado para AVC!"); changeScreen('screen-games-menu'); } 
+    if(avcHits >= 5) { clearInterval(avcInterval); localStorage.setItem('m_avc', 'true'); spawnConfetti(); alert("🏅 Perfeito! Diagnóstico concluído."); changeScreen('screen-games-menu'); } 
     else { spawnAvcFace(); }
 }
 
-// --- JOGO 8: TRIAGEM DE CRISE EXPANDIDA (5 SITUAÇÕES MANCHESTER) ---
-let triageIndex = 0;
-const triageDeck = [
-    { q: "Caso 1: Ônibus capotou. Quem você deve atender EM PRIMEIRO LUGAR?", a: "Vítima A: Chorando alto com braço quebrado.", b: "Vítima B: Desmaiada no chão, sem respirar.", right: "b", info: "A parada respiratória silenciosa é risco de morte imediata!" },
-    { q: "Caso 2: Incêndio em lanchonete. Quem é prioridade?", a: "Vítima A: Engasgada totalmente, sem ar, com as mãos no pescoço.", b: "Vítima B: Sentada, reclamando de queimadura leve no braço.", right: "a", info: "Asfixia por engasgo mata em poucos minutos!" },
-    { q: "Caso 3: Fábrica mecânica. Quem resgatar primeiro?", a: "Vítima A: Homem com hemorragia arterial jorrando sangue da perna.", b: "Vítima B: Jovem com pequeno corte limpo no dedo indicador.", right: "a", info: "Hemorragia massiva arterial leva ao choque hipovolêmico rápido!" },
-    { q: "Caso 4: Desmaios no calor. Quem tratar com urgência?", a: "Vítima A: Moça desmaiada, sem pulso e fria.", b: "Vítima B: Garoto hiperventilando por crise nervosa/ansiedade.", right: "a", info: "A ausência de pulso indica parada cardíaca iminente!" },
-    { q: "Caso 5: Acidente em trilha florestal. Quem resgatar primeiro?", a: "Vítima A: Homem picado por cobra jararaca, entrando em choque.", b: "Vítima B: Mulher com tornozelo inchado após pisar em falso.", right: "a", info: "O choque por envenenamento é uma emergência sistêmica!" }
+let feverVal = 39.5;
+function startFeverGame() { feverVal = 39.5; changeScreen('screen-fever-game'); feverInterval = setInterval(() => { feverVal += 0.1; document.getElementById("fever-status").innerHTML = feverVal.toFixed(1) + " °C"; if(feverVal >= 41) { clearInterval(feverInterval); changeScreen('screen-games-menu'); } }, 1000); }
+function applyFeverAction(isRight) { if(isRight) { feverVal -= 0.9; if(feverVal <= 37.2) { clearInterval(feverInterval); localStorage.setItem('m_fever', 'true'); spawnConfetti(); changeScreen('screen-games-menu'); } } else triggerErrorShake(); }
+
+let sprainState = 0;
+function startSprainGame() { sprainState = 0; changeScreen('screen-sprain-game'); }
+function clickSprainTool(t) { if(t === 1) sprainState = 1; if(t === 2) { if(sprainState === 1) { localStorage.setItem('m_sprain', 'true'); spawnConfetti(); changeScreen('screen-games-menu'); } else triggerErrorShake(); } }
+
+// --- TRIAGEM DE CRISE ---
+let triageCurrentStep = 0;
+const fullTriageCases = [
+    { q: "Cenário 1: Quem você atende PRIMEIRO?", a: "Vítima A: Chorando alto com braço quebrado.", b: "Vítima B: Desmaiada e sem respirar.", right: "B", err: "Quem grita está respirando! Foque no silêncio.", succ: "Parada respiratória silenciosa é prioridade máxima." },
+    { q: "Cenário 2: Dois acidentes domésticos simultâneos!", a: "Vítima A: Engasgo total por pedaço de carne.", b: "Vítima B: Queimadura leve no braço gritando.", right: "A", err: "O engasgo total bloqueia o oxigênio e mata em minutos. A dor pode esperar.", succ: "A asfixia mecânica é emergência vermelha absoluta." },
+    { q: "Cenário 3: Emergência industrial com cortes!", a: "Vítima A: Corte na coxa com sangue arterial jorrando.", b: "Vítima B: Corte leve na mão usando pano limpo.", right: "A", err: "Sangramento arterial jorrando esvazia o volume de sangue em minutos!", succ: "Hemorragias massivas precisam de contenção imediata." },
+    { q: "Cenário 4: Desmaios no meio da multidão!", a: "Vítima A: Desmaiado, pele fria e sem pulso detectável.", b: "Vítima B: Ofegante, chorando por crise de ansiedade.", right: "A", err: "A crise de ansiedade assusta, mas a ausência de pulso indica parada cardíaca!", succ: "Parada cardiorrespiratória é prioridade número um." },
+    { q: "Cenário 5: Acidentes em ambiente rural!", a: "Vítima A: Picado por cobra com boca seca e tontura grave.", b: "Vítima B: Tornozelo muito inchado após queda.", right: "A", err: "O envenenamento por cobra ataca o sistema circulatório rapidamente.", succ: "Choques e toxinas sistêmicas passam à frente de traumas ortopédicos leves." }
 ];
-function startTriageGame() { triageIndex = 0; loadTriageCase(); changeScreen('screen-triage-game'); }
-function loadTriageCase() {
-    if(triageIndex >= triageDeck.length) { localStorage.setItem('m_triage', 'true'); spawnConfetti(); alert("🏅 Triagem Manchester Concluída! Você sabe priorizar vidas."); changeScreen('screen-games-menu'); return; }
-    document.getElementById("triage-step-display").innerHTML = `Caso: ${triageIndex + 1} / ${triageDeck.length}`;
-    const c = triageDeck[triageIndex]; document.getElementById("triage-main-q").innerHTML = c.q;
+function startTriageGame() { triageCurrentStep = 0; loadTriageScenario(); changeScreen('screen-triage-game'); }
+function loadTriageScenario() {
+    if(triageCurrentStep >= fullTriageCases.length) { localStorage.setItem('m_triage', 'true'); spawnConfetti(); alert("🏅 Sensacional! Você completou toda a triagem de crise Manchester!"); changeScreen('screen-games-menu'); return; }
+    const currentCase = fullTriageCases[triageCurrentStep];
+    document.getElementById("triage-main-q").innerHTML = `(${triageCurrentStep + 1}/5) ${currentCase.q}`;
     const opt = document.getElementById("triage-options");
     opt.innerHTML = `
-        <button onclick="evalTriage('a')">${c.a}</button>
-        <button onclick="evalTriage('b')">${c.b}</button>
+        <button onclick="evaluateTriageAnswer('A')">${currentCase.a}</button>
+        <button onclick="evaluateTriageAnswer('B')">${currentCase.b}</button>
     `;
 }
-function evalTriage(choice) {
-    const c = triageDeck[triageIndex];
-    if(choice === c.right) { soundSuccess(); alert(`🏅 Correto!\n${c.info}`); triageIndex++; loadTriageCase(); } 
-    else { triggerErrorShake(); alert(`❌ Incorreto!\n${c.info}\nTente novamente.`); startTriageGame(); }
+function evaluateTriageAnswer(choice) {
+    const currentCase = fullTriageCases[triageCurrentStep];
+    if(choice === currentCase.right) { soundSuccess(); alert("🟢 " + currentCase.succ); triageCurrentStep++; loadTriageScenario(); } 
+    else { triggerErrorShake(); alert("❌ " + currentCase.err); triageCurrentStep = 0; loadTriageScenario(); }
 }
 
-// --- QUIZ MOTOR ---
+// --- BANCO DE PERGUNTAS ---
 const fullQuizDatabase = {
     pt: [
         { question: "Uma pessoa engasgou e NÃO consegue emitir som ou tossir. O que fazer?", answers: [{text: "Fazer Manobra de Heimlich", correct: true}, {text: "Dar água ou bater nas costas em pé", correct: false}] },
@@ -712,32 +760,47 @@ function loadQuestion() {
     const q = activeQuizDeck[currentQuestionIndex];
     document.getElementById("quiz-status").innerHTML = `Questão ${currentQuestionIndex + 1} / ${activeQuizDeck.length}`;
     document.getElementById("question").innerHTML = q.question; document.getElementById("next").style.display = "none";
+    
     const ansDiv = document.getElementById("answers"); ansDiv.innerHTML = "";
     q.answers.forEach(a => {
         const b = document.createElement("button"); b.innerHTML = a.text;
         b.onclick = () => {
             clearInterval(quizTimerInterval); document.querySelectorAll("#answers button").forEach(btn => btn.disabled = true);
-            if(a.correct) { b.className = "correct"; score += 100; soundSuccess(); } 
-            else { b.className = "wrong"; triggerErrorShake(); }
+            if(a.correct) { b.className = "correct"; score += 100; quizHits++; } 
+            else { b.className = "wrong"; triggerErrorShake(); quizMisses++; }
+            
+            document.getElementById("quiz-hits-display").innerHTML = `🟢 Acertos: ${quizHits}`;
+            document.getElementById("quiz-misses-display").innerHTML = `🔴 Erros: ${quizMisses}`;
+            document.getElementById("score-text").innerHTML = `✨ Pontos: ${score}`;
             document.getElementById("next").style.display = "block";
         };
         ansDiv.appendChild(b);
     });
-    document.getElementById("score-text").innerHTML = langData[currentLang].score + score;
 }
 
-function handleQuizError() { triggerErrorShake(); document.getElementById("next").style.display = "block"; }
-function nextQuestion() { currentQuestionIndex++; if(currentQuestionIndex >= activeQuizDeck.length) { alert("Treinamento finalizado!"); stopQuizGame(); } else { loadQuestion(); startQuizTimer(); } }
+function handleQuizError() { quizMisses++; document.getElementById("quiz-misses-display").innerHTML = `🔴 Erros: ${quizMisses}`; triggerErrorShake(); document.getElementById("next").style.display = "block"; }
+
+function nextQuestion() { 
+    currentQuestionIndex++; 
+    if(currentQuestionIndex >= activeQuizDeck.length) { 
+        // Salva a pontuação no Ranking automaticamente antes de encerrar
+        registerQuizScore(score);
+        spawnConfetti();
+        alert(`🎉 Treinamento finalizado!\nVocê conquistou: ${score} pontos.`); 
+        stopQuizGame(); 
+    } else { 
+        loadQuestion(); 
+        startQuizTimer(); 
+    } 
+}
 function stopQuizGame() { clearInterval(quizTimerInterval); changeScreen('screen-menu'); }
 
 function changeScreen(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active-screen'));
-    const target = document.getElementById(id); if(target) target.classList.add('active-screen');
+    const target = document.getElementById(id);
+    if(target) target.classList.add('active-screen');
     if(id === 'screen-games-menu') loadMedals();
-    if(id === 'screen-game') { 
-        if (audioCtx.state === 'suspended') { audioCtx.resume(); }
-        score = 0; currentQuestionIndex = 0; prepareAndShuffleQuiz(); loadQuestion(); startQuizTimer(); 
-    }
+    if(id === 'screen-game') { score = 0; quizHits = 0; quizMisses = 0; document.getElementById("quiz-hits-display").innerHTML = "🟢 Acertos: 0"; document.getElementById("quiz-misses-display").innerHTML = "🔴 Erros: 0"; document.getElementById("score-text").innerHTML = "✨ Pontos: 0"; currentQuestionIndex = 0; prepareAndShuffleQuiz(); loadQuestion(); startQuizTimer(); }
 }
 
 function loadProfile() { document.getElementById("hero-name").value = localStorage.getItem('hero_name') || "Hero"; updateRankDisplay(); }
