@@ -94,19 +94,14 @@ button:active { transform: scale(0.97); }
 .bounce-animation { font-size: 42px; animation: wave 0.4s infinite alternate; }
 @keyframes wave { from { transform: translateY(0); } to { transform: translateY(-6px); } }
 
-@keyframes rcp-shock-jump {
-    0% { transform: translateY(0) scale(1); }
-    20% { transform: translateY(-35px) scaleY(1.2); }
-    50% { transform: translateY(-35px) scale(1); }
-    100% { transform: translateY(0) scale(1); }
-}
-.shock-jump { animation: rcp-shock-jump 0.5s ease-out 1; }
-
-/* 🛌 CSS DA MANOBRA DE MASSAGEM RCP NO CHÃO */
 .rcp-scene { position: relative; width: 160px; height: 100px; display: flex; align-items: flex-end; justify-content: center; }
 .rcp-patient { font-size: 55px; transform: rotate(-90deg); position: absolute; left: 20px; bottom: -15px; user-select: none; }
-.rcp-hand { font-size: 42px; position: absolute; left: 55px; top: -5px; z-index: 5; transition: transform 0.08s ease; user-select: none; }
-.compress-hand { transform: translateY(18px) scaleY(0.9); }
+.rcp-hand { font-size: 46px; position: absolute; left: 58px; top: -12px; z-index: 5; transition: transform 0.08s ease; user-select: none; transform: rotate(180deg); }
+.compress-hand { transform: rotate(180deg) translateY(-18px) scaleY(0.9); }
+
+.bystander-crowd { position: absolute; width: 100%; height: 100%; left: 0; top: 0; pointer-events: none; }
+.bystander { font-size: 24px; position: absolute; pointer-events: auto; cursor: pointer; animation: wave 0.3s infinite alternate; transition: opacity 0.2s ease, transform 0.2s ease; }
+.bystander:active { transform: scale(0.8); }
 
 .tinder-box { flex-grow: 1; display: flex; align-items: center; justify-content: center; position: relative; width: 100%; }
 .tinder-card { width: 88%; height: 130px; background: linear-gradient(135deg, #ff007f, #7928ca); border-radius: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 15px; box-sizing: border-box; position: absolute; box-shadow: 0 8px 20px rgba(0,0,0,0.3); transition: transform 0.3s ease, opacity 0.3s ease; border: 3px solid transparent; }
@@ -126,15 +121,6 @@ button:active { transform: scale(0.97); }
 .leaderboard-list { background: rgba(0,0,0,0.4); padding: 15px; border-radius: 20px; text-align: left; overflow-y: auto; flex-grow: 1; margin-bottom: 10px; }
 .leaderboard-item { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 14px; font-weight: bold; }
 .leaderboard-item:last-child { border: none; }
-.guide-list { overflow-y: auto; flex-grow: 1; padding-right: 2px; }
-.guide-box { background: rgba(0,0,0,0.3); padding: 10px; border-radius: 14px; text-align: left; margin-bottom: 6px; border-left: 4px solid #ff9100; cursor: pointer; }
-.correct { background: #2e7d32 !important; color: white !important; }
-.wrong { background: #c62828 !important; color: white !important; }
-
-.dea-pad { width: 45%; padding: 10px; border: 2px dashed #00e676; border-radius: 10px; font-size: 12px; font-weight: bold; cursor: pointer; text-align: center; background: rgba(0,0,0,0.3); }
-.dea-pad-placed { background: #00c853 !important; border-style: solid; color: white; }
-.btn-shock { background: #ff1744; color: white; font-size: 18px; font-weight: 900; display: none; width: 100%; animation: blink-shock 0.5s infinite alternate; }
-@keyframes blink-shock { from { box-shadow: 0 0 5px #ff1744; } to { box-shadow: 0 0 20px #ff1744; transform: scale(1.02); } }
 </style>
 </head>
 <body>
@@ -171,7 +157,7 @@ button:active { transform: scale(0.97); }
             <button class="btn-menu-sos" id="btn-menu-sos" onclick="changeScreen('screen-sos')">🚨 GUIA SOS / VOZ</button>
             <button class="btn-menu-rank" onclick="openLeaderboardScreen()">🏆 PLACAR DE JOGADORES</button>
         </div>
-        <p style="margin-top: auto; font-size: 10px; opacity: 0.5;">SOS HERO Pro Pack v8.9</p>
+        <p style="margin-top: auto; font-size: 10px; opacity: 0.5;">SOS HERO Pro Pack v9.0</p>
     </div>
 
     <div id="screen-leaderboard" class="screen">
@@ -212,14 +198,12 @@ button:active { transform: scale(0.97); }
         <h1 id="g1-header">❤️ RITMO RCP</h1>
         <p id="rcp-subtitle" style="font-size:11px; color:#00e676; font-weight:bold;">🎵 Siga o compasso de Stayin' Alive!</p>
         <div id="rhythm-feedback" style="font-size:16px; font-weight:bold; height:24px; margin-bottom:5px; color:#ffeb3b;">...</div>
-        
         <div class="game-canvas" style="background:rgba(0,0,0,0.55);" onclick="processRhythmClick()">
             <div class="rcp-scene">
                 <div id="rcp-h" class="rcp-hand">🫸🏽</div>
                 <div class="rcp-patient">🧍</div>
             </div>
         </div>
-        
         <div id="rhythm-score" style="font-size:16px; font-weight:bold;">0 / 20</div>
         <button class="btn-back btn-global-back" onclick="stopRhythmGame()">↩ Voltar</button>
     </div>
@@ -239,10 +223,11 @@ button:active { transform: scale(0.97); }
         <h1 id="g13-header">⚡ OPERAÇÃO DEA</h1>
         <p id="dea-scen">...</p>
         <div class="progress-container-game" id="dea-load-box" style="display:none; margin-bottom:6px;"><div id="dea-bar" class="progress-fill-game" style="background:linear-gradient(90deg, #ff9100, #ff1744);"></div></div>
-        <div class="game-canvas" style="flex-direction:row; justify-content:space-around; align-items:center;">
+        <div class="game-canvas" style="flex-direction:row; justify-content:space-around; align-items:center; position:relative;">
             <div id="pad-right" class="dea-pad" onclick="placeDeaPad('right')">↗️ Clavícula Dir.</div>
             <div id="dea-body" style="font-size:60px; user-select:none; transition: transform 0.2s;">🧍</div>
             <div id="pad-left" class="dea-pad" onclick="placeDeaPad('left')">↙️ Costela Esq.</div>
+            <div id="dea-crowd" class="bystander-crowd"></div>
         </div>
         <button id="btn-dea-shock" class="btn-shock" onclick="triggerDeaShock()">⚡ ENVIAR CHOQUE!</button>
         <button class="btn-back btn-global-back" onclick="resetDeaIntervals(); changeScreen('screen-games-menu')">↩ Voltar</button>
@@ -261,23 +246,17 @@ button:active { transform: scale(0.97); }
 
     <div id="screen-fract-game" class="screen">
         <h1 id="g16-header">🦴 TALA DE FRATURA</h1>
-        <div class="game-canvas"><span style="font-size:50px;">🦴</span></div>
-        <p id="lbl-fract-scen">Suspeita de osso quebrado na perna. Monte uma tala:</p>
-        <div style="display:flex; flex-direction:column; gap:5px;">
-            <button onclick="triggerErrorShake()" style="background:#c62828; color:white;"> Puxar Membro Torcido</button>
-            <button onclick="applyFractSucc()" style="background:#00c853; color:white;"> Imobilizar com Faixas e Papelão</button>
-        </div>
+        <p id="fract-step-display" style="font-size:12px; color:#ffeb3b; font-weight:bold; margin:2px 0;">Caso: 1 / 3</p>
+        <p id="lbl-fract-scen" style="font-weight:bold; min-height:45px; font-size:13px;">...</p>
+        <div id="fract-options" style="display:flex; flex-direction:column; gap:6px;"></div>
         <button class="btn-back btn-global-back" onclick="changeScreen('screen-games-menu')">↩ Voltar</button>
     </div>
 
     <div id="screen-eye-game" class="screen">
         <h1 id="g17-header">👁️ CISCO NO OLHO</h1>
-        <div class="game-canvas"><span style="font-size:60px;">👁️</span><span style="font-size:14px; position:absolute; left:48%;">⚫</span></div>
-        <p id="lbl-eye-scen">Cisco incômodo preso na córnea. Qual a ação?</p>
-        <div style="display:flex; gap:5px;">
-            <button onclick="triggerErrorShake();" style="background:#c62828; color:white; margin:0; flex:1;">🫵 Coçar com Força</button>
-            <button onclick="washEyeCisco()" style="background:#00c853; color:white; margin:0; flex:1;">💧 Lavar com Soro Fisiológico</button>
-        </div>
+        <p id="eye-step-display" style="font-size:12px; color:#ffeb3b; font-weight:bold; margin:2px 0;">Caso: 1 / 3</p>
+        <p id="lbl-eye-scen" style="font-weight:bold; min-height:45px; font-size:13px;">...</p>
+        <div id="eye-options" style="display:flex; flex-direction:column; gap:6px;"></div>
         <button class="btn-back btn-global-back" onclick="changeScreen('screen-games-menu')">↩ Voltar</button>
     </div>
 
@@ -299,18 +278,19 @@ button:active { transform: scale(0.97); }
 
     <div id="screen-fever-game" class="screen">
         <h1 id="g9-header">🧊 CONTROLAR FEBRE</h1>
-        <div style="font-size:40px; margin:5px;">👶</div>
-        <div class="progress-container-game"><div id="fever-bar" class="progress-fill-game"></div></div>
-        <div id="fever-status" style="font-size:18px; font-weight:bold; color:#ff5252;">39.5 °C</div>
-        <div style="display:flex; gap:5px;"><button onclick="applyFeverAction(false)" style="background:#c62828; color:white; flex:1; margin:0;">🧴 Álcool</button><button onclick="applyFeverAction(true)" style="background:#00c853; color:white; flex:1; margin:0;">🧽 Pano Úmido</button></div>
-        <button class="btn-back btn-global-back" onclick="clearInterval(feverInterval); changeScreen('screen-games-menu')">↩ Voltar</button>
+        <p id="fever-step-display" style="font-size:12px; color:#ffeb3b; font-weight:bold; margin:2px 0;">Caso: 1 / 3</p>
+        <p id="lbl-fever-scen" style="font-weight:bold; min-height:45px; font-size:13px;">...</p>
+        <div id="fever-options" style="display:flex; flex-direction:column; gap:6px;"></div>
+        <button class="btn-back btn-global-back" onclick="changeScreen('screen-games-menu')">↩ Voltar</button>
     </div>
 
     <div id="screen-sprain-game" class="screen">
-        <h1 id="g12-header">💖 TORNOZELO TORCIDO</h1>
-        <div style="font-size:35px;">   🦶</div>
-        <div class="progress-container-game"><div id="sprain-bar" class="progress-fill-game" style="width:75%;"></div></div>
-        <div style="display:flex; gap:5px;"><button onclick="clickSprainTool(1)" style="background:#ff9100; color:white; flex:1; margin:0;">🧣 Pano</button><button onclick="clickSprainTool(2)" style="background:#00c853; color:white; flex:1; margin:0;">🧊 Gelo</button></div>
+        <h1 id="g12-header">🦵 TORNOZELO TORCIDO</h1>
+        <p id="sprain-scen" style="font-weight:bold; min-height:35px; font-size:13px;">Passo 1: Vítima torceu o pé correndo na quadra. Qual o primeiro passo do protocolo PRICE?</p>
+        <div class="game-canvas">
+            <span id="sprain-foot-emoji" style="font-size:55px; transition:all 0.3s;">🦶</span>
+        </div>
+        <div id="sprain-options" style="display:flex; flex-direction:column; gap:6px;"></div>
         <button class="btn-back btn-global-back" onclick="changeScreen('screen-games-menu')">↩ Voltar</button>
     </div>
 
@@ -362,50 +342,12 @@ let quizTimerInterval; let quizTimeLeft = 20;
 let activeQuizDeck = [];
 let feverInterval;
 
-const langData = {
-    pt: {
-        menuTitle: "SOS HERO", menuSubtitle: "O aplicativo definitivo que salva vidas",
-        btnPlay: "🎮 QUIZ DE SIMULAÇÃO", btnGames: "🕹️ CENTRAL DE MINI-JOGOS", btnSos: "🚨 GUIA SOS / VOZ",
-        back: "↩ Voltar", easy: "Fácil", medium: "Médio", hard: "Difícil", score: "Pontos: ",
-        gMenuTitle: "🕹️ MINI-JOGOS", g1: "Ritmo RCP", g2: "Certo ou Mito", g3: "Heimlich", g4: "Montar Maleta", g5: "Olho Clínico AVC", g8: "Triagem de Crise",
-        g9: "Febre Alta", g12: "Tornozelo Torcido", g13: "Operação DEA", g15: "Química na Pele", g16: "Tala de Fratura", g17: "Cisco no Olho",
-        chokeObstr: "Vias aéreas obstruídas! Pressione!", chokeSucc: " Alimento expelido!", chokeBtn: "🔺 MANOBRA",
-        lblTime: "Tempo: ", avcSave: "Salvos: ", rcpMelody: "🎵 Siga o compasso de Stayin' Alive!", btnNextText: "Avançar ➔",
-        maletaEval: "🎒 Avaliar Kit", r0: "Estudante Curioso", r1: "Socorrista Júnior", r2: "Herói Resgatista", r3: "Paramédico Lendário",
-        quizHeader: "Questão ", deaScen1: "Passo 1: Instale as pás adesivas nos locais corretos do tórax!", deaScen2: "Passo 2: Analisando ritmo cardíaco... MANTENHA-SE AFASTADO!", deaScen3: "Passo 3: Carregando energia... CARGA PRONTA! AFASTESE E ATIRE!", deaSucc: "DEA Operado com sucesso! Ritmo cardíaco restabelecido temporariamente.",
-        gBox1T: "🚑 Engasgo 🫁", gBox1D: "Em donuts, aplique a Manobra de Heimlich empurrando a boca do estômago para dentro e para cima. Se perder a consciência, inicie massagem cardíaca.",
-        gBox2T: "👶 Bebês engasgados 🍼", gBox2D: "Coloque o bebê de bruços no seu braço inclinado para baixo e aplique 5 batidas firmes nas costas. Vire-o e faça 5 compressões no peito.",
-        gBox3T: "🫀 Infarto Clínico 🚨", gBox3D: "Sintomas: dor forte e aperto no peito que irradia para o braço esquerdo, suor frio e náusea. Chame imediatamente o SAMU (192) e acalme a vítima.",
-        gBox4T: "🧠 AVC (Derrame) ⚡", gBox4D: "Identifique com o teste SAMU: Sorriso (um lado cai), Abraço (perda de força em um braço), Música (fala confusa). Havendo um sinal, ligue 192.",
-        gBox5T: "🔥 Queimaduras 🧊", gBox5D: "Lave imediatamente o local apenas com água fria corrente por 10 a 15 minutos. Nunca passe pasta de dente, pomadas ou manteiga na ferida.",
-        gBox6T: "🌪️ Crise Convulsiva 🛌", gBox6D: "Proteja a cabeça da vítima com algo macio, afaste objetos perigosos ao redor e vire-a de lado para não engasgar. Nunca segure a língua.",
-        gBox7T: "🩸 Hemorragias 🩹", gBox7D: "Estanque o sangue fazendo compressão direta sobre o ferimento usando um pano limpo. Se for um membro e o sangramento for massivo, use torniquete acima.",
-        gBox8T: "🔌 Choque Elétrico 🔌", gBox8D: "Never toque na vítima enquanto ela estiver grudada na energia. Desligue imediatamente o disjuntor geral antes de prestar os cuidados básicos."
-    },
-    es: {
-        menuTitle: "SOS HERO", menuSubtitle: "La app definitiva para salvar vidas",
-        btnPlay: "🎮 TRIVIA DE SIMULACIÓN", btnGames: "🕹️ CENTRAL DE MINI-JUEGOS", btnSos: "🚨 GUIA SOS / VOZ",
-        back: "↩ Volver", easy: "Fácil", medium: "Medio", hard: "Difícil", score: "Puntos: ",
-        gMenuTitle: "¡MINI-JUEGOS!", g1: "Ritmo RCP", g2: "Hecho o Mito", g3: "Heimlich", g4: "Armar Maletín", g5: "Ojo Clínico ACV", g8: "Triaje de Crisis",
-        g9: "Fiebre Alta", g12: "Tobillo Torcido", g13: "Operación DEA", g15: "Química Piel", g16: "Tala Fractura", g17: "Cisco Ojo",
-        lblTime: "Tiempo: ", avcSave: "Salvados: ", rcpMelody: "🎵 ¡Siga el ritmo de Stayin' Alive!", btnNextText: "Avanzar ➔",
-        maletaEval: "🎒 Evaluar", r0: "Estudiante", r1: "Socorrista Jr", r2: "Héroe", r3: "Paramédico",
-        triageQ: "Quién atender primero?", triageA: "Víctima A: Llorando fuerte.", triageB: "Víctima B: Desmayada.",
-        triageErrA: "⚠️ ¡Incorrecto!", triageSucc: "🏅 ¡Perfecto!", quizHeader: "🎮 MISIÓN ",
-        deaScen1: "¡Paso 1: Coloque los parches!", deaScen2: "¡Paso 2: Analizando!", deaScen3: "¡Paso 3: Cargando... FUEGO!", deaSucc: "¡Éxito!"
-    }
-};
-
 function triggerErrorShake() {
     soundError(); if(navigator.vibrate) navigator.vibrate([100, 50, 100]);
     const container = document.getElementById("main-container");
     if(container) container.classList.add("shake-effect"); setTimeout(() => { if(container) container.classList.remove("shake-effect"); }, 300);
 }
-function spawnConfetti() {
-    soundSuccess(); if(navigator.vibrate) navigator.vibrate(250);
-    updateRankDisplay();
-}
-
+function spawnConfetti() { soundSuccess(); if(navigator.vibrate) navigator.vibrate(250); updateRankDisplay(); }
 function saveName() { localStorage.setItem('hero_name', document.getElementById("hero-name").value); updateRankDisplay(); }
 function loadProfile() { document.getElementById("hero-name").value = localStorage.getItem('hero_name') || "Hero"; updateRankDisplay(); }
 
@@ -413,47 +355,22 @@ function updateRankDisplay() {
     const mIds = ['rcp', 'tinder', 'heimlich', 'maleta', 'avc', 'triage', 'fever', 'sprain', 'dea', 'chem', 'fract', 'eye'];
     let count = 0; mIds.forEach(id => { if(localStorage.getItem('m_'+id) === 'true') count++; });
     let percent = (count / 12) * 100; document.getElementById("rank-fill").style.width = percent + "%";
-    let txt = langData[currentLang].r0; if(count >= 3) txt = langData[currentLang].r1; if(count >= 7) txt = langData[currentLang].r2; if(count === 12) txt = langData[currentLang].r3;
+    let txt = "Estudante Curioso"; if(count >= 3) txt = "Socorrista Júnior"; if(count >= 7) txt = "Herói Resgatista"; if(count === 12) txt = "Paramédico Lendário";
     document.getElementById("rank-label").innerHTML = `${document.getElementById("hero-name").value} - ${txt} (${count}/12)`;
 }
 
 function toggleTheme() { document.body.classList.toggle("night-mode"); playTone(550, 'sine', 0.05); }
 
 function setLanguage(lang) {
-    currentLang = lang; const l = langData[lang];
-    document.getElementById("menu-title").innerHTML = l.menuTitle; document.getElementById("menu-subtitle").innerHTML = l.menuSubtitle;
-    document.getElementById("btn-menu-play").innerHTML = l.btnPlay; document.getElementById("btn-menu-games").innerHTML = l.btnGames; document.getElementById("btn-menu-sos").innerHTML = l.btnSos;
-    document.querySelectorAll(".btn-global-back").forEach(b => b.innerHTML = l.back);
-    document.getElementById("opt-easy").innerHTML = l.easy; document.getElementById("opt-medium").innerHTML = l.medium; document.getElementById("opt-hard").innerHTML = l.hard;
-    document.getElementById("games-menu-title").innerHTML = l.gMenuTitle;
-    document.getElementById("g1-title").innerHTML = l.g1; document.getElementById("g1-header").innerHTML = "❤️ " + l.g1; document.getElementById("rcp-subtitle").innerHTML = l.rcpMelody;
-    document.getElementById("g2-title").innerHTML = l.g2; document.getElementById("g2-header").innerHTML = "🔥 " + l.g2;
-    document.getElementById("g3-title").innerHTML = l.g3; document.getElementById("g3-header").innerHTML = "🥖 " + l.g3;
-    document.getElementById("g4-title").innerHTML = l.g4; document.getElementById("g4-header").innerHTML = "💼 " + l.g4;
-    document.getElementById("g5-title").innerHTML = l.g5; document.getElementById("g5-header").innerHTML = "🧠 " + l.g5;
-    document.getElementById("g8-title").innerHTML = l.g8; document.getElementById("g8-header").innerHTML = "🔀 " + l.g8;
-    document.getElementById("g9-title").innerHTML = l.g9; document.getElementById("g9-header").innerHTML = "🧊 " + l.g9;
-    document.getElementById("g12-title").innerHTML = l.g12; document.getElementById("g12-header").innerHTML = "💖 " + l.g12;
-    document.getElementById("g13-title").innerHTML = l.g13; document.getElementById("g13-header").innerHTML = "⚡ " + l.g13;
-    document.getElementById("g15-title").innerHTML = l.g15; document.getElementById("g15-header").innerHTML = "🧪 " + l.g15;
-    document.getElementById("g16-title").innerHTML = l.g16; document.getElementById("g16-header").innerHTML = "🦴 " + l.g16;
-    document.getElementById("g17-title").innerHTML = l.g17; document.getElementById("g17-header").innerHTML = "👁️ " + l.g17;
-    document.getElementById("triage-main-q").innerHTML = l.triageQ;
-    document.getElementById("next").innerHTML = l.btnNextText;
+    currentLang = lang;
+    document.getElementById("menu-title").innerHTML = "SOS HERO";
     buildSOSGuide(); setupTriage(); updateRankDisplay();
 }
 
 function buildSOSGuide() {
-    const l = langData[currentLang];
     document.getElementById("guide-container").innerHTML = `
-        <div class="guide-box" onclick="speakSOS('${l.gBox1D}')"><h3>${l.gBox1T}</h3><p>${l.gBox1D}</p></div>
-        <div class="guide-box" onclick="speakSOS('${l.gBox2D}')"><h3>${l.gBox2T}</h3><p>${l.gBox2D}</p></div>
-        <div class="guide-box" onclick="speakSOS('${l.gBox3D}')"><h3>${l.gBox3T}</h3><p>${l.gBox3D}</p></div>
-        <div class="guide-box" onclick="speakSOS('${l.gBox4D}')"><h3>${l.gBox4T}</h3><p>${l.gBox4D}</p></div>
-        <div class="guide-box" onclick="speakSOS('${l.gBox5D}')"><h3>${l.gBox5T}</h3><p>${l.gBox5D}</p></div>
-        <div class="guide-box" onclick="speakSOS('${l.gBox6D}')"><h3>${l.gBox6T}</h3><p>${l.gBox6D}</p></div>
-        <div class="guide-box" onclick="speakSOS('${l.gBox7D}')"><h3>${l.gBox7T}</h3><p>${l.gBox7D}</p></div>
-        <div class="guide-box" onclick="speakSOS('${l.gBox8D}')"><h3>${l.gBox8T}</h3><p>${l.gBox8D}</p></div>
+        <div class="guide-box" onclick="speakSOS('Em adultos, aplique a Manobra de Heimlich empurrando a boca do estômago para dentro e para cima.')"><h3>🚑 Engasgo 🫁</h3><p>Manobra de Heimlich em adultos.</p></div>
+        <div class="guide-box" onclick="speakSOS('Coloque o bebê de bruços no seu braço inclinado para baixo e aplique 5 batidas firmes nas costas.')"><h3>👶 Bebês engasgados 🍼</h3><p>Procedimento para menores de 1 ano.</p></div>
     `;
 }
 
@@ -465,7 +382,6 @@ function filterSOSGuide() {
 function setDifficulty() { currentDiff = document.getElementById("diff-select").value; }
 
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-const stayinAliveMelody = [293.66, 293.66, 293.66, 293.66, 261.63, 293.66, 349.23, 293.66]; 
 function playTone(freq, type, duration) {
     try {
         const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
@@ -477,15 +393,8 @@ function playTone(freq, type, duration) {
 function soundSuccess() { playTone(587, 'sine', 0.1); }
 function soundError() { playTone(140, 'triangle', 0.2); }
 
-// --- CONTROLES DE ATIVAÇÃO DOS MINI JOGOS ---
-function startChemGame() { changeScreen('screen-chem-game'); }
-function startFractGame() { changeScreen('screen-fract-game'); }
-function startEyeGame() { changeScreen('screen-eye-game'); }
-
-// --- LEADERBOARD ---
 function openLeaderboardScreen() {
-    changeScreen('screen-leaderboard');
-    const box = document.getElementById("leaderboard-box"); box.innerHTML = "";
+    changeScreen('screen-leaderboard'); const box = document.getElementById("leaderboard-box"); box.innerHTML = "";
     let history = JSON.parse(localStorage.getItem('sos_hero_leaderboard')) || [];
     if(history.length === 0) { box.innerHTML = "<p style='text-align:center;opacity:0.6;'>Nenhum registro ainda. Conclua o Quiz!</p>"; return; }
     history.forEach((player, index) => {
@@ -500,23 +409,16 @@ function registerQuizScore(finalScore) {
     history = history.slice(0, 5); localStorage.setItem('sos_hero_leaderboard', JSON.stringify(history));
 }
 
-// --- RITMO RCP REESTILIZADO (MÃO PRESSIONANDO PACIENTE DEITADO) ---
-let metronomeInterval, rhythmClicks = 0, lastTime = 0, melodyIndex = 0;
+// --- RCP ---
 function startRhythmGame() { 
     if (audioCtx.state === 'suspended') { audioCtx.resume(); }
     rhythmClicks = 0; lastTime = 0; melodyIndex = 0; 
-    document.getElementById("rcp-h").className = "rcp-hand";
     changeScreen('screen-rhythm-game'); 
     metronomeInterval = setInterval(() => { playTone(stayinAliveMelody[melodyIndex % stayinAliveMelody.length], 'sine', 0.08); melodyIndex++; }, 545); 
 }
 function processRhythmClick() {
-    const now = Date.now();
-    const hand = document.getElementById("rcp-h");
-    
-    // Dispara a animação visual da mão descendo no peito
-    hand.classList.add("compress-hand");
-    setTimeout(() => hand.classList.remove("compress-hand"), 80);
-
+    const now = Date.now(); const hand = document.getElementById("rcp-h");
+    hand.classList.add("compress-hand"); setTimeout(() => hand.classList.remove("compress-hand"), 80);
     if (lastTime !== 0) {
         const bpm = 60 / ((now - lastTime) / 1000); let margin = currentDiff === 'easy' ? 40 : (currentDiff === 'hard' ? 12 : 22);
         if (bpm >= (110 - margin) && bpm <= (110 + margin)) { document.getElementById("rhythm-feedback").innerHTML = "🟢 OK!"; rhythmClicks++; soundSuccess(); } 
@@ -527,55 +429,149 @@ function processRhythmClick() {
 }
 function stopRhythmGame() { clearInterval(metronomeInterval); changeScreen('screen-games-menu'); }
 
-// --- JOGO HEIMLICH RESTAURADO (VISUAL ORIGINAL DA VÍTIMA) ---
+// --- HEIMLICH ---
 let chokeThrusts = 0;
 function startChokeGame() { chokeThrusts = 0; document.getElementById("choke-victim").innerHTML = "🤢"; document.getElementById("choke-food").style.top = "45px"; changeScreen('screen-choke-game'); }
 function applyHeimlichThrust() { chokeThrusts++; playTone(440, 'sine', 0.05); if (chokeThrusts >= 5) { document.getElementById("choke-victim").innerHTML = "😀"; document.getElementById("choke-food").style.top = "-60px"; localStorage.setItem('m_heimlich', 'true'); spawnConfetti(); setTimeout(() => changeScreen('screen-games-menu'), 600); } }
 
-// --- DEA ---
-let deaPlacedRight = false, deaPlacedLeft = false;
-let deaChargeInterval = null; let deaChargeProgress = 0;
+// --- DEA SEGURANÇA ---
+let deaPlacedRight = false, deaPlacedLeft = false, deaChargeInterval = null, deaChargeProgress = 0, deaBystandersCount = 0;
 function startDeaGame() {
     if (audioCtx.state === 'suspended') { audioCtx.resume(); }
-    resetDeaIntervals(); deaPlacedRight = false; deaPlacedLeft = false;
+    resetDeaIntervals(); deaPlacedRight = false; deaPlacedLeft = false; deaBystandersCount = 0;
     document.getElementById("pad-right").className = "dea-pad"; document.getElementById("pad-left").className = "dea-pad";
     document.getElementById("btn-dea-shock").style.display = "none"; document.getElementById("dea-load-box").style.display = "none";
-    document.getElementById("dea-body").className = ""; document.getElementById("dea-scen").innerHTML = langData[currentLang].deaScen1;
+    document.getElementById("dea-crowd").innerHTML = ""; document.getElementById("dea-body").className = "";
+    document.getElementById("dea-scen").innerHTML = "Passo 1: Instale as pás adesivas nos locais corretos do tórax!";
     changeScreen('screen-dea-game');
 }
 function placeDeaPad(side) {
     if(side === 'right' && !deaPlacedRight) { deaPlacedRight = true; document.getElementById("pad-right").classList.add("dea-pad-placed"); soundSuccess(); }
     if(side === 'left' && !deaPlacedLeft) { deaPlacedLeft = true; document.getElementById("pad-left").classList.add("dea-pad-placed"); soundSuccess(); }
     if(deaPlacedRight && deaPlacedLeft) {
-        document.getElementById("dea-scen").innerHTML = langData[currentLang].deaScen2; playTone(350, 'sine', 1.0);
+        document.getElementById("dea-scen").innerHTML = "Passo 2: Analisando ritmo cardíaco... MANTENHA-SE AFASTADO!"; playTone(350, 'sine', 1.0);
         setTimeout(startDeaChargingSequence, 1400);
     }
 }
 function startDeaChargingSequence() {
     deaChargeProgress = 0; document.getElementById("dea-load-box").style.display = "block";
-    document.getElementById("dea-scen").innerHTML = langData[currentLang].deaScen3; let frequencyBase = 440;
+    let frequencyBase = 440;
     deaChargeInterval = setInterval(() => {
         deaChargeProgress += 5; document.getElementById("dea-bar").style.width = deaChargeProgress + "%";
-        frequencyBase += 25; playTone(frequencyBase, 'sine', 0.05);
-        if(navigator.vibrate) navigator.vibrate(30);
-        if(deaChargeProgress >= 100) { clearInterval(deaChargeInterval); document.getElementById("btn-dea-shock").style.display = "block"; }
+        frequencyBase += 22; playTone(frequencyBase, 'sine', 0.05);
+        if(deaChargeProgress >= 100) { clearInterval(deaChargeInterval); spawnDeaBystanders(); }
     }, 100);
+}
+function spawnDeaBystanders() {
+    document.getElementById("dea-scen").innerHTML = "Passo 3: Carga pronta! Há curiosos perto do corpo! Clique neles para AFASTAR antes de atirar!";
+    const crowd = document.getElementById("dea-crowd"); crowd.innerHTML = "";
+    const coords = [{t:15, l:15}, {t:10, l:72}, {t:75, l:20}, {t:80, l:68}]; deaBystandersCount = coords.length;
+    const icons = ["🏃‍♂️", "🧍‍♀️", "🏃‍♀️", "🧍‍♂️"];
+    coords.forEach((pos, i) => {
+        const span = document.createElement("span"); span.className = "bystander"; span.innerHTML = icons[i];
+        span.style.top = pos.t + "%"; span.style.left = pos.l + "%";
+        span.onclick = () => {
+            playTone(600, 'sine', 0.05); span.style.opacity = "0"; span.style.pointerEvents = "none";
+            deaBystandersCount--; if(deaBystandersCount <= 0) { document.getElementById("btn-dea-shock").style.display = "block"; }
+        };
+        crowd.appendChild(span);
+    });
 }
 function triggerDeaShock() {
     document.getElementById("btn-dea-shock").style.display = "none"; document.getElementById("dea-load-box").style.display = "none";
     document.getElementById("main-container").classList.add("flash-effect"); setTimeout(() => document.getElementById("main-container").classList.remove("flash-effect"), 250);
     const patientBody = document.getElementById("dea-body"); patientBody.classList.add("shock-jump");
-    playTone(150, 'sawtooth', 0.6); if(navigator.vibrate) navigator.vibrate([300, 100, 200]);
-    setTimeout(() => {
-        patientBody.classList.remove("shock-jump"); localStorage.setItem('m_dea', 'true'); spawnConfetti();
-        alert(langData[currentLang].deaSucc); changeScreen('screen-games-menu');
-    }, 600);
+    playTone(150, 'sawtooth', 0.6);
+    setTimeout(() => { patientBody.classList.remove("shock-jump"); localStorage.setItem('m_dea', 'true'); spawnConfetti(); alert("DEA Operado com sucesso!"); changeScreen('screen-games-menu'); }, 600);
 }
 function resetDeaIntervals() { clearInterval(deaChargeInterval); }
 
 function applyChemSucc() { localStorage.setItem('m_chem', 'true'); spawnConfetti(); changeScreen('screen-games-menu'); }
-function applyFractSucc() { localStorage.setItem('m_fract', 'true'); spawnConfetti(); changeScreen('screen-games-menu'); }
+
+// --- 🦴 TALA DE FRATURA 3 CASOS ---
+let fractCurrentStep = 0;
+const fullFractCases = [
+    { q: "Caso 1: Perna torta com dor extrema após queda, mas SEM rompimento da pele (Fratura Fechada):", options: [{t:"Imobilizar com papelão e faixas na posição atual", r:true}, {t:"Puxar a perna para alinhar o osso", r:false}], info: "Em fraturas fechadas, apenas imobilize! Nunca tente alinhar o osso." },
+    { q: "Caso 2: O osso quebrou, rompeu a pele e há forte sangramento ativo (Fratura Exposta):", options: [{t:"Cobrir com pano limpo para conter hemorragia", r:true}, {t:"Empurrar o osso para dentro antes da tala", r:false}], info: "Em fraturas expostas, sua prioridade máxima é conter o sangramento cobrindo o ferimento com panos limpos." },
+    { q: "Caso 3: Vítima caiu de telhado. Reclama de dor na cervical e perda de tato nas pernas:", options: [{t:"NÃO movimentar a vítima e aguardar o SAMU", r:true}, {t:"Ajudar a sentar e massagear", r:false}], info: "Suspeita de trauma na coluna: NÃO movimente o paciente para evitar paralisia!" }
+];
+function startFractGame() { fractCurrentStep = 0; loadFractCase(); changeScreen('screen-fract-game'); }
+function loadFractCase() {
+    if(fractCurrentStep >= fullFractCases.length) { localStorage.setItem('m_fract', 'true'); spawnConfetti(); changeScreen('screen-games-menu'); return; }
+    document.getElementById("fract-step-display").innerHTML = `Caso: ${fractCurrentStep + 1} / ${fullFractCases.length}`;
+    const c = fullFractCases[fractCurrentStep]; document.getElementById("lbl-fract-scen").innerHTML = c.q;
+    const optDiv = document.getElementById("fract-options"); optDiv.innerHTML = "";
+    c.options.forEach(o => {
+        const btn = document.createElement("button"); btn.innerHTML = o.t;
+        btn.onclick = () => { if(o.r) { soundSuccess(); fractCurrentStep++; loadFractCase(); } else { triggerErrorShake(); startFractGame(); } };
+        optDiv.appendChild(btn);
+    });
+}
+
+// --- 👁️ CISCO NO OLHO 3 CASOS ---
+let eyeCurrentStep = 0;
+const fullEyeCases = [
+    { q: "Caso 1: Poeira ou cílio entrou no olho causando incômodo e vermelhidão:", options: [{t:"Lavar com bastante Soro Fisiológico", r:true}, {t:"Coçar forte até aliviar", r:false}], info: "Ciscos simples devem ser lavados. Nunca coce para não arranhar a córnea." },
+    { q: "Caso 2: Respingo de água sanitária ou produto corrosivo direto no olho:", options: [{t:"Lavar continuamente em água corrente por 15min", r:true}, {t:"Fechar os olhos e vendar firme", r:false}], info: "Queimaduras químicas exigem lavagem imediata e contínua com água limpa!" },
+    { q: "Caso 3: Uma farpa pontiaguda de madeira voou e ficou cravada no olho:", options: [{t:"Proteger com copo plástico sem remover o objeto", r:true}, {t:"Arrancar a farpa rapidamente com pinça", correct:false}], info: "Objetos cravados NUNCA devem ser removidos em casa. Proteja-os e vá ao hospital." }
+];
+function startEyeGame() { eyeCurrentStep = 0; loadEyeCase(); changeScreen('screen-eye-game'); }
+function loadEyeCase() {
+    if(eyeCurrentStep >= fullEyeCases.length) { localStorage.setItem('m_eye', 'true'); spawnConfetti(); changeScreen('screen-games-menu'); return; }
+    document.getElementById("eye-step-display").innerHTML = `Caso: ${eyeCurrentStep + 1} / ${fullEyeCases.length}`;
+    const c = fullEyeCases[eyeCurrentStep]; document.getElementById("lbl-eye-scen").innerHTML = c.q;
+    const optDiv = document.getElementById("eye-options"); optDiv.innerHTML = "";
+    c.options.forEach(o => {
+        const btn = document.createElement("button"); btn.innerHTML = o.t;
+        btn.onclick = () => { if(o.r || o.correct) { soundSuccess(); eyeCurrentStep++; loadEyeCase(); } else { triggerErrorShake(); startEyeGame(); } };
+        optDiv.appendChild(btn);
+    });
+}
 function washEyeCisco() { localStorage.setItem('m_eye', 'true'); spawnConfetti(); changeScreen('screen-games-menu'); }
+
+// --- 🧊 FEBRE ALTA 3 CASOS ---
+let feverCurrentStep = 0;
+const fullFeverCases = [
+    { q: "Caso 1: Bebê com 39.2 °C chorando muito. Qual a medida física protetora?", options: [{t:"🧽 Aplicar toalha úmida morna no tronco/axilas", r:true}, {t:"🧴 Passar álcool na pele para esfriar", r:false}] },
+    { q: "Caso 2: Jovem sofreu insolação extrema na praia, corpo fervendo e tonto:", options: [{t:"⛺ Levar para sombra e aplicar panos frios", r:true}, {t:"🏃 Fazer correr para suar o calor", r:false}] },
+    { q: "Caso 3: Criança com febre alta repentina acompanhada de rigidez na nuca:", options: [{t:"🚨 Chamar o SAMU (192) imediatamente", r:true}, {t:"💊 Dar banho gelado e esperar amanhecer", r:false}] }
+];
+function startFeverGame() { feverCurrentStep = 0; loadFeverCase(); changeScreen('screen-fever-game'); }
+function loadFeverCase() {
+    if(feverCurrentStep >= fullFeverCases.length) { localStorage.setItem('m_fever', 'true'); spawnConfetti(); changeScreen('screen-games-menu'); return; }
+    document.getElementById("fever-step-display").innerHTML = `Caso: ${feverCurrentStep + 1} / ${fullFeverCases.length}`;
+    const c = fullFeverCases[feverCurrentStep]; document.getElementById("lbl-fever-scen").innerHTML = c.q;
+    const optDiv = document.getElementById("fever-options"); optDiv.innerHTML = "";
+    c.options.forEach(o => {
+        const btn = document.createElement("button"); btn.innerHTML = o.t;
+        btn.onclick = () => { if(o.r) { soundSuccess(); feverCurrentStep++; loadFeverCase(); } else { triggerErrorShake(); startFeverGame(); } };
+        optDiv.appendChild(btn);
+    });
+}
+function applyFeverAction(isRight) { if(isRight) { localStorage.setItem('m_fever', 'true'); spawnConfetti(); changeScreen('screen-games-menu'); } else triggerErrorShake(); }
+
+// --- 🦵 TORNOZELO TORCIDO PROTOCOLO PRICE ---
+let sprainStepIndex = 0;
+function startSprainGame() { sprainStepIndex = 1; document.getElementById("sprain-foot-emoji").style.transform = "rotate(0deg)"; loadSprainStep(); changeScreen('screen-sprain-game'); }
+function loadSprainStep() {
+    const scen = document.getElementById("sprain-scen"); const opt = document.getElementById("sprain-options"); opt.innerHTML = "";
+    if(sprainStepIndex === 1) {
+        scen.innerHTML = "Passo 1: Vítima torceu o pé jogando futebol. Qual a ação inicial (Proteção/Repouso)?";
+        opt.innerHTML = `<button onclick="advanceSprain(1)">Imobilizar o pé e proibir de pisar</button><button onclick="triggerErrorShake()">Fazer caminhar para testar a dor</button>`;
+    } else if(sprainStepIndex === 2) {
+        scen.innerHTML = "Passo 2: Hora de controlar a inflamação com Gelo (Ice). Como aplicar?";
+        opt.innerHTML = `<button onclick="advanceSprain(2)">Envolver o gelo em um pano antes de aplicar</button><button onclick="triggerErrorShake()">Colocar o gelo puro direto na pele</button>`;
+    } else if(sprainStepIndex === 3) {
+        scen.innerHTML = "Passo 3: Última etapa. Como reduzir o inchaço/edema do tornozelo (Elevação)?";
+        opt.innerHTML = `<button onclick="advanceSprain(3)">Elevar a perna acima do nível do coração</button><button onclick="triggerErrorShake()">Deixar a perna pendurada para baixo</button>`;
+    }
+}
+function advanceSprain(step) {
+    soundSuccess();
+    if(step === 1) { sprainStepIndex = 2; loadSprainStep(); }
+    else if(step === 2) { sprainStepIndex = 3; document.getElementById("sprain-foot-emoji").style.transform = "translateY(-15px)"; loadSprainStep(); }
+    else if(step === 3) { localStorage.setItem('m_sprain', 'true'); spawnConfetti(); alert("🏅 Protocolo PRICE aplicado perfeitamente!"); changeScreen('screen-games-menu'); }
+}
 
 // --- TINDER ---
 let tinderIndex = 0, tinderScore = 0;
@@ -643,14 +639,6 @@ function spawnAvcFace() {
 function clickAvcNextBtn() { if(!avcCurrentIsSick) { avcHits++; document.getElementById("avc-score-counter").innerHTML = avcHits; evalAvcVictory(); } else { triggerErrorShake(); } }
 function evalAvcVictory() { if(avcHits >= 5) { clearInterval(avcInterval); localStorage.setItem('m_avc', 'true'); spawnConfetti(); alert("🏅 Perfeito! Diagnóstico concluído."); changeScreen('screen-games-menu'); } else { spawnAvcFace(); } }
 
-let feverVal = 39.5;
-function startFeverGame() { feverVal = 39.5; changeScreen('screen-fever-game'); feverInterval = setInterval(() => { feverVal += 0.1; document.getElementById("fever-status").innerHTML = feverVal.toFixed(1) + " °C"; if(feverVal >= 41) { clearInterval(feverInterval); changeScreen('screen-games-menu'); } }, 1000); }
-function applyFeverAction(isRight) { if(isRight) { feverVal -= 0.9; if(feverVal <= 37.2) { clearInterval(feverInterval); localStorage.setItem('m_fever', 'true'); spawnConfetti(); changeScreen('screen-games-menu'); } } else triggerErrorShake(); }
-
-let sprainState = 0;
-function startSprainGame() { sprainState = 0; changeScreen('screen-sprain-game'); }
-function clickSprainTool(t) { if(t === 1) sprainState = 1; if(t === 2) { if(sprainState === 1) { localStorage.setItem('m_sprain', 'true'); spawnConfetti(); changeScreen('screen-games-menu'); } else triggerErrorShake(); } }
-
 // --- TRIAGEM DE CRISE ---
 let triageCurrentStep = 0;
 const fullTriageCases = [
@@ -662,49 +650,45 @@ const fullTriageCases = [
 ];
 function startTriageGame() { triageCurrentStep = 0; loadTriageScenario(); changeScreen('screen-triage-game'); }
 function loadTriageScenario() {
-    if(triageCurrentStep >= fullTriageCases.length) { localStorage.setItem('m_triage', 'true'); spawnConfetti(); alert("🏅 Sensacional! Você completou toda a triagem de crise Manchester!"); changeScreen('screen-games-menu'); return; }
-    const currentCase = fullTriageCases[triageCurrentStep]; document.getElementById("triage-main-q").innerHTML = `(${triageCurrentStep + 1}/5) ${currentCase.q}`;
+    if(triageCurrentStep >= fullTriageCases.length) { localStorage.setItem('m_triage', 'true'); spawnConfetti(); alert("🏅 Triagem Concluída!"); changeScreen('screen-games-menu'); return; }
+    const currentCase = fullTriageCases[triageCurrentStep]; document.getElementById("triage-main-q").innerHTML = `Reflexão (${triageCurrentStep + 1}/5) ${currentCase.q}`;
     const opt = document.getElementById("triage-options");
     opt.innerHTML = `<button onclick="evaluateTriageAnswer('A')">${currentCase.a}</button><button onclick="evaluateTriageAnswer('B')">${currentCase.b}</button>`;
 }
 function evaluateTriageAnswer(choice) {
     const currentCase = fullTriageCases[triageCurrentStep];
-    if(choice === currentCase.right) { soundSuccess(); alert("🟢 " + currentCase.succ); triageCurrentStep++; loadTriageScenario(); } 
+    if(choice === currentCase.right) { soundSuccess(); triageCurrentStep++; loadTriageScenario(); } 
     else { triggerErrorShake(); alert("❌ " + currentCase.err); triageCurrentStep = 0; loadTriageScenario(); }
 }
 
-// --- BANCO DE PERGUNTAS ---
+// --- 🎮 BANCO DE PERGUNTAS SEPARADO POR NÍVEIS DE DIFICULDADE GLOBAIS ---
 const fullQuizDatabase = {
-    pt: [
-        { question: "Uma pessoa engasgou e NÃO consegue emitir som ou tossir. O que fazer?", answers: [{text: "Fazer Manobra de Heimlich", correct: true}, {text: "Dar água ou bater nas costas em pé", correct: false}] },
-        { question: "Dor forte no peito e braço esquerdo dormente indica suspeita de:", answers: [{text: "Infarto do Miocárdio", correct: true}, {text: "Crise de labirintite", correct: false}] },
-        { question: "Qual a frequência ideal de compressões por minuto na massagem cardíaca (RCP)?", answers: [{text: "Entre 100 e 120 por minuto", correct: true}, {text: "Cerca de 60 por minuto", correct: false}] },
-        { question: "O que significa a sigla médica SAMU?", answers: [{text: "Serviço de Atendimento Móvel de Urgência", correct: true}, {text: "Sistema de Assistência Médica", correct: false}] },
-        { question: "Qual o telefone oficial de emergência do Corpo de Bombeiros no Brasil?", answers: [{text: "193", correct: true}, {text: "190", correct: false}] },
-        { question: "Em engasgo de bebê menor de 1 ano que não consegue chorar, qual a ação?", answers: [{text: "5 batidas firmes nas costas inclinado de bruços", correct: true}, {text: "Sacudir pelas pernas", correct: false}] },
-        { question: "Alguém cortou a mão e está sangrando muito. Como agir inicialmente?", answers: [{text: "Comprimir com pano limpo e firme", correct: true}, {text: "Colocar pó de café ou açúcar", correct: false}] },
-        { question: "Sintoma clássico de AVC observado ao pedir para a pessoa sorrir:", answers: [{text: "Um lado do rosto ou boca fica caído/torto", correct: true}, {text: "Dor de dente aguda", correct: false}] },
-        { question: "Ao presenciar alguém sofrendo choque elétrico em uma tomada ativa:", answers: [{text: "Desligar o disjuntor geral imediatamente", correct: true}, {text: "Puxar a vítima diretamente", correct: false}] },
-        { question: "Uma pessoa desmaiou, mas está respirando normal. Qual a melhor conduta?", answers: [{text: "Deitá-la de costas e elevar as pernas a 30cm", correct: true}, {text: "Sentá-la e jogar água fria", correct: false}] },
-        { question: "O que NUNCA se deve fazer em caso de queimaduras térmicas na pele?", answers: [{text: "Passar pasta de dente, pomadas caseiras ou manteiga", correct: true}, {text: "Lavar com água corrente fria", correct: false}] },
-        { question: "Vítima com suspeita de fratura fechada na perna. O que fazer?", answers: [{text: "Imobilizar o membro na posição atual", correct: true}, {text: "Puxar o pé para alinhar", correct: false}] },
-        { question: "Pessoa foi picada por uma cobra venenosa na trilha. Qual a conduta?", answers: [{text: "Lavar com água/sabão e manter em repouso", correct: true}, {text: "Cortar e sugar o veneno com a boca", correct: false}] },
-        { question: "Vítima com um pedaço de vidro cravado na perna. Como agir?", answers: [{text: "NÃO remover o objeto e imobilizá-lo", correct: true}, {text: "Arrancar o vidro rapidamente", correct: false}] },
-        { question: "O que fazer diante de uma pessoa em plena crise convulsiva?", answers: [{text: "Proteger a cabeça e virá-la de lado", correct: true}, {text: "Segurar a língua com uma colher", correct: false}] },
-        { question: "Em caso de insolação grave, qual o primeiro cuidado?", answers: [{text: "Levar para local fresco e usar panos úmidos", correct: true}, {text: "Dar uma dose de bebida alcoólica", correct: false}] },
-        { question: "Criança ingeriu produto de limpeza químico corrosivo por acidente:", answers: [{text: "Não provocar vômito e buscar socorro médico", correct: true}, {text: "Forçar o vômito para expelir", correct: false}] },
-        { question: "Nariz de uma criança começou a sangrar muito. Qual a posição correta?", answers: [{text: "Inclinar a cabeça para frente e pressionar", correct: true}, {text: "Inclinar a cabeça totalmente para trás", correct: false}] },
-        { question: "Produto químico de limpeza espirrou direto nos olhos. O que fazer?", answers: [{text: "Lavar com água corrente por 15 a 20 minutos", correct: true}, {text: "Fechar os olhos e vendar firme", correct: false}] },
-        { question: "Vítima caiu de grande altura e reclama de dor na coluna:", answers: [{text: "NÃO remover o objeto e chamar o resgate", correct: true}, {text: "Ajudar a levantar e andar", correct: false}] }
+    easy: [
+        { question: "Qual o telefone oficial para acionar o Corpo de Bombeiros no Brasil?", answers: [{text: "193", correct: true}, {text: "190", correct: false}] },
+        { question: "Para chamar o serviço de ambulância pública de urgência (SAMU), ligamos para:", answers: [{text: "192", correct: true}, {text: "199", correct: false}] },
+        { question: "Uma pessoa consciente desmaiou de repente no calor. Qual a primeira atitude?", answers: [{text: "Deitá-la de costas e elevar as pernas a 30cm", correct: true}, {text: "Jogar um copo de água gelada no rosto dela", correct: false}] },
+        { question: "Onde deve ser aplicada a força na manobra de Heimlich em um adulto engasgado?", answers: [{text: "Na boca do estômago (abdômen), para dentro e para cima", correct: true}, {text: "Dando fortes tapas no topo da cabeça", correct: false}] }
+    ],
+    medium: [
+        { question: "Qual a frequência ideal de compressões por minuto que você deve aplicar na RCP?", answers: [{text: "Entre 100 e 120 compressões por minuto", correct: true}, {text: "Cerca de 50 compressões por minuto", correct: false}] },
+        { question: "Ao suspeitar de um AVC (Derrame), qual teste rápido você deve fazer com a vítima?", answers: [{text: "Pedir para ela dar um Sorriso e ver se o rosto entorta", correct: true}, {text: "Pedir para ela ler um parágrafo de costas", correct: false}] },
+        { question: "Pessoa reclama de dor forte em aperto no peito que irradia para o braço esquerdo. Suspeita de:", answers: [{text: "Infarto do Miocárdio", correct: true}, {text: "Crise aguda de Labirintite", correct: false}] },
+        { question: "Ao presenciar um choque elétrico ativo em uma tomada de casa, como agir com segurança?", answers: [{text: "Desligar imediatamente o disjuntor geral de energia", correct: true}, {text: "Puxar a vítima pelos braços rapidamente", correct: false}] }
+    ],
+    hard: [
+        { question: "Diante de uma fratura exposta onde o osso rompeu a pele com hemorragia intensa, qual a conduta?", answers: [{text: "Conter o sangue com panos limpos, sem empurrar o osso", correct: true}, {text: "Forçar o osso de volta para dentro para alinhar o membro", correct: false}] },
+        { question: "Uma vítima caiu de uma árvore alta, está consciente mas não sente as pernas. Conduta correta:", answers: [{text: "NÃO movimentar a vítima sob hipótese alguma e chamar o resgate", correct: true}, {text: "Sentá-la em uma cadeira confortável para aguardar", correct: false}] },
+        { question: "Em caso de queimadura química nos olhos por produto corrosivo, qual o cuidado essencial?", answers: [{text: "Lavar continuamente com água corrente limpa por 15 a 20 minutos", correct: true}, {text: "Vendar o olho firmemente com gaze seca sem lavar", correct: false}] },
+        { question: "Vítima de acidente está com um estilhaço grande de vidro cravado no abdômen. O que fazer?", answers: [{text: "Não remover o objeto, protegê-lo e imobilizá-lo até o hospital", correct: true}, {text: "Arrancar o vidro o mais rápido possível para fechar o corte", correct: false}] }
     ]
 };
 
 function prepareAndShuffleQuiz() {
-    let sourceDeck = fullQuizDatabase[currentLang] || fullQuizDatabase['pt']; activeQuizDeck = [...sourceDeck];
-    if(currentLang === 'pt') {
-        for (let i = activeQuizDeck.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1)); [activeQuizDeck[i], activeQuizDeck[j]] = [activeQuizDeck[j], activeQuizDeck[i]];
-        }
+    // Escolhe as perguntas EXATAMENTE baseadas na dificuldade selecionada pelo usuário
+    let sourceDeck = fullQuizDatabase[currentDiff] || fullQuizDatabase['medium'];
+    activeQuizDeck = [...sourceDeck];
+    for (let i = activeQuizDeck.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1)); [activeQuizDeck[i], activeQuizDeck[j]] = [activeQuizDeck[j], activeQuizDeck[i]];
     }
 }
 
@@ -716,7 +700,7 @@ function startQuizTimer() {
 function loadQuestion() {
     if (currentQuestionIndex >= activeQuizDeck.length) { stopQuizGame(); return; }
     const q = activeQuizDeck[currentQuestionIndex];
-    document.getElementById("quiz-status").innerHTML = `Questão ${currentQuestionIndex + 1} / ${activeQuizDeck.length}`;
+    document.getElementById("quiz-status").innerHTML = `Dificuldade: ${currentDiff.toUpperCase()} | Q. ${currentQuestionIndex + 1}/${activeQuizDeck.length}`;
     document.getElementById("question").innerHTML = q.question; document.getElementById("next").style.display = "none";
     
     const ansDiv = document.getElementById("answers"); ansDiv.innerHTML = "";
@@ -724,27 +708,29 @@ function loadQuestion() {
         const b = document.createElement("button"); b.innerHTML = a.text;
         b.onclick = () => {
             clearInterval(quizTimerInterval); document.querySelectorAll("#answers button").forEach(btn => btn.disabled = true);
-            if(a.correct) { b.className = "correct"; score += 100; quizHits++; } 
-            else { b.className = "wrong"; triggerErrorShake(); quizMisses++; }
-            
+            if(a.correct) { b.className = "correct"; score += 100; quizHits++; } else { b.className = "wrong"; triggerErrorShake(); quizMisses++; }
             document.getElementById("quiz-hits-display").innerHTML = `🟢 Acertos: ${quizHits}`;
             document.getElementById("quiz-misses-display").innerHTML = `🔴 Erros: ${quizMisses}`;
-            document.getElementById("score-text").innerHTML = `✨ Pontos: ${score}`;
-            document.getElementById("next").style.display = "block";
+            document.getElementById("score-text").innerHTML = `✨ Pontos: ${score}`; document.getElementById("next").style.display = "block";
         };
         ansDiv.appendChild(b);
     });
 }
 
 function handleQuizError() { quizMisses++; document.getElementById("quiz-misses-display").innerHTML = `🔴 Erros: ${quizMisses}`; triggerErrorShake(); document.getElementById("next").style.display = "block"; }
-function nextQuestion() { currentQuestionIndex++; if(currentQuestionIndex >= activeQuizDeck.length) { registerQuizScore(score); spawnConfetti(); alert(`🎉 Treinamento finalizado!\nVocê conquistou: ${score} pontos.`); stopQuizGame(); } else { loadQuestion(); startQuizTimer(); } }
+function nextQuestion() { currentQuestionIndex++; if(currentQuestionIndex >= activeQuizDeck.length) { registerQuizScore(score); spawnConfetti(); alert(`🎉 Treinamento finalizado!\nPontuação registrada no Placar Geral.`); stopQuizGame(); } else { loadQuestion(); startQuizTimer(); } }
 function stopQuizGame() { clearInterval(quizTimerInterval); changeScreen('screen-menu'); }
 
 function changeScreen(id) {
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active-screen'));
-    const target = document.getElementById(id); if(target) target.classList.add('active-screen');
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active-screen')); const target = document.getElementById(id); if(target) target.classList.add('active-screen');
     if(id === 'screen-games-menu') loadMedals();
     if(id === 'screen-game') { score = 0; quizHits = 0; quizMisses = 0; document.getElementById("quiz-hits-display").innerHTML = "🟢 Acertos: 0"; document.getElementById("quiz-misses-display").innerHTML = "🔴 Erros: 0"; document.getElementById("score-text").innerHTML = "✨ Pontos: 0"; currentQuestionIndex = 0; prepareAndShuffleQuiz(); loadQuestion(); startQuizTimer(); }
+}
+
+function loadMedals() {
+    const mIds = ['rcp', 'tinder', 'heimlich', 'maleta', 'avc', 'triage', 'fever', 'sprain', 'dea', 'chem', 'fract', 'eye'];
+    mIds.forEach(id => { const el = document.getElementById('medal-'+id); if(el && localStorage.getItem('m_'+id) === 'true') el.classList.add('medal-unlocked'); });
+    updateRankDisplay();
 }
 
 function loadProfile() { document.getElementById("hero-name").value = localStorage.getItem('hero_name') || "Hero"; updateRankDisplay(); }
