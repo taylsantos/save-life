@@ -102,17 +102,11 @@ button:active { transform: scale(0.97); }
 }
 .shock-jump { animation: rcp-shock-jump 0.5s ease-out 1; }
 
-/* 🥖 MODELAGEM DO CANVAs INTERATIVO HEIMLICH REESTILIZADO */
-.h-manikin-wrapper { position: relative; width: 180px; height: 120px; margin: auto; }
-.manikin-rescuer { position: absolute; left: 30px; bottom: 0; font-size: 50px; z-index: 1; transition: transform 0.12s ease; user-select: none; }
-.manikin-victim { position: absolute; left: 75px; bottom: 0; font-size: 50px; z-index: 2; transform: rotate(15deg); transform-origin: bottom center; transition: transform 0.12s ease; user-select: none; }
-.manikin-arms { position: absolute; left: 66px; bottom: 15px; font-size: 28px; z-index: 3; transition: transform 0.12s ease; user-select: none; }
-.manikin-food { position: absolute; left: 110px; bottom: 30px; font-size: 16px; z-index: 4; transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275); user-select: none; }
-
-/* Animações de Compressão Tática */
-.squeeze-rescuer { transform: translateX(10px) scaleX(1.05); }
-.squeeze-victim { transform: rotate(28deg) translateX(4px); }
-.squeeze-arms { transform: scale(0.8) translateX(6px); }
+/* 🛌 CSS DA MANOBRA DE MASSAGEM RCP NO CHÃO */
+.rcp-scene { position: relative; width: 160px; height: 100px; display: flex; align-items: flex-end; justify-content: center; }
+.rcp-patient { font-size: 55px; transform: rotate(-90deg); position: absolute; left: 20px; bottom: -15px; user-select: none; }
+.rcp-hand { font-size: 42px; position: absolute; left: 55px; top: -5px; z-index: 5; transition: transform 0.08s ease; user-select: none; }
+.compress-hand { transform: translateY(18px) scaleY(0.9); }
 
 .tinder-box { flex-grow: 1; display: flex; align-items: center; justify-content: center; position: relative; width: 100%; }
 .tinder-card { width: 88%; height: 130px; background: linear-gradient(135deg, #ff007f, #7928ca); border-radius: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 15px; box-sizing: border-box; position: absolute; box-shadow: 0 8px 20px rgba(0,0,0,0.3); transition: transform 0.3s ease, opacity 0.3s ease; border: 3px solid transparent; }
@@ -177,7 +171,7 @@ button:active { transform: scale(0.97); }
             <button class="btn-menu-sos" id="btn-menu-sos" onclick="changeScreen('screen-sos')">🚨 GUIA SOS / VOZ</button>
             <button class="btn-menu-rank" onclick="openLeaderboardScreen()">🏆 PLACAR DE JOGADORES</button>
         </div>
-        <p style="margin-top: auto; font-size: 10px; opacity: 0.5;">SOS HERO Pro Pack v8.8</p>
+        <p style="margin-top: auto; font-size: 10px; opacity: 0.5;">SOS HERO Pro Pack v8.9</p>
     </div>
 
     <div id="screen-leaderboard" class="screen">
@@ -218,23 +212,26 @@ button:active { transform: scale(0.97); }
         <h1 id="g1-header">❤️ RITMO RCP</h1>
         <p id="rcp-subtitle" style="font-size:11px; color:#00e676; font-weight:bold;">🎵 Siga o compasso de Stayin' Alive!</p>
         <div id="rhythm-feedback" style="font-size:16px; font-weight:bold; height:24px; margin-bottom:5px; color:#ffeb3b;">...</div>
-        <div id="rhythm-target" onclick="processRhythmClick()" style="width:95px; height:95px; background:#ff1744; border-radius:50%; margin: 15px auto; display:flex; align-items:center; justify-content:center; font-size:32px; cursor:pointer; border: 5px solid white;">❤️</div>
+        
+        <div class="game-canvas" style="background:rgba(0,0,0,0.55);" onclick="processRhythmClick()">
+            <div class="rcp-scene">
+                <div id="rcp-h" class="rcp-hand">🫸🏽</div>
+                <div class="rcp-patient">🧍</div>
+            </div>
+        </div>
+        
         <div id="rhythm-score" style="font-size:16px; font-weight:bold;">0 / 20</div>
         <button class="btn-back btn-global-back" onclick="stopRhythmGame()">↩ Voltar</button>
     </div>
 
     <div id="screen-choke-game" class="screen">
         <h1 id="g3-header">🥖 MANOBRA HEIMLICH</h1>
-        <p id="choke-scen">O socorrista está apertando o abdômen do paciente. Expulse o alimento!</p>
-        <div class="game-canvas" style="background: rgba(0,0,0,0.6);">
-            <div class="h-manikin-wrapper">
-                <div id="manikin-r" class="manikin-rescuer">👩🏽‍⚕️</div>
-                <div id="manikin-a" class="manikin-arms">🫵🏽</div>
-                <div id="manikin-v" class="manikin-victim">👨🏻‍💼</div>
-                <div id="manikin-f" class="manikin-food">🥩</div>
-            </div>
+        <p id="choke-scen">Vítima engasgada! Pressione o abdômen repetidamente!</p>
+        <div class="game-canvas">
+            <span id="choke-victim" style="font-size:60px; user-select:none;">🤢</span>
+            <span id="choke-food" style="font-size:24px; position:absolute; top:45px; transition: all 0.3s;">🥩</span>
         </div>
-        <button onclick="applyHeimlichThrust()" style="background:#00c853; color:white; padding:15px; font-size:16px; letter-spacing: 0.5px;">🎯 EXECUTAR MANOBRA</button>
+        <button onclick="applyHeimlichThrust()" style="background:#ff9100; color:white; padding:15px; font-size:16px;">🔺 MANOBRA (PUSH)</button>
         <button class="btn-back btn-global-back" onclick="changeScreen('screen-games-menu')">↩ Voltar</button>
     </div>
 
@@ -375,7 +372,15 @@ const langData = {
         chokeObstr: "Vias aéreas obstruídas! Pressione!", chokeSucc: " Alimento expelido!", chokeBtn: "🔺 MANOBRA",
         lblTime: "Tempo: ", avcSave: "Salvos: ", rcpMelody: "🎵 Siga o compasso de Stayin' Alive!", btnNextText: "Avançar ➔",
         maletaEval: "🎒 Avaliar Kit", r0: "Estudante Curioso", r1: "Socorrista Júnior", r2: "Herói Resgatista", r3: "Paramédico Lendário",
-        quizHeader: "Questão ", deaScen1: "Passo 1: Instale as pás adesivas nos locais corretos do tórax!", deaScen2: "Passo 2: Analisando ritmo cardíaco... MANTENHA-SE AFASTADO!", deaScen3: "Passo 3: Carregando energia... CARGA PRONTA! AFASTESE E ATIRE!", deaSucc: "DEA Operado com sucesso! Ritmo cardíaco restabelecido temporariamente."
+        quizHeader: "Questão ", deaScen1: "Passo 1: Instale as pás adesivas nos locais corretos do tórax!", deaScen2: "Passo 2: Analisando ritmo cardíaco... MANTENHA-SE AFASTADO!", deaScen3: "Passo 3: Carregando energia... CARGA PRONTA! AFASTESE E ATIRE!", deaSucc: "DEA Operado com sucesso! Ritmo cardíaco restabelecido temporariamente.",
+        gBox1T: "🚑 Engasgo 🫁", gBox1D: "Em donuts, aplique a Manobra de Heimlich empurrando a boca do estômago para dentro e para cima. Se perder a consciência, inicie massagem cardíaca.",
+        gBox2T: "👶 Bebês engasgados 🍼", gBox2D: "Coloque o bebê de bruços no seu braço inclinado para baixo e aplique 5 batidas firmes nas costas. Vire-o e faça 5 compressões no peito.",
+        gBox3T: "🫀 Infarto Clínico 🚨", gBox3D: "Sintomas: dor forte e aperto no peito que irradia para o braço esquerdo, suor frio e náusea. Chame imediatamente o SAMU (192) e acalme a vítima.",
+        gBox4T: "🧠 AVC (Derrame) ⚡", gBox4D: "Identifique com o teste SAMU: Sorriso (um lado cai), Abraço (perda de força em um braço), Música (fala confusa). Havendo um sinal, ligue 192.",
+        gBox5T: "🔥 Queimaduras 🧊", gBox5D: "Lave imediatamente o local apenas com água fria corrente por 10 a 15 minutos. Nunca passe pasta de dente, pomadas ou manteiga na ferida.",
+        gBox6T: "🌪️ Crise Convulsiva 🛌", gBox6D: "Proteja a cabeça da vítima com algo macio, afaste objetos perigosos ao redor e vire-a de lado para não engasgar. Nunca segure a língua.",
+        gBox7T: "🩸 Hemorragias 🩹", gBox7D: "Estanque o sangue fazendo compressão direta sobre o ferimento usando um pano limpo. Se for um membro e o sangramento for massivo, use torniquete acima.",
+        gBox8T: "🔌 Choque Elétrico 🔌", gBox8D: "Never toque na vítima enquanto ela estiver grudada na energia. Desligue imediatamente o disjuntor geral antes de prestar os cuidados básicos."
     },
     es: {
         menuTitle: "SOS HERO", menuSubtitle: "La app definitiva para salvar vidas",
@@ -460,6 +465,7 @@ function filterSOSGuide() {
 function setDifficulty() { currentDiff = document.getElementById("diff-select").value; }
 
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+const stayinAliveMelody = [293.66, 293.66, 293.66, 293.66, 261.63, 293.66, 349.23, 293.66]; 
 function playTone(freq, type, duration) {
     try {
         const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
@@ -471,7 +477,12 @@ function playTone(freq, type, duration) {
 function soundSuccess() { playTone(587, 'sine', 0.1); }
 function soundError() { playTone(140, 'triangle', 0.2); }
 
-// --- PLACAR GERAL ---
+// --- CONTROLES DE ATIVAÇÃO DOS MINI JOGOS ---
+function startChemGame() { changeScreen('screen-chem-game'); }
+function startFractGame() { changeScreen('screen-fract-game'); }
+function startEyeGame() { changeScreen('screen-eye-game'); }
+
+// --- LEADERBOARD ---
 function openLeaderboardScreen() {
     changeScreen('screen-leaderboard');
     const box = document.getElementById("leaderboard-box"); box.innerHTML = "";
@@ -489,15 +500,23 @@ function registerQuizScore(finalScore) {
     history = history.slice(0, 5); localStorage.setItem('sos_hero_leaderboard', JSON.stringify(history));
 }
 
-// --- RCP ---
+// --- RITMO RCP REESTILIZADO (MÃO PRESSIONANDO PACIENTE DEITADO) ---
+let metronomeInterval, rhythmClicks = 0, lastTime = 0, melodyIndex = 0;
 function startRhythmGame() { 
     if (audioCtx.state === 'suspended') { audioCtx.resume(); }
     rhythmClicks = 0; lastTime = 0; melodyIndex = 0; 
+    document.getElementById("rcp-h").className = "rcp-hand";
     changeScreen('screen-rhythm-game'); 
     metronomeInterval = setInterval(() => { playTone(stayinAliveMelody[melodyIndex % stayinAliveMelody.length], 'sine', 0.08); melodyIndex++; }, 545); 
 }
 function processRhythmClick() {
     const now = Date.now();
+    const hand = document.getElementById("rcp-h");
+    
+    // Dispara a animação visual da mão descendo no peito
+    hand.classList.add("compress-hand");
+    setTimeout(() => hand.classList.remove("compress-hand"), 80);
+
     if (lastTime !== 0) {
         const bpm = 60 / ((now - lastTime) / 1000); let margin = currentDiff === 'easy' ? 40 : (currentDiff === 'hard' ? 12 : 22);
         if (bpm >= (110 - margin) && bpm <= (110 + margin)) { document.getElementById("rhythm-feedback").innerHTML = "🟢 OK!"; rhythmClicks++; soundSuccess(); } 
@@ -508,52 +527,10 @@ function processRhythmClick() {
 }
 function stopRhythmGame() { clearInterval(metronomeInterval); changeScreen('screen-games-menu'); }
 
-// --- 🥖 MOTOR HEIMLICH REALISTA ATUALIZADO (Aperto de abdômen + Carne Subindo) ---
-let heimlichCount = 0;
-function startChokeGame() { 
-    heimlichCount = 0; 
-    document.getElementById("manikin-v").innerHTML = "👨🏻‍💼"; 
-    document.getElementById("manikin-f").style.bottom = "30px"; // Começa preso lá no tórax
-    document.getElementById("manikin-f").style.left = "110px";
-    document.getElementById("manikin-f").style.opacity = "1";
-    document.getElementById("manikin-r").className = "manikin-rescuer";
-    document.getElementById("manikin-v").className = "manikin-victim";
-    document.getElementById("manikin-a").className = "manikin-arms";
-    changeScreen('screen-choke-game'); 
-}
-function applyHeimlichThrust() { 
-    heimlichCount++; 
-    playTone(480, 'sine', 0.06); 
-    
-    const rescuer = document.getElementById("manikin-r");
-    const victim = document.getElementById("manikin-v");
-    const arms = document.getElementById("manikin-a");
-    const food = document.getElementById("manikin-f");
-    
-    // Dispara classes CSS de compressão abdominal (Efeito aperto mecânico)
-    rescuer.classList.add("squeeze-rescuer");
-    victim.classList.add("squeeze-victim");
-    arms.classList.add("squeeze-arms");
-    
-    // A carne vai subindo milimetricamente de baixo para cima pela garganta
-    let currentBottom = 30 + (heimlichCount * 14);
-    let currentLeft = 110 + (heimlichCount * 6);
-    food.style.bottom = currentBottom + "px";
-    food.style.left = currentLeft + "px";
-    
-    setTimeout(() => {
-        rescuer.classList.remove("squeeze-rescuer");
-        victim.classList.remove("squeeze-victim");
-        arms.classList.remove("squeeze-arms");
-    }, 120);
-    
-    if (heimlichCount >= 5) { 
-        victim.innerHTML = "😀"; 
-        food.style.bottom = "110px"; food.style.left = "190px"; food.style.opacity = "0"; // Expulso voando
-        localStorage.setItem('m_heimlich', 'true'); spawnConfetti(); 
-        setTimeout(() => changeScreen('screen-games-menu'), 800); 
-    } 
-}
+// --- JOGO HEIMLICH RESTAURADO (VISUAL ORIGINAL DA VÍTIMA) ---
+let chokeThrusts = 0;
+function startChokeGame() { chokeThrusts = 0; document.getElementById("choke-victim").innerHTML = "🤢"; document.getElementById("choke-food").style.top = "45px"; changeScreen('screen-choke-game'); }
+function applyHeimlichThrust() { chokeThrusts++; playTone(440, 'sine', 0.05); if (chokeThrusts >= 5) { document.getElementById("choke-victim").innerHTML = "😀"; document.getElementById("choke-food").style.top = "-60px"; localStorage.setItem('m_heimlich', 'true'); spawnConfetti(); setTimeout(() => changeScreen('screen-games-menu'), 600); } }
 
 // --- DEA ---
 let deaPlacedRight = false, deaPlacedLeft = false;
@@ -696,7 +673,7 @@ function evaluateTriageAnswer(choice) {
     else { triggerErrorShake(); alert("❌ " + currentCase.err); triageCurrentStep = 0; loadTriageScenario(); }
 }
 
-// --- BANCO DE PERGUNTAS QUIZ ---
+// --- BANCO DE PERGUNTAS ---
 const fullQuizDatabase = {
     pt: [
         { question: "Uma pessoa engasgou e NÃO consegue emitir som ou tossir. O que fazer?", answers: [{text: "Fazer Manobra de Heimlich", correct: true}, {text: "Dar água ou bater nas costas em pé", correct: false}] },
@@ -747,10 +724,13 @@ function loadQuestion() {
         const b = document.createElement("button"); b.innerHTML = a.text;
         b.onclick = () => {
             clearInterval(quizTimerInterval); document.querySelectorAll("#answers button").forEach(btn => btn.disabled = true);
-            if(a.correct) { b.className = "correct"; score += 100; quizHits++; } else { b.className = "wrong"; triggerErrorShake(); quizMisses++; }
+            if(a.correct) { b.className = "correct"; score += 100; quizHits++; } 
+            else { b.className = "wrong"; triggerErrorShake(); quizMisses++; }
+            
             document.getElementById("quiz-hits-display").innerHTML = `🟢 Acertos: ${quizHits}`;
             document.getElementById("quiz-misses-display").innerHTML = `🔴 Erros: ${quizMisses}`;
-            document.getElementById("score-text").innerHTML = `✨ Pontos: ${score}`; document.getElementById("next").style.display = "block";
+            document.getElementById("score-text").innerHTML = `✨ Pontos: ${score}`;
+            document.getElementById("next").style.display = "block";
         };
         ansDiv.appendChild(b);
     });
@@ -761,7 +741,8 @@ function nextQuestion() { currentQuestionIndex++; if(currentQuestionIndex >= act
 function stopQuizGame() { clearInterval(quizTimerInterval); changeScreen('screen-menu'); }
 
 function changeScreen(id) {
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active-screen')); const target = document.getElementById(id); if(target) target.classList.add('active-screen');
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active-screen'));
+    const target = document.getElementById(id); if(target) target.classList.add('active-screen');
     if(id === 'screen-games-menu') loadMedals();
     if(id === 'screen-game') { score = 0; quizHits = 0; quizMisses = 0; document.getElementById("quiz-hits-display").innerHTML = "🟢 Acertos: 0"; document.getElementById("quiz-misses-display").innerHTML = "🔴 Erros: 0"; document.getElementById("score-text").innerHTML = "✨ Pontos: 0"; currentQuestionIndex = 0; prepareAndShuffleQuiz(); loadQuestion(); startQuizTimer(); }
 }
