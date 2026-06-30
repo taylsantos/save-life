@@ -101,6 +101,14 @@ button:active { transform: scale(0.97); }
 }
 .shock-jump { animation: rcp-shock-jump 0.5s ease-out 1; }
 
+.heimlich-scene { display: flex; align-items: flex-end; justify-content: center; position: relative; width: 140px; height: 110px; }
+.heimlich-hero { font-size: 50px; position: absolute; left: 35px; bottom: 0; z-index: 2; transition: transform 0.1s ease; user-select: none; }
+.heimlich-victim { font-size: 50px; position: absolute; left: 0; bottom: 0; z-index: 1; transition: transform 0.1s ease; user-select: none; }
+.heimlich-food { font-size: 20px; position: absolute; left: -10px; bottom: 42px; z-index: 3; transition: all 0.2s cubic-bezier(0.18, 0.89, 0.32, 1.28); user-select: none; }
+
+.thrust-hero { transform: scaleX(1.08) translate(-4px, -2px); }
+.thrust-victim { transform: rotate(-8deg) translate(-5px, 2px); }
+
 .tinder-box { flex-grow: 1; display: flex; align-items: center; justify-content: center; position: relative; width: 100%; }
 .tinder-card { width: 88%; height: 130px; background: linear-gradient(135deg, #ff007f, #7928ca); border-radius: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 15px; box-sizing: border-box; position: absolute; box-shadow: 0 8px 20px rgba(0,0,0,0.3); transition: transform 0.3s ease, opacity 0.3s ease; border: 3px solid transparent; }
 .tinder-buttons { display: flex; justify-content: center; gap: 30px; }
@@ -159,7 +167,7 @@ button:active { transform: scale(0.97); }
             <button class="btn-menu-games" id="btn-menu-games" onclick="changeScreen('screen-games-menu')">🕹️ CENTRAL DE MINI-JOGOS</button>
             <button class="btn-menu-sos" id="btn-menu-sos" onclick="changeScreen('screen-sos')">🚨 GUIA SOS / VOZ</button>
         </div>
-        <p style="margin-top: auto; font-size: 10px; opacity: 0.5;">SOS HERO Pro Pack v7.9</p>
+        <p style="margin-top: auto; font-size: 10px; opacity: 0.5;">SOS HERO Pro Pack v8.2</p>
     </div>
 
     <div id="screen-games-menu" class="screen">
@@ -202,8 +210,11 @@ button:active { transform: scale(0.97); }
         <h1 id="g3-header">🥖 MANOBRA HEIMLICH</h1>
         <p id="choke-scen">Vítima engasgada! Pressione o abdômen repetidamente!</p>
         <div class="game-canvas">
-            <span id="choke-victim" style="font-size:60px; user-select:none;">🤢</span>
-            <span id="choke-food" style="font-size:24px; position:absolute; top:45px; transition: all 0.3s;">🥩</span>
+            <div class="heimlich-scene">
+                <span id="h-hero" class="heimlich-hero">💪🏿</span>
+                <span id="h-victim" class="heimlich-victim">🤢</span>
+                <span id="h-food" class="heimlich-food">🥩</span>
+            </div>
         </div>
         <button onclick="applyHeimlichThrust()" style="background:#ff9100; color:white; padding:15px; font-size:16px;">🔺 MANOBRA (PUSH)</button>
         <button class="btn-back btn-global-back" onclick="changeScreen('screen-games-menu')">↩ Voltar</button>
@@ -290,14 +301,16 @@ button:active { transform: scale(0.97); }
 
     <div id="screen-avc-game" class="screen">
         <h1 id="g5-header">🧠 OLHO CLÍNICO AVC</h1>
-        <p style="font-weight:bold;"><span id="lbl-time">Tempo:</span> <span id="avc-timer" style="color:#ff5252; font-size:16px;">14</span>s</p>
+        <p style="font-weight:bold;"><span id="lbl-time">Tempo:</span> <span id="avc-timer" style="color:#ff5252; font-size:16px;">14</span>s | <span id="lbl-hits">Acertos:</span> <span id="avc-score-counter">0</span>/5</p>
         <div class="game-canvas" id="avc-canvas" style="height:120px; background:rgba(0,0,0,0.5);"></div>
+        <button onclick="clickAvcNextBtn()" style="background:#2196f3; color:white; border-radius:12px; font-weight:bold; margin-top:5px; padding:10px;">Nenhum Sinal (Próximo) ➔</button>
         <button class="btn-back btn-global-back" onclick="clearInterval(avcInterval); changeScreen('screen-games-menu')">↩ Voltar</button>
     </div>
 
     <div id="screen-triage-game" class="screen">
         <h1 id="g8-header">🔀 TRIAGEM DE CRISE</h1>
-        <p id="triage-main-q" style="font-weight:bold; margin-bottom:10px;">...</p>
+        <p id="triage-step-display" style="font-size:12px; color:#ffeb3b; font-weight:bold; margin:2px 0;">Caso: 1 / 5</p>
+        <p id="triage-main-q" style="font-weight:bold; margin-bottom:10px; min-height:45px;">...</p>
         <div style="display:flex; flex-direction:column; gap:8px;" id="triage-options"></div>
         <button class="btn-back btn-global-back" onclick="changeScreen('screen-games-menu')">↩ Voltar</button>
     </div>
@@ -337,9 +350,6 @@ const langData = {
         chokeObstr: "Vias aéreas obstruídas! Pressione!", chokeSucc: " Alimento expelido!", chokeBtn: "🔺 MANOBRA",
         lblTime: "Tempo: ", avcSave: "Salvos: ", rcpMelody: "🎵 Siga o compasso de Stayin' Alive!", btnNextText: "Avançar ➔",
         maletaEval: "🎒 Avaliar Kit", r0: "Estudante Curioso", r1: "Socorrista Júnior", r2: "Herói Resgatista", r3: "Paramédico Lendário",
-        triageQ: "Quem você deve atender EM PRIMEIRO LUGAR no acidente?",
-        triageA: "Vítima A: Chorando alto com braço quebrado.", triageB: "Vítima B: Desmaiada e sem respirar.",
-        triageErrA: "⚠️ Errado! Quem grita está respirando. Foque no silêncio.", triageSucc: "🏅 Perfeito! Parada respiratória silenciosa é prioridade máxima.",
         quizHeader: "Questão ", deaScen1: "Passo 1: Instale as pás adesivas nos locais corretos do tórax!", deaScen2: "Passo 2: Analisando ritmo cardíaco... MANTENHA-SE AFASTADO!", deaScen3: "Passo 3: Carregando energia... CARGA PRONTA! AFASTESE E ATIRE!", deaSucc: "DEA Operado com sucesso! Ritmo cardíaco restabelecido temporariamente.",
         gBox1T: "🚑 Engasgo 🫁", gBox1D: "Em adultos, aplique a Manobra de Heimlich empurrando a boca do estômago para dentro e para cima. Se perder a consciência, inicie massagem cardíaca.",
         gBox2T: "👶 Bebês engasgados 🍼", gBox2D: "Coloque o bebê de bruços no seu braço inclinado para baixo e aplique 5 batidas firmes nas costas. Vire-o e faça 5 compressões no peito.",
@@ -410,9 +420,8 @@ function setLanguage(lang) {
     document.getElementById("g15-title").innerHTML = l.g15; document.getElementById("g15-header").innerHTML = "🧪 " + l.g15;
     document.getElementById("g16-title").innerHTML = l.g16; document.getElementById("g16-header").innerHTML = "🦴 " + l.g16;
     document.getElementById("g17-title").innerHTML = l.g17; document.getElementById("g17-header").innerHTML = "👁️ " + l.g17;
-    document.getElementById("triage-main-q").innerHTML = l.triageQ;
     document.getElementById("next").innerHTML = l.btnNextText;
-    buildSOSGuide(); setupTriage(); updateRankDisplay();
+    buildSOSGuide(); updateRankDisplay();
 }
 
 function buildSOSGuide() {
@@ -452,10 +461,14 @@ function soundError() { playTone(140, 'triangle', 0.2); }
 function startChemGame() { changeScreen('screen-chem-game'); }
 function startFractGame() { changeScreen('screen-fract-game'); }
 function startEyeGame() { changeScreen('screen-eye-game'); }
-function startTriageGame() { changeScreen('screen-triage-game'); }
 
 // --- RCP ---
-function startRhythmGame() { rhythmClicks = 0; lastTime = 0; melodyIndex = 0; changeScreen('screen-rhythm-game'); metronomeInterval = setInterval(() => { playTone(stayinAliveMelody[melodyIndex % stayinAliveMelody.length], 'sine', 0.08); melodyIndex++; }, 545); }
+function startRhythmGame() { 
+    if (audioCtx.state === 'suspended') { audioCtx.resume(); }
+    rhythmClicks = 0; lastTime = 0; melodyIndex = 0; 
+    changeScreen('screen-rhythm-game'); 
+    metronomeInterval = setInterval(() => { playTone(stayinAliveMelody[melodyIndex % stayinAliveMelody.length], 'sine', 0.08); melodyIndex++; }, 545); 
+}
 function processRhythmClick() {
     const now = Date.now();
     if (lastTime !== 0) {
@@ -470,13 +483,32 @@ function stopRhythmGame() { clearInterval(metronomeInterval); changeScreen('scre
 
 // --- HEIMLICH ---
 let heimlichCount = 0;
-function startChokeGame() { heimlichCount = 0; document.getElementById("choke-victim").innerHTML = "🤢"; document.getElementById("choke-food").style.top = "45px"; changeScreen('screen-choke-game'); }
-function applyHeimlichThrust() { heimlichCount++; playTone(440, 'sine', 0.05); if (heimlichCount >= 5) { document.getElementById("choke-victim").innerHTML = "😀"; document.getElementById("choke-food").style.top = "-60px"; localStorage.setItem('m_heimlich', 'true'); spawnConfetti(); setTimeout(() => changeScreen('screen-games-menu'), 600); } }
+function startChokeGame() { 
+    heimlichCount = 0; 
+    document.getElementById("h-victim").innerHTML = "🤢"; 
+    document.getElementById("h-food").style.bottom = "42px"; 
+    document.getElementById("h-food").style.left = "-10px";
+    document.getElementById("h-food").style.opacity = "1";
+    changeScreen('screen-choke-game'); 
+}
+function applyHeimlichThrust() { 
+    heimlichCount++; 
+    playTone(440, 'sine', 0.05); 
+    const hero = document.getElementById("h-hero"); const victim = document.getElementById("h-victim"); const food = document.getElementById("h-food");
+    hero.classList.add("thrust-hero"); victim.classList.add("thrust-victim");
+    let newBottom = 42 + (heimlichCount * 12); food.style.bottom = newBottom + "px";
+    setTimeout(() => { hero.classList.remove("thrust-hero"); victim.classList.remove("thrust-victim"); }, 100);
+    if (heimlichCount >= 5) { 
+        victim.innerHTML = "😀"; food.style.bottom = "140px"; food.style.left = "-60px"; food.style.opacity = "0";
+        localStorage.setItem('m_heimlich', 'true'); spawnConfetti(); setTimeout(() => changeScreen('screen-games-menu'), 700); 
+    } 
+}
 
 // --- DEA ---
 let deaPlacedRight = false, deaPlacedLeft = false;
 let deaChargeInterval = null; let deaChargeProgress = 0;
 function startDeaGame() {
+    if (audioCtx.state === 'suspended') { audioCtx.resume(); }
     resetDeaIntervals();
     deaPlacedRight = false; deaPlacedLeft = false;
     document.getElementById("pad-right").className = "dea-pad"; document.getElementById("pad-left").className = "dea-pad";
@@ -513,15 +545,11 @@ function triggerDeaShock() {
     document.getElementById("dea-load-box").style.display = "none";
     document.getElementById("main-container").classList.add("flash-effect");
     setTimeout(() => document.getElementById("main-container").classList.remove("flash-effect"), 250);
-    const patientBody = document.getElementById("dea-body");
-    patientBody.classList.add("shock-jump");
-    playTone(150, 'sawtooth', 0.6);
-    if(navigator.vibrate) navigator.vibrate([300, 100, 200]);
+    const patientBody = document.getElementById("dea-body"); patientBody.classList.add("shock-jump");
+    playTone(150, 'sawtooth', 0.6); if(navigator.vibrate) navigator.vibrate([300, 100, 200]);
     setTimeout(() => {
-        patientBody.classList.remove("shock-jump");
-        localStorage.setItem('m_dea', 'true'); spawnConfetti();
-        alert(langData[currentLang].deaSucc);
-        changeScreen('screen-games-menu');
+        patientBody.classList.remove("shock-jump"); localStorage.setItem('m_dea', 'true'); spawnConfetti();
+        alert(langData[currentLang].deaSucc); changeScreen('screen-games-menu');
     }, 600);
 }
 function resetDeaIntervals() { clearInterval(deaChargeInterval); }
@@ -540,7 +568,7 @@ const tinderDeck = [
     { text: "Segurar firme ou puxar a língua de quem está convulsionando evita que ela engasgue.", isCorrect: false },
     { text: "Lavar os olhos continuamente por 15 minutos após respingos químicos é o correto.", isCorrect: true },
     { text: "Em caso de entorse, aplicar gelo direto na pele sem proteção de tecido queima o local.", isCorrect: true },
-    { text: "Se um objeto pontiagudo penetrar o corpo, devemos arrancá-lo o mais rápido possível.", isCorrect: false },
+    { text: "Se um objecto pontiagudo penetrar o corpo, devemos arrancá-lo o mais rápido possível.", isCorrect: false },
     { text: "Quem está gritando alto em um acidente está respirando e tem passagem de ar.", isCorrect: true },
     { text: "Forçar o vômito após ingerir soda cáustica ou cloro limpa o estômago com segurança.", isCorrect: false }
 ];
@@ -584,34 +612,63 @@ function concludeMaleta() {
     changeScreen('screen-games-menu');
 }
 
-// --- OUTROS JOGOS ---
-let avcInterval, avcTimeLeft = 14, avcHits = 0;
-function startAvcGame() { avcTimeLeft = 14; avcHits = 0; changeScreen('screen-avc-game'); spawnAvcFace(); avcInterval = setInterval(() => { avcTimeLeft--; document.getElementById("avc-timer").innerHTML = avcTimeLeft; if(avcTimeLeft <= 0) { clearInterval(avcInterval); changeScreen('screen-games-menu'); } }, 1000); }
-function spawnAvcFace() { const canvas = document.getElementById("avc-canvas"); canvas.innerHTML = ""; const isSym = Math.random() > 0.4; const face = document.createElement("div"); face.className = "avc-face"; face.innerHTML = isSym ? "🥴" : "😀"; face.style.left = "42%"; face.style.top = "25%"; face.onclick = () => { if(isSym) { avcHits++; if(avcHits >= 5) { clearInterval(avcInterval); localStorage.setItem('m_avc', 'true'); spawnConfetti(); changeScreen('screen-games-menu'); } else spawnAvcFace(); } else triggerErrorShake(); }; canvas.appendChild(face); }
-
-let feverVal = 39.5;
-function startFeverGame() { feverVal = 39.5; changeScreen('screen-fever-game'); feverInterval = setInterval(() => { feverVal += 0.1; document.getElementById("fever-status").innerHTML = feverVal.toFixed(1) + " °C"; if(feverVal >= 41) { clearInterval(feverInterval); changeScreen('screen-games-menu'); } }, 1000); }
-function applyFeverAction(isRight) { if(isRight) { feverVal -= 0.9; if(feverVal <= 37.2) { clearInterval(feverInterval); localStorage.setItem('m_fever', 'true'); spawnConfetti(); changeScreen('screen-games-menu'); } } else triggerErrorShake(); }
-
-let sprainState = 0;
-function startSprainGame() { sprainState = 0; changeScreen('screen-sprain-game'); }
-function clickSprainTool(t) { if(t === 1) sprainState = 1; if(t === 2) { if(sprainState === 1) { localStorage.setItem('m_sprain', 'true'); spawnConfetti(); changeScreen('screen-games-menu'); } else triggerErrorShake(); } }
-
-function setupTriage() {
-    const opt = document.getElementById("triage-options"); const l = langData[currentLang];
-    if(opt) { opt.innerHTML = `<button onclick="alert('${l.triageErrA}'); triggerErrorShake(); changeScreen('screen-games-menu')">${l.triageA}</button><button onclick="localStorage.setItem('m_triage', 'true'); spawnConfetti(); alert('${l.triageSucc}'); changeScreen('screen-games-menu')">${l.triageB}</button>`; }
+// --- JOGO 5: AVC ATUALIZADO (DIAGNÓSTICO NENHUM SINAL) ---
+let avcInterval, avcTimeLeft = 14, avcHits = 0, avcCurrentIsSick = false;
+function startAvcGame() { avcTimeLeft = 14; avcHits = 0; document.getElementById("avc-score-counter").innerHTML = "0"; changeScreen('screen-avc-game'); spawnAvcFace(); clearInterval(avcInterval); avcInterval = setInterval(() => { avcTimeLeft--; document.getElementById("avc-timer").innerHTML = avcTimeLeft; if(avcTimeLeft <= 0) { clearInterval(avcInterval); alert("⏱️ O tempo acabou!"); changeScreen('screen-games-menu'); } }, 1000); }
+function spawnAvcFace() {
+    const canvas = document.getElementById("avc-canvas"); canvas.innerHTML = "";
+    avcCurrentIsSick = Math.random() > 0.4;
+    const face = document.createElement("div"); face.className = "avc-face";
+    face.innerHTML = avcCurrentIsSick ? "🥴" : "😀"; face.style.left = "42%"; face.style.top = "25%";
+    face.onclick = () => {
+        if(avcCurrentIsSick) { avcHits++; document.getElementById("avc-score-counter").innerHTML = avcHits; evalAvcVictory(); } 
+        else { triggerErrorShake(); }
+    };
+    canvas.appendChild(face);
+}
+function clickAvcNextBtn() {
+    if(!avcCurrentIsSick) { avcHits++; document.getElementById("avc-score-counter").innerHTML = avcHits; evalAvcVictory(); } 
+    else { triggerErrorShake(); }
+}
+function evalAvcVictory() {
+    if(avcHits >= 5) { clearInterval(avcInterval); localStorage.setItem('m_avc', 'true'); spawnConfetti(); alert("🏅 Perfeito! Olho clínico calibrado para AVC!"); changeScreen('screen-games-menu'); } 
+    else { spawnAvcFace(); }
 }
 
-function speakSOS(t) { window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = 'pt-BR'; window.speechSynthesis.speak(u); }
+// --- JOGO 8: TRIAGEM DE CRISE EXPANDIDA (5 SITUAÇÕES MANCHESTER) ---
+let triageIndex = 0;
+const triageDeck = [
+    { q: "Caso 1: Ônibus capotou. Quem você deve atender EM PRIMEIRO LUGAR?", a: "Vítima A: Chorando alto com braço quebrado.", b: "Vítima B: Desmaiada no chão, sem respirar.", right: "b", info: "A parada respiratória silenciosa é risco de morte imediata!" },
+    { q: "Caso 2: Incêndio em lanchonete. Quem é prioridade?", a: "Vítima A: Engasgada totalmente, sem ar, com as mãos no pescoço.", b: "Vítima B: Sentada, reclamando de queimadura leve no braço.", right: "a", info: "Asfixia por engasgo mata em poucos minutos!" },
+    { q: "Caso 3: Fábrica mecânica. Quem resgatar primeiro?", a: "Vítima A: Homem com hemorragia arterial jorrando sangue da perna.", b: "Vítima B: Jovem com pequeno corte limpo no dedo indicador.", right: "a", info: "Hemorragia massiva arterial leva ao choque hipovolêmico rápido!" },
+    { q: "Caso 4: Desmaios no calor. Quem tratar com urgência?", a: "Vítima A: Moça desmaiada, sem pulso e fria.", b: "Vítima B: Garoto hiperventilando por crise nervosa/ansiedade.", right: "a", info: "A ausência de pulso indica parada cardíaca iminente!" },
+    { q: "Caso 5: Acidente em trilha florestal. Quem resgatar primeiro?", a: "Vítima A: Homem picado por cobra jararaca, entrando em choque.", b: "Vítima B: Mulher com tornozelo inchado após pisar em falso.", right: "a", info: "O choque por envenenamento é uma emergência sistêmica!" }
+];
+function startTriageGame() { triageIndex = 0; loadTriageCase(); changeScreen('screen-triage-game'); }
+function loadTriageCase() {
+    if(triageIndex >= triageDeck.length) { localStorage.setItem('m_triage', 'true'); spawnConfetti(); alert("🏅 Triagem Manchester Concluída! Você sabe priorizar vidas."); changeScreen('screen-games-menu'); return; }
+    document.getElementById("triage-step-display").innerHTML = `Caso: ${triageIndex + 1} / ${triageDeck.length}`;
+    const c = triageDeck[triageIndex]; document.getElementById("triage-main-q").innerHTML = c.q;
+    const opt = document.getElementById("triage-options");
+    opt.innerHTML = `
+        <button onclick="evalTriage('a')">${c.a}</button>
+        <button onclick="evalTriage('b')">${c.b}</button>
+    `;
+}
+function evalTriage(choice) {
+    const c = triageDeck[triageIndex];
+    if(choice === c.right) { soundSuccess(); alert(`🏅 Correto!\n${c.info}`); triageIndex++; loadTriageCase(); } 
+    else { triggerErrorShake(); alert(`❌ Incorreto!\n${c.info}\nTente novamente.`); startTriageGame(); }
+}
 
-// --- BANCO DE PERGUNTAS (20 PERGUNTAS) ---
+// --- QUIZ MOTOR ---
 const fullQuizDatabase = {
     pt: [
         { question: "Uma pessoa engasgou e NÃO consegue emitir som ou tossir. O que fazer?", answers: [{text: "Fazer Manobra de Heimlich", correct: true}, {text: "Dar água ou bater nas costas em pé", correct: false}] },
         { question: "Dor forte no peito e braço esquerdo dormente indica suspeita de:", answers: [{text: "Infarto do Miocárdio", correct: true}, {text: "Crise de labirintite", correct: false}] },
         { question: "Qual a frequência ideal de compressões por minuto na massagem cardíaca (RCP)?", answers: [{text: "Entre 100 e 120 por minuto", correct: true}, {text: "Cerca de 60 por minuto", correct: false}] },
         { question: "O que significa a sigla médica SAMU?", answers: [{text: "Serviço de Atendimento Móvel de Urgência", correct: true}, {text: "Sistema de Assistência Médica", correct: false}] },
-        { question: "Qual the telefone oficial de emergência do Corpo de Bombeiros no Brasil?", answers: [{text: "193", correct: true}, {text: "190", correct: false}] },
+        { question: "Qual o telefone oficial de emergência do Corpo de Bombeiros no Brasil?", answers: [{text: "193", correct: true}, {text: "190", correct: false}] },
         { question: "Em engasgo de bebê menor de 1 ano que não consegue chorar, qual a ação?", answers: [{text: "5 batidas firmes nas costas inclinado de bruços", correct: true}, {text: "Sacudir pelas pernas", correct: false}] },
         { question: "Alguém cortou a mão e está sangrando muito. Como agir inicialmente?", answers: [{text: "Comprimir com pano limpo e firme", correct: true}, {text: "Colocar pó de café ou açúcar", correct: false}] },
         { question: "Sintoma clássico de AVC observado ao pedir para a pessoa sorrir:", answers: [{text: "Um lado do rosto ou boca fica caído/torto", correct: true}, {text: "Dor de dente aguda", correct: false}] },
@@ -655,7 +712,6 @@ function loadQuestion() {
     const q = activeQuizDeck[currentQuestionIndex];
     document.getElementById("quiz-status").innerHTML = `Questão ${currentQuestionIndex + 1} / ${activeQuizDeck.length}`;
     document.getElementById("question").innerHTML = q.question; document.getElementById("next").style.display = "none";
-    
     const ansDiv = document.getElementById("answers"); ansDiv.innerHTML = "";
     q.answers.forEach(a => {
         const b = document.createElement("button"); b.innerHTML = a.text;
@@ -676,10 +732,12 @@ function stopQuizGame() { clearInterval(quizTimerInterval); changeScreen('screen
 
 function changeScreen(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active-screen'));
-    const target = document.getElementById(id);
-    if(target) target.classList.add('active-screen');
+    const target = document.getElementById(id); if(target) target.classList.add('active-screen');
     if(id === 'screen-games-menu') loadMedals();
-    if(id === 'screen-game') { score = 0; currentQuestionIndex = 0; prepareAndShuffleQuiz(); loadQuestion(); startQuizTimer(); }
+    if(id === 'screen-game') { 
+        if (audioCtx.state === 'suspended') { audioCtx.resume(); }
+        score = 0; currentQuestionIndex = 0; prepareAndShuffleQuiz(); loadQuestion(); startQuizTimer(); 
+    }
 }
 
 function loadProfile() { document.getElementById("hero-name").value = localStorage.getItem('hero_name') || "Hero"; updateRankDisplay(); }
