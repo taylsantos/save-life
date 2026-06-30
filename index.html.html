@@ -69,6 +69,10 @@ button:active { transform: scale(0.97); }
 .btn-back { background: rgba(255,255,255,0.15); color: white; margin-top: auto; padding: 10px; border: 1px solid rgba(255,255,255,0.1); }
 .btn-next-quiz { background: #ff9100; color: white; display: none; padding: 14px; border-radius: 14px; font-weight: bold; box-shadow: 0 4px 12px rgba(255,145,0,0.3); margin: 8px 0; }
 
+/* Injeções de feedback visual */
+button.correct { background: #00c853 !important; color: white !important; }
+button.wrong { background: #ff1744 !important; color: white !important; }
+
 .config-row { display: flex; justify-content: center; gap: 8px; margin-bottom: 10px; align-items: center; }
 .lang-btn, .theme-btn { font-size: 18px; background: none; box-shadow: none; width: auto; padding: 4px; margin: 0; }
 .diff-select, .name-input, .search-input { background: rgba(0,0,0,0.5); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 6px; border-radius: 10px; font-weight: bold; font-size: 12px; outline: none; }
@@ -103,6 +107,12 @@ button:active { transform: scale(0.97); }
 .bystander { font-size: 24px; position: absolute; pointer-events: auto; cursor: pointer; animation: wave 0.3s infinite alternate; transition: opacity 0.2s ease, transform 0.2s ease; }
 .bystander:active { transform: scale(0.8); }
 
+@keyframes shock-jump-anim {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2) translateY(-8px); color: #ffeb3b; }
+}
+.shock-jump { animation: shock-jump-anim 0.3s ease 2; }
+
 .tinder-box { flex-grow: 1; display: flex; align-items: center; justify-content: center; position: relative; width: 100%; }
 .tinder-card { width: 88%; height: 130px; background: linear-gradient(135deg, #ff007f, #7928ca); border-radius: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 15px; box-sizing: border-box; position: absolute; box-shadow: 0 8px 20px rgba(0,0,0,0.3); transition: transform 0.3s ease, opacity 0.3s ease; border: 3px solid transparent; }
 .tinder-buttons { display: flex; justify-content: center; gap: 30px; }
@@ -121,6 +131,11 @@ button:active { transform: scale(0.97); }
 .leaderboard-list { background: rgba(0,0,0,0.4); padding: 15px; border-radius: 20px; text-align: left; overflow-y: auto; flex-grow: 1; margin-bottom: 10px; }
 .leaderboard-item { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 14px; font-weight: bold; }
 .leaderboard-item:last-child { border: none; }
+
+.guide-list { display: flex; flex-direction: column; gap: 8px; overflow-y: auto; flex-grow: 1; }
+.guide-box { background: rgba(0,0,0,0.3); padding: 10px; border-radius: 14px; text-align: left; border: 1px solid rgba(255,255,255,0.05); cursor: pointer; }
+.guide-box h3 { margin: 0 0 4px 0; font-size: 14px; color: #00e676; }
+.guide-box p { margin: 0; font-size: 11px; opacity: 0.8; }
 
 .dea-pad { width: 45%; padding: 10px; border: 2px dashed #00e676; border-radius: 10px; font-size: 12px; font-weight: bold; cursor: pointer; text-align: center; background: rgba(0,0,0,0.3); }
 .dea-pad-placed { background: #00c853 !important; border-style: solid; color: white; }
@@ -346,6 +361,10 @@ let quizHits = 0; let quizMisses = 0;
 let quizTimerInterval; let quizTimeLeft = 20;
 let activeQuizDeck = [];
 
+// Declarações corretas do motor RCP
+let rhythmClicks = 0; let lastTime = 0; let melodyIndex = 0; let metronomeInterval = null;
+const stayinAliveMelody = [440, 440, 440, 349, 440, 523, 440];
+
 const langData = {
     pt: {
         menuTitle: "SOS HERO", menuSubtitle: "O aplicativo definitivo que salva vidas",
@@ -400,10 +419,7 @@ function setLanguage(lang) {
     buildSOSGuide(); setupTriage(); updateRankDisplay();
 }
 
-function setupTriage() {
-    // Mantém a inicialização de segurança limpa para evitar colisões
-    triageCurrentStep = 0;
-}
+function setupTriage() { triageCurrentStep = 0; }
 
 function buildSOSGuide() {
     document.getElementById("guide-container").innerHTML = `
@@ -419,10 +435,14 @@ function filterSOSGuide() {
 
 function setDifficulty() { currentDiff = document.getElementById("diff-select").value; }
 
-const windowAudioCtx = window.AudioContext || window.webkitAudioContext;
-const audioCtx = new windowAudioCtx();
+let audioCtx = null;
 function playTone(freq, type, duration) {
     try {
+        if (!audioCtx) {
+            const windowAudioCtx = window.AudioContext || window.webkitAudioContext;
+            audioCtx = new windowAudioCtx();
+        }
+        if (audioCtx.state === 'suspended') { audioCtx.resume(); }
         const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
         osc.type = type; osc.frequency.value = freq; gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration);
@@ -432,9 +452,75 @@ function playTone(freq, type, duration) {
 function soundSuccess() { playTone(587, 'sine', 0.1); }
 function soundError() { playTone(140, 'triangle', 0.2); }
 
+function triggerErrorShake() {
+    soundError();
+    const main = document.getElementById("main-container");
+    main.classList.add("shake-effect");
+    setTimeout(() => main.classList.remove("shake-effect"), 300);
+}
+
+function spawnConfetti() {
+    soundSuccess();
+    for(let i=0; i<15; i++) {
+        let conf = document.createElement("div");
+        conf.style.position = "absolute"; conf.style.width = "8px"; conf.style.height = "8px";
+        conf.style.backgroundColor = ["#00e676","#ff1744","#ffeb3b","#2196f3"][Math.floor(Math.random()*4)];
+        conf.style.left = Math.random() * 100 + "%"; conf.style.top = "0%"; conf.style.zIndex = "100";
+        conf.style.transition = "all 0.8s ease-out";
+        document.getElementById("main-container").appendChild(conf);
+        setTimeout(() => { conf.style.top = "90%"; conf.style.transform = "rotate(360deg)"; conf.style.opacity = "0"; }, 50);
+        setTimeout(() => conf.remove(), 850);
+    }
+}
+
+function speakSOS(text) {
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = currentLang === 'pt' ? 'pt-BR' : 'es-ES';
+        window.speechSynthesis.speak(utterance);
+    } else {
+        alert(text);
+    }
+}
+
+function toggleTheme() { document.body.classList.toggle("night-mode"); }
+
+function saveName() {
+    localStorage.setItem('hero_name', document.getElementById("hero-name").value);
+    updateRankDisplay();
+}
+
+function updateRankDisplay() {
+    let unlocked = 0;
+    const mIds = ['rcp', 'tinder', 'heimlich', 'maleta', 'avc', 'triage', 'fever', 'sprain', 'dea', 'chem', 'fract', 'eye'];
+    mIds.forEach(id => { if(localStorage.getItem('m_'+id) === 'true') unlocked++; });
+    let perc = Math.round((unlocked / mIds.length) * 100);
+    document.getElementById("rank-label").innerHTML = `Ranking: ${perc}% Concluído`;
+    document.getElementById("rank-fill").style.width = perc + "%";
+}
+
+function openLeaderboardScreen() {
+    const box = document.getElementById("leaderboard-box");
+    box.innerHTML = "";
+    let currentHero = localStorage.getItem('hero_name') || "Hero";
+    let mockList = [
+        {name: "Capitão Resgate", pts: 1200},
+        {name: "Dra. Ana Silva", pts: 1000},
+        {name: currentHero, pts: score > 0 ? score : 400},
+        {name: "Socorrista Alfa", pts: 300}
+    ].sort((a,b) => b.pts - a.pts);
+
+    mockList.forEach((user, i) => {
+        box.innerHTML += `<div class="leaderboard-item"><span>${i+1}. ${user.name}</span><span>✨ ${user.pts}</span></div>`;
+    });
+    changeScreen('screen-leaderboard');
+}
+
+function registerQuizScore(finalScore) {}
+
 // --- RCP ---
 function startRhythmGame() { 
-    if (audioCtx.state === 'suspended') { audioCtx.resume(); }
     rhythmClicks = 0; lastTime = 0; melodyIndex = 0; 
     changeScreen('screen-rhythm-game'); 
     metronomeInterval = setInterval(() => { playTone(stayinAliveMelody[melodyIndex % stayinAliveMelody.length], 'sine', 0.08); melodyIndex++; }, 545); 
@@ -460,7 +546,6 @@ function applyHeimlichThrust() { chokeThrusts++; playTone(440, 'sine', 0.05); if
 // --- DEA ---
 let deaPlacedRight = false, deaPlacedLeft = false, deaChargeInterval = null, deaChargeProgress = 0, deaBystandersCount = 0;
 function startDeaGame() {
-    if (audioCtx.state === 'suspended') { audioCtx.resume(); }
     resetDeaIntervals(); deaPlacedRight = false; deaPlacedLeft = false; deaBystandersCount = 0;
     document.getElementById("pad-right").className = "dea-pad"; document.getElementById("pad-left").className = "dea-pad";
     document.getElementById("btn-dea-shock").style.display = "none"; document.getElementById("dea-load-box").style.display = "none";
@@ -511,7 +596,7 @@ function resetDeaIntervals() { clearInterval(deaChargeInterval); }
 
 function applyChemSucc() { localStorage.setItem('m_chem', 'true'); spawnConfetti(); changeScreen('screen-games-menu'); }
 
-// --- 🦴 TALA DE FRATURA ---
+// --- TALA DE FRATURA ---
 let fractCurrentStep = 0;
 const fullFractCases = [
     { q: "Caso 1: Perna torta com dor extrema após queda, mas SEM rompimento da pele (Fratura Fechada):", options: [{t:"Imobilizar com papelão e faixas na posição atual", r:true}, {t:"Puxar a perna para alinhar o osso", r:false}], info: "Em fraturas fechadas, apenas imobilize! Nunca tente alinhar o osso." },
@@ -531,12 +616,12 @@ function loadFractCase() {
     });
 }
 
-// --- 👁️ CISCO NO OLHO ---
+// --- CISCO NO OLHO ---
 let eyeCurrentStep = 0;
 const fullEyeCases = [
     { q: "Caso 1: Poeira ou cílio entrou no olho causando incômodo e vermelhidão:", options: [{t:"Lavar com bastante Soro Fisiológico", r:true}, {t:"Coçar forte até aliviar", r:false}] },
     { q: "Caso 2: Respingo de produto químico corrosivo direto no olho:", options: [{t:"Lavar continuamente em água corrente por 15min", r:true}, {t:"Fechar os olhos e vendar firme", r:false}] },
-    { q: "Caso 3: Uma farpa pontiaguda de madeira voou e ficou cravada no olho:", options: [{t:"Proteger com copo plástico sem remover o objeto", r:true}, {t:"Arrancar a farpa rapidamente com pinça", r:false}] }
+    { q: "Caso 3: Uma farpa pontiaguda de madeira voou e ficou cravada no olho:", options: [{t:"Proteger com copo plástico sem remover o objecto", r:true}, {t:"Arrancar a farpa rapidamente com pinça", r:false}] }
 ];
 function startEyeGame() { eyeCurrentStep = 0; loadEyeCase(); changeScreen('screen-eye-game'); }
 function loadEyeCase() {
@@ -551,7 +636,7 @@ function loadEyeCase() {
     });
 }
 
-// --- 🧊 FEBRE ALTA ---
+// --- FEBRE ALTA ---
 let feverCurrentStep = 0;
 const fullFeverCases = [
     { q: "Caso 1: Bebê com 39.2 °C chorando muito. Qual a medida física protetora?", options: [{t:"🧽 Aplicar toalha úmida morna no corpo", r:true}, {t:"🧴 Passar álcool na pele para esfriar", r:false}] },
@@ -571,7 +656,7 @@ function loadFeverCase() {
     });
 }
 
-// --- 🦵 TORNOZELO TORCIDO ---
+// --- TORNOZELO TORCIDO ---
 let sprainStepIndex = 0;
 function startSprainGame() { sprainStepIndex = 1; document.getElementById("sprain-foot-emoji").style.transform = "rotate(0deg)"; loadSprainStep(); changeScreen('screen-sprain-game'); }
 function loadSprainStep() {
@@ -675,6 +760,7 @@ function loadTriageScenario() {
     const currentCase = fullTriageCases[triageCurrentStep]; document.getElementById("triage-main-q").innerHTML = `Reflexão (${triageCurrentStep + 1}/5) ${currentCase.q}`;
     const opt = document.getElementById("triage-options");
     opt.innerHTML = `<button onclick="evaluateTriageAnswer('A')">${currentCase.a}</button><button onclick="evaluateTriageAnswer('B')">${currentCase.b}</button>`;
+    document.getElementById("triage-step-display").innerHTML = `Caso: ${triageCurrentStep + 1} / ${fullTriageCases.length}`;
 }
 function evaluateTriageAnswer(choice) {
     const currentCase = fullTriageCases[triageCurrentStep];
@@ -700,7 +786,7 @@ const fullQuizDatabase = {
         { question: "Diante de uma fratura exposta onde o osso rompeu a pele com hemorragia intensa, qual a conduta?", answers: [{text: "Conter o sangue com panos limpos, sem empurrar o osso", correct: true}, {text: "Forçar o osso de volta para dentro", correct: false}] },
         { question: "Uma vítima caiu de uma árvore alta, está consciente mas não sente as pernas. Conduta correta:", answers: [{text: "NÃO movimentar a vítima sob hipótese alguma e chamar o resgate", correct: true}, {text: "Sentá-la para aguardar o socorro", correct: false}] },
         { question: "Em caso de queimadura química nos olhos por produto corrosivo, qual o cuidado essencial?", answers: [{text: "Lavar continuamente com água corrente limpa por 15 a 20 minutos", correct: true}, {text: "Vendar o olho firmemente sem lavar", correct: false}] },
-        { question: "Vítima de acidente está com um estilhaço grande de vidro cravado no abdômen. O que fazer?", answers: [{text: "Não remover o objeto, protegê-lo e imobilizá-lo até o hospital", correct: true}, {text: "Arrancar o vidro o mais rápido possível", correct: false}] }
+        { question: "Vítima de acidente está com um estilhaço grande de vidro cravado no abdômen. O que fazer?", answers: [{text: "Não remover o objecto, protegê-lo e imobilizá-lo até o hospital", correct: true}, {text: "Arrancar o vidro o mais rápido possível", correct: false}] }
     ]
 };
 
@@ -727,7 +813,7 @@ function loadQuestion() {
         const b = document.createElement("button"); b.innerHTML = a.text;
         b.onclick = () => {
             clearInterval(quizTimerInterval); document.querySelectorAll("#answers button").forEach(btn => btn.disabled = true);
-            if(a.correct) { b.className = "correct"; score += 100; quizHits++; } else { b.className = "wrong"; triggerErrorShake(); quizMisses++; }
+            if(a.correct) { b.classList.add("correct"); score += 100; quizHits++; } else { b.classList.add("wrong"); triggerErrorShake(); quizMisses++; }
             document.getElementById("quiz-hits-display").innerHTML = `🟢 Acertos: ${quizHits}`;
             document.getElementById("quiz-misses-display").innerHTML = `🔴 Erros: ${quizMisses}`;
             document.getElementById("score-text").innerHTML = `✨ Pontos: ${score}`; document.getElementById("next").style.display = "block";
@@ -752,7 +838,6 @@ function loadMedals() {
     updateRankDisplay();
 }
 
-// Vincula os botões principais de forma nativa e segura para evitar colisões
 document.getElementById("btn-menu-play").onclick = () => changeScreen('screen-game');
 document.getElementById("btn-menu-games").onclick = () => changeScreen('screen-games-menu');
 document.getElementById("btn-menu-sos").onclick = () => changeScreen('screen-sos');
