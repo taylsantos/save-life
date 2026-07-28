@@ -34,6 +34,7 @@ body {
     display: flex; flex-direction: column; overflow: hidden;
     border: 4px solid #1f3148;
     box-shadow: 0 0 30px rgba(0, 240, 255, 0.2); padding: 8px;
+    position: relative;
 }
 
 .statusbar {
@@ -45,14 +46,15 @@ body {
 .screen { display: none; flex-direction: column; height: 100%; padding: 10px; background: var(--card-bg); border-radius: 12px; overflow-y: auto; }
 .screen.active { display: flex; }
 
-h1 { font-size: 16px; color: var(--accent-blue); text-align: center; margin-bottom: 6px; text-transform: uppercase; }
-p { font-size: 11px; color: var(--text-dim); text-align: center; margin-bottom: 12px; }
+h1 { font-size: 15px; color: var(--accent-blue); text-align: center; margin-bottom: 4px; text-transform: uppercase; }
+p { font-size: 11px; color: var(--text-dim); text-align: center; margin-bottom: 10px; }
 
 /* BOTÕES TÁTICOS */
 button {
     background: rgba(0, 240, 255, 0.12); color: #fff; border: 1px solid var(--accent-blue);
-    padding: 10px; border-radius: 8px; font-weight: bold; font-size: 11px;
-    cursor: pointer; text-transform: uppercase; margin: 4px 0; transition: all 0.2s;
+    padding: 10px; border-radius: 8px; font-weight: bold; font-size: 10px;
+    cursor: pointer; text-transform: uppercase; margin: 3px 0; transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
 }
 button:hover { background: rgba(0, 240, 255, 0.25); border-color: #fff; }
 button:active { transform: scale(0.97); }
@@ -65,26 +67,33 @@ button:active { transform: scale(0.97); }
 /* MONITOR CARDIÁCO */
 .monitor {
     background: #000; border: 1px solid #1f3148; border-radius: 8px;
-    padding: 8px; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 8px;
+    padding: 6px 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 8px;
 }
-.mon-box { background: rgba(255,255,255,0.03); padding: 6px; border-radius: 4px; }
+.mon-box { background: rgba(255,255,255,0.03); padding: 4px 8px; border-radius: 4px; }
 .mon-lbl { font-size: 9px; color: var(--text-dim); font-weight: bold; }
 .mon-val { font-family: monospace; font-size: 16px; font-weight: bold; }
+
+/* ÁREA DA ILUSTRAÇÃO DOS PROCEDIMENTOS */
+.illustration-box {
+    width: 100%; height: 140px; background: #030712;
+    border-radius: 8px; border: 1px solid rgba(0,240,255,0.3);
+    margin-bottom: 8px; display: flex; align-items: center; justify-content: center;
+}
 
 /* FEEDBACK MSG */
 .feedback-box {
     background: rgba(0,0,0,0.5); border-left: 3px solid var(--accent-yellow);
-    padding: 8px; font-size: 11px; color: var(--accent-yellow); margin-bottom: 8px;
-    min-height: 40px; display: flex; align-items: center; border-radius: 4px;
+    padding: 8px; font-size: 10px; color: var(--accent-yellow); margin-bottom: 8px;
+    min-height: 36px; display: flex; align-items: center; border-radius: 4px; line-height: 1.3;
 }
 
-/* MODAL DE RCP DE TREINO */
+/* MODAL DE RCP DE TREINO PRÁTICO */
 .rcp-modal {
     position: absolute; top:0; left:0; width:100%; height:100%;
-    background: rgba(5,10,18,0.95); display: none; flex-direction: column;
-    padding: 16px; justify-content: space-between; text-align: center; border-radius: 20px;
+    background: rgba(5,10,18,0.98); display: none; flex-direction: column;
+    padding: 12px; justify-content: space-between; text-align: center; border-radius: 20px; z-index: 50;
 }
-.counter { font-size: 42px; font-family: monospace; color: var(--accent-green); font-weight: bold; margin: 10px 0; }
+.counter { font-size: 38px; font-family: monospace; color: var(--accent-green); font-weight: bold; margin: 4px 0; }
 </style>
 </head>
 <body>
@@ -98,33 +107,38 @@ button:active { transform: scale(0.97); }
     <!-- TELA 1: MENU PRINCIPAL DE TREINO -->
     <div id="screen-menu" class="screen active">
         <h1>🆘 TREINO DE EMERGÊNCIA</h1>
-        <p>Aprenda a reconhecer sinais graves de Pressão e a realizar RCP:</p>
+        <p>Aprenda a reconhecer os sinais de alteração pressórica e a realizar a RCP:</p>
 
-        <button class="btn-red" onclick="startScenario('alta')">🚨 1. CRISE HIPERTENSIVA (SOGRA - 150x130)</button>
-        <button class="btn-yellow" onclick="startScenario('baixa')">🔵 2. PRESSÃO BAIXA (HIPOTENSÃO & TONTONTURA)</button>
-        <button class="btn-green" onclick="startScenario('pcr')">🫀 3. SIMULADOR DE RCP (30 COMPRESSÕES : 2 VENTILAÇÕES)</button>
+        <button class="btn-red" onclick="startScenario('alta')">🚨 1. CRISE HIPERTENSIVA (PA 150x130 mmHg)</button>
+        <button class="btn-yellow" onclick="startScenario('baixa')">🔵 2. PRESSÃO BAIXA (HIPOTENSÃO & TONTURA)</button>
+        <button class="btn-green" onclick="startScenario('pcr')">🫀 3. PROTOCOLO DE RCP (30 COMPRESSÕES : 2 VENTILAÇÕES)</button>
 
-        <div style="background: rgba(0,240,255,0.05); border: 1px solid var(--accent-blue); padding: 10px; border-radius: 8px; margin-top: 10px; font-size: 10px; text-align: left;">
+        <div style="background: rgba(0,240,255,0.05); border: 1px solid var(--accent-blue); padding: 10px; border-radius: 8px; margin-top: 10px; font-size: 10px; text-align: left; line-height: 1.4;">
             <b style="color:var(--accent-blue);">💡 SINAIS DE ALERTA:</b><br>
-            • <b>Pressão Diastólica &ge; 120/130 mmHg:</b> Emergência! Risco de AVC/Infarto.<br>
-            • <b>Visão turva + Dor na nuca:</b> Alerta de crise hipertensiva.<br>
+            • <b>Pressão Diastólica &ge; 120/130 mmHg:</b> Crise hipertensiva com risco vascular.<br>
+            • <b>Visão turva + Dor na nuca:</b> Alerta de elevação pressórica grave.<br>
             • <b>Inconsciente + Sem respiração:</b> Inicie compressões no peito imediatamente.
         </div>
     </div>
 
-    <!-- TELA 2: SIMULADOR EM TEMPO REAL -->
+    <!-- TELA 2: SIMULADOR EM TEMPO REAL COM ILUSTRAÇÃO -->
     <div id="screen-sim" class="screen">
         <div class="monitor">
             <div class="mon-box"><span class="mon-lbl">PA (mmHg)</span><div class="mon-val" id="m-pa" style="color:var(--accent-blue);">120x80</div></div>
             <div class="mon-box"><span class="mon-lbl">FC (BPM)</span><div class="mon-val" id="m-fc" style="color:var(--accent-green);">80</div></div>
         </div>
 
-        <div class="feedback-box" id="feedback-txt">Avaliando paciente...</div>
+        <!-- QUADRO DE ILUSTRAÇÃO DO PROCEDIMENTO -->
+        <div class="illustration-box" id="illustration-container">
+            <!-- Ilustração SVG injetada dinamicamente -->
+        </div>
+
+        <div class="feedback-box" id="feedback-txt">Avaliando estado do paciente...</div>
 
         <!-- PAINEL DE SINTOMAS OBSERVADOS -->
-        <div style="background: rgba(255,255,255,0.03); padding: 8px; border-radius: 6px; margin-bottom: 8px; text-align: left; font-size: 10px;">
+        <div style="background: rgba(255,255,255,0.03); padding: 6px; border-radius: 6px; margin-bottom: 6px; text-align: left; font-size: 10px;">
             <b style="color:var(--accent-yellow);">🔎 SINTOMAS OBSERVADOS NA VÍTIMA:</b>
-            <div id="sintomas-list" style="margin-top: 4px; color:#fff;">-</div>
+            <div id="sintomas-list" style="margin-top: 3px; color:#fff;">-</div>
         </div>
 
         <h2>AÇÕES DE EMERGÊNCIA:</h2>
@@ -138,20 +152,33 @@ button:active { transform: scale(0.97); }
         <button class="btn-back" onclick="changeScreen('screen-menu')">↩ Voltar ao Menu</button>
     </div>
 
-    <!-- MODAL DE RCP DE TREINO PRÁTICO -->
+    <!-- MODAL DE RCP DE TREINO PRÁTICO COM ILUSTRAÇÃO DA MANOBRA -->
     <div class="rcp-modal" id="rcp-modal">
-        <h2 style="color:var(--accent-red);">🫀 TREINO DE COMPRESSÃO TORÁCICA</h2>
-        <p style="color:#fff;">Mantenha o ritmo firme no centro do peito!</p>
+        <h2 style="color:var(--accent-red);">🫀 COMPRESSÃO TORÁCICA CONTINUA</h2>
+        
+        <!-- ILUSTRAÇÃO DA RCP -->
+        <div class="illustration-box" style="height: 120px; margin: 4px 0;" id="rcp-svg-container">
+            <svg viewBox="0 0 200 120" width="140" height="100">
+                <!-- Vítima Deitada -->
+                <rect x="20" y="80" width="160" height="12" rx="4" fill="#374151"/>
+                <circle cx="45" cy="70" r="12" fill="#ffcc99"/>
+                <rect x="60" y="65" width="80" height="20" rx="6" fill="#1f618d"/>
+                <!-- Mãos do Socorrista Pressionando o Centro do Peito -->
+                <path d="M 100,20 L 100,60" stroke="#00f0ff" stroke-width="6" stroke-dasharray="4" stroke-linecap="round"/>
+                <polygon points="95,55 100,65 105,55" fill="#00f0ff"/>
+                <ellipse cx="100" cy="65" rx="8" ry="4" fill="#ff1744"/>
+            </svg>
+        </div>
 
         <div>
-            <span style="color:var(--accent-yellow); font-weight:bold;" id="rcp-ciclo">CICLO 1 / 5</span>
+            <span style="color:var(--accent-yellow); font-weight:bold; font-size: 11px;" id="rcp-ciclo">CICLO 1 / 5</span>
             <div class="counter" id="rcp-count">00 / 30</div>
-            <p id="rcp-inst">Pressione 'COMPRIMIR' no ritmo de 100 a 120 BPM!</p>
+            <p id="rcp-inst" style="font-size: 10px; color: #fff;">Pressione 'COMPRIMIR' no ritmo de 100 a 120 BPM!</p>
         </div>
 
         <div style="display:flex; gap:6px;">
-            <button class="btn-red" style="flex:1; padding:15px;" onclick="comprimir()">🫀 COMPRIMIR (PEITO)</button>
-            <button class="btn-green" style="flex:1; padding:15px;" id="btn-vent" disabled onclick="ventilar()">🌬️ VENTILAR (2x)</button>
+            <button class="btn-red" style="flex:1; padding:12px;" onclick="comprimir()">🫀 COMPRIMIR (PEITO)</button>
+            <button class="btn-green" style="flex:1; padding:12px;" id="btn-vent" disabled onclick="ventilar()">🌬️ VENTILAR (2x)</button>
         </div>
 
         <button class="btn-back" onclick="fecharRcp()">ABANDONAR TREINO</button>
@@ -162,6 +189,42 @@ button:active { transform: scale(0.97); }
 let paPas = 120, paPad = 80, fc = 80;
 let rcpComp = 0, rcpVent = 0, rcpCicloNum = 1;
 let cenarioAtual = '';
+
+/* Dicionário de SVGs Ilustrativos */
+const ilustracoes = {
+    crise: `<svg viewBox="0 0 200 120" width="160" height="110">
+        <!-- Vítima Sentada com Dor de Cabeça -->
+        <circle cx="100" cy="40" r="18" fill="#ffcc99"/>
+        <path d="M 85,30 Q 100,20 115,30" stroke="#ff1744" stroke-width="3" fill="none"/>
+        <path d="M 85,70 L 115,70 L 110,110 L 90,110 Z" fill="#1f618d"/>
+        <!-- Símbolo de Pressão/Dor -->
+        <path d="M 75,25 L 82,35 M 125,25 L 118,35" stroke="#ffd166" stroke-width="3" stroke-linecap="round"/>
+    </svg>`,
+    hipotensao: `<svg viewBox="0 0 200 120" width="160" height="110">
+        <!-- Vítima Deitada com Pernas Elevadas -->
+        <rect x="20" y="85" width="160" height="10" rx="3" fill="#374151"/>
+        <circle cx="45" cy="75" r="14" fill="#e0d0c0"/>
+        <rect x="60" y="70" width="60" height="18" rx="4" fill="#1f618d"/>
+        <!-- Pernas sobre calço (Elevadas) -->
+        <polygon points="120,78 160,55 165,65 120,88" fill="#2c3e50"/>
+        <rect x="145" y="65" width="25" height="20" fill="#ffd166" rx="3"/>
+    </svg>`,
+    samu: `<svg viewBox="0 0 200 120" width="160" height="110">
+        <!-- Ambulância / Ligação 192 -->
+        <rect x="40" y="40" width="100" height="50" rx="6" fill="#ffffff" stroke="#ff1744" stroke-width="2"/>
+        <path d="M 140,55 L 165,55 L 175,75 L 175,90 L 140,90 Z" fill="#ffffff" stroke="#ff1744" stroke-width="2"/>
+        <!-- Cruz Vermelha -->
+        <rect x="80" y="55" width="20" height="6" fill="#ff1744"/>
+        <rect x="87" y="48" width="6" height="20" fill="#ff1744"/>
+        <circle cx="65" cy="90" r="10" fill="#333"/>
+        <circle cx="155" cy="90" r="10" fill="#333"/>
+    </svg>`,
+    pcr: `<svg viewBox="0 0 200 120" width="160" height="110">
+        <!-- Parada Cardíaca -->
+        <path d="M 100,30 C 70,10 50,40 100,90 C 150,40 130,10 100,30 Z" fill="#ff1744"/>
+        <path d="M 60,60 L 85,60 L 95,40 L 105,80 L 115,60 L 140,60" stroke="#ffffff" stroke-width="3" fill="none"/>
+    </svg>`
+};
 
 function changeScreen(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -175,18 +238,21 @@ function startScenario(tipo) {
     if(tipo === 'alta') {
         paPas = 150; paPad = 130; fc = 98;
         document.getElementById('m-pa').style.color = "var(--accent-red)";
-        document.getElementById('sintomas-list').innerHTML = "• Dor forte de cabeça na nuca<br>• Visão embaçada / pontos luminosos<br>• Zumbido no ouvido";
-        document.getElementById('feedback-txt').innerHTML = "🚨 CRISE HIPERTENSIVA! A pressão diastólica (130) está criticamente alta!";
+        document.getElementById('illustration-container').innerHTML = ilustracoes.crise;
+        document.getElementById('sintomas-list').innerHTML = "• Dor forte de cabeça / nuca<br>• Visão embaçada ou pontos luminosos<br>• Zumbido no ouvido";
+        document.getElementById('feedback-txt').innerHTML = "🚨 CRISE HIPERTENSIVA! A pressão diastólica (130 mmHg) está criticamente elevada!";
     } else if(tipo === 'baixa') {
         paPas = 85; paPad = 50; fc = 110;
         document.getElementById('m-pa').style.color = "var(--accent-blue)";
-        document.getElementById('sintomas-list').innerHTML = "• Tontura intensa ao levantar<br>• Pele fria, pálida e suada<br>• Sensação de desmaio iminente";
-        document.getElementById('feedback-txt').innerHTML = "🔵 PRESSÃO BAIXA! Fluxo sanguíneo reduzido no cérebro.";
+        document.getElementById('illustration-container').innerHTML = ilustracoes.hipotensao;
+        document.getElementById('sintomas-list').innerHTML = "• Tontura forte ao se levantar<br>• Pele pálida, fria e suada<br>• Sensação de desmaio";
+        document.getElementById('feedback-txt').innerHTML = "🔵 PRESSÃO BAIXA! Fluxo sanguíneo reduzido temporariamente.";
     } else if(tipo === 'pcr') {
         paPas = 0; paPad = 0; fc = 0;
         document.getElementById('m-pa').style.color = "var(--accent-red)";
-        document.getElementById('sintomas-list').innerHTML = "• Inconsciente (Não responde)<br>• Sem respiração (Tórax não mexe)<br>• Sem pulso carotídeo";
-        document.getElementById('feedback-txt').innerHTML = "🚨 PARADA CARDIORRESPIRATÓRIA! Inicie compressões imediatamente!";
+        document.getElementById('illustration-container').innerHTML = ilustracoes.pcr;
+        document.getElementById('sintomas-list').innerHTML = "• Inconsciente (Não responde ao chamar)<br>• Ausência de respiração<br>• Sem pulso palpável";
+        document.getElementById('feedback-txt').innerHTML = "🚨 PARADA CARDIORRESPIRATÓRIA! Inicie as compressões no centro do peito imediatamente!";
         abrirRcp();
     }
 
@@ -196,14 +262,25 @@ function startScenario(tipo) {
 
 function fazerAcao(acao) {
     const fb = document.getElementById('feedback-txt');
+    const container = document.getElementById('illustration-container');
+
     if(acao === 'calmar') {
-        if(cenarioAtual === 'alta') fb.innerHTML = "✅ CORRETO: Coloque a pessoa sentada e quieta. Evite esforços e deitar reto!";
-        else fb.innerHTML = "ℹ️ Posição sentada mantida.";
+        if(cenarioAtual === 'alta') {
+            container.innerHTML = ilustracoes.crise;
+            fb.innerHTML = "✅ CORRETO: Manter a pessoa sentada e repousada reduz o esforço do coração. Evite deitar reto!";
+        } else {
+            fb.innerHTML = "ℹ️ Posição sentada mantida.";
+        }
     } else if(acao === 'elevar_pernas') {
-        if(cenarioAtual === 'baixa') fb.innerHTML = "✅ CORRETO: Elevar as pernas a 30cm ajuda o sangue a voltar ao cérebro na Pressão Baixa!";
-        else if(cenarioAtual === 'alta') fb.innerHTML = "⚠️ ATENÇÃO: NÃO eleve as pernas em Crise Hipertensiva! Isso aumenta a pressão na cabeça.";
+        if(cenarioAtual === 'baixa') {
+            container.innerHTML = ilustracoes.hipotensao;
+            fb.innerHTML = "✅ CORRETO: Elevar as pernas a 30cm facilita o retorno venoso de sangue ao cérebro na Pressão Baixa!";
+        } else if(cenarioAtual === 'alta') {
+            fb.innerHTML = "⚠️ ATENÇÃO: NÃO eleve as pernas na Crise Hipertensiva! Isso aumenta a pressão vascular na cabeça.";
+        }
     } else if(acao === 'samu') {
-        fb.innerHTML = "🚑 SAMU 192 ACIONADO! Relate o valor de 150x130 e os sintomas ao médico regulador.";
+        container.innerHTML = ilustracoes.samu;
+        fb.innerHTML = "🚑 SAMU 192 ACIONADO! Relate os valores pressóricos e sintomas ao médico regulador.";
     }
 }
 
@@ -221,7 +298,7 @@ function comprimir() {
         document.getElementById('rcp-count').innerText = `${rcpComp.toString().padStart(2, '0')} / 30`;
         if(rcpComp === 30) {
             document.getElementById('btn-vent').disabled = false;
-            document.getElementById('rcp-inst').innerText = "30 Compressões feitas! Agora aplique 2 Ventilações!";
+            document.getElementById('rcp-inst').innerText = "30 Compressões concluídas! Agora aplique 2 Ventilações!";
         }
     }
 }
