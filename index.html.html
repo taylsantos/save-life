@@ -3,348 +3,108 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SOS HERO - Treinador de PA & Protocolo RCP</title>
+<title>Guia de Primeiros Socorros</title>
 <style>
 :root {
-    --bg-main: #060a12;
-    --card-bg: #0a1320;
-    --accent-blue: #00f0ff;
-    --accent-green: #00e676;
-    --accent-red: #ff1744;
-    --accent-yellow: #ffd166;
-    --accent-purple: #b388ff;
-    --text-primary: #ffffff;
-    --text-dim: #8fa3bf;
+    --bg-dark: #0f172a;
+    --card-bg: #1e293b;
+    --accent-blue: #38bdf8;
+    --accent-red: #ef4444;
+    --accent-green: #22c55e;
+    --accent-yellow: #eab308;
+    --text-main: #f8fafc;
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
 
-body {
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    background: var(--bg-main);
-    color: var(--text-primary);
-    display: flex; justify-content: center; align-items: center;
-    min-height: 100vh; padding: 10px;
-}
+body { background: var(--bg-dark); color: var(--text-main); padding: 12px; display: flex; justify-content: center; }
 
-/* 📱 FRAME DO TABLET */
-.tablet-container {
-    width: 100vw; max-width: 500px; height: 95vh; max-height: 850px;
-    background: #121d2b; border-radius: 24px;
-    display: flex; flex-direction: column; overflow: hidden;
-    border: 4px solid #1f3148;
-    box-shadow: 0 0 30px rgba(0, 240, 255, 0.2); padding: 8px;
-    position: relative;
-}
+.app-container { width: 100%; max-width: 480px; background: var(--card-bg); border-radius: 16px; padding: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
 
-.statusbar {
-    background: #03060a; padding: 6px 12px; border-radius: 12px;
-    display: flex; justify-content: space-between; font-size: 11px; color: var(--text-dim);
-    margin-bottom: 6px;
-}
+h1 { font-size: 18px; color: var(--accent-blue); text-align: center; margin-bottom: 12px; text-transform: uppercase; }
 
-.screen { display: none; flex-direction: column; height: 100%; padding: 10px; background: var(--card-bg); border-radius: 12px; overflow-y: auto; }
-.screen.active { display: flex; }
+.nav-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
 
-h1 { font-size: 15px; color: var(--accent-blue); text-align: center; margin-bottom: 4px; text-transform: uppercase; }
-p { font-size: 11px; color: var(--text-dim); text-align: center; margin-bottom: 10px; }
-
-/* BOTÕES TÁTICOS */
 button {
-    background: rgba(0, 240, 255, 0.12); color: #fff; border: 1px solid var(--accent-blue);
-    padding: 10px; border-radius: 8px; font-weight: bold; font-size: 10px;
-    cursor: pointer; text-transform: uppercase; margin: 3px 0; transition: all 0.2s;
-    display: flex; align-items: center; justify-content: center; gap: 6px;
+    background: #334155; color: #fff; border: 1px solid var(--accent-blue);
+    padding: 12px 8px; border-radius: 8px; font-size: 11px; font-weight: bold;
+    cursor: pointer; text-transform: uppercase; transition: 0.2s;
 }
-button:hover { background: rgba(0, 240, 255, 0.25); border-color: #fff; }
-button:active { transform: scale(0.97); }
+button:hover { background: var(--accent-blue); color: #000; }
 
-.btn-red { background: rgba(255, 23, 68, 0.2); border-color: var(--accent-red); color: #ff80ab; }
-.btn-green { background: rgba(0, 230, 118, 0.2); border-color: var(--accent-green); color: var(--accent-green); }
-.btn-yellow { background: rgba(255, 209, 102, 0.2); border-color: var(--accent-yellow); color: var(--accent-yellow); }
-.btn-back { background: rgba(255,255,255,0.05); color: #aaa; border-color: #444; margin-top: auto; }
+.content-section { display: none; background: rgba(0,0,0,0.2); padding: 12px; border-radius: 8px; border-left: 4px solid var(--accent-blue); margin-bottom: 12px; }
+.content-section.active { display: block; }
 
-/* MONITOR CARDIÁCO */
-.monitor {
-    background: #000; border: 1px solid #1f3148; border-radius: 8px;
-    padding: 6px 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 8px;
-}
-.mon-box { background: rgba(255,255,255,0.03); padding: 4px 8px; border-radius: 4px; }
-.mon-lbl { font-size: 9px; color: var(--text-dim); font-weight: bold; }
-.mon-val { font-family: monospace; font-size: 16px; font-weight: bold; }
+h2 { font-size: 14px; color: var(--accent-yellow); margin-bottom: 6px; }
+p, li { font-size: 12px; color: #cbd5e1; line-height: 1.5; margin-bottom: 6px; }
+ul { padding-left: 16px; }
 
-/* ÁREA DA ILUSTRAÇÃO DOS PROCEDIMENTOS */
-.illustration-box {
-    width: 100%; height: 130px; background: #030712;
-    border-radius: 8px; border: 1px solid rgba(0,240,255,0.3);
-    margin-bottom: 8px; display: flex; align-items: center; justify-content: center;
-}
-
-/* FEEDBACK MSG */
-.feedback-box {
-    background: rgba(0,0,0,0.5); border-left: 3px solid var(--accent-yellow);
-    padding: 8px; font-size: 10px; color: var(--accent-yellow); margin-bottom: 8px;
-    min-height: 36px; display: flex; align-items: center; border-radius: 4px; line-height: 1.3;
-}
-
-/* GUIA DE RCP */
-.rcp-guide {
-    background: rgba(255, 255, 255, 0.03); border-left: 3px solid var(--accent-green);
-    padding: 6px 8px; font-size: 9.5px; text-align: left; line-height: 1.4;
-    border-radius: 4px; margin-bottom: 8px;
-}
-
-/* MODAL DE RCP DE TREINO PRÁTICO */
-.rcp-modal {
-    position: absolute; top:0; left:0; width:100%; height:100%;
-    background: rgba(5,10,18,0.98); display: none; flex-direction: column;
-    padding: 12px; justify-content: space-between; text-align: center; border-radius: 20px; z-index: 50;
-    overflow-y: auto;
-}
-.counter { font-size: 36px; font-family: monospace; color: var(--accent-green); font-weight: bold; margin: 2px 0; }
+.table-responsive { overflow-x: auto; margin-top: 8px; }
+table { width: 100%; border-collapse: collapse; font-size: 11px; text-align: left; }
+th, td { border: 1px solid #475569; padding: 6px; }
+th { background: var(--accent-blue); color: #000; }
 </style>
 </head>
 <body>
 
-<div class="tablet-container">
-    <div class="statusbar">
-        <span>🩺 TREINADOR APH: PRESSÃO & RCP</span>
-        <span>🔋 100%</span>
+<div class="app-container">
+    <h1>🆘 GUIA PRIMEIROS SOCORROS</h1>
+
+    <div class="nav-grid">
+        <button onclick="showTopic('pa')">🩸 PRESSÃO (PA)</button>
+        <button onclick="showTopic('pcr')">🫀 PCR & PR</button>
+        <button onclick="showTopic('ovace')">🫁 ENGASGO (OVACE)</button>
+        <button onclick="showTopic('vinais')">🩺 SINAIS VITAIS</button>
     </div>
 
-    <!-- TELA 1: MENU PRINCIPAL DE TREINO -->
-    <div id="screen-menu" class="screen active">
-        <h1>🆘 TREINO DE EMERGÊNCIA</h1>
-        <p>Aprenda a reconhecer os sinais de alteração pressórica e a realizar a RCP:</p>
-
-        <button class="btn-red" onclick="startScenario('alta')">🚨 1. CRISE HIPERTENSIVA (PA 150x130 mmHg)</button>
-        <button class="btn-yellow" onclick="startScenario('baixa')">🔵 2. PRESSÃO BAIXA (HIPOTENSÃO & TONTURA)</button>
-        <button class="btn-green" onclick="startScenario('pcr')">🫀 3. PROTOCOLO DE RCP (30 COMPRESSÕES : 2 VENTILAÇÕES)</button>
-
-        <div style="background: rgba(0,240,255,0.05); border: 1px solid var(--accent-blue); padding: 10px; border-radius: 8px; margin-top: 10px; font-size: 10px; text-align: left; line-height: 1.4;">
-            <b style="color:var(--accent-blue);">💡 SINAIS DE ALERTA:</b><br>
-            • <b>Pressão Diastólica &ge; 120/130 mmHg:</b> Crise hipertensiva com risco vascular.<br>
-            • <b>Visão turva + Dor na nuca:</b> Alerta de elevação pressórica grave.<br>
-            • <b>Inconsciente + Sem respiração:</b> Inicie compressões no peito imediatamente.
-        </div>
+    <!-- MÓDULO PRESSÃO ARTERIAL -->
+    <div id="sec-pa" class="content-section active">
+        <h2>🚨 PRESSÃO ALTA (HIPERTENSÃO)</h2>
+        <ul>
+            <li><b>Sinais:</b> Dor na nuca, visão embaçada, zumbido no ouvido.</li>
+            <li><b>Conduta:</b> Mantenha a pessoa sentada e em repouso. Acalme o ambiente. Se houver dor no peito ou falta de ar, ligue 192 (SAMU).</li>
+        </ul>
+        <h2 style="margin-top:10px;">🔵 PRESSÃO BAIXA (HIPOTENSÃO)</h2>
+        <ul>
+            <li><b>Sinais:</b> Tontura, suor frio, palidez, sensação de desmaio.</li>
+            <li><b>Conduta:</b> Deite a pessoa de costas e <b>eleve as pernas a 30 cm</b>. Afrouxe roupas apertadas.</li>
+        </ul>
     </div>
 
-    <!-- TELA 2: SIMULADOR EM TEMPO REAL COM ILUSTRAÇÃO -->
-    <div id="screen-sim" class="screen">
-        <div class="monitor">
-            <div class="mon-box"><span class="mon-lbl">PA (mmHg)</span><div class="mon-val" id="m-pa" style="color:var(--accent-blue);">120x80</div></div>
-            <div class="mon-box"><span class="mon-lbl">FC (BPM)</span><div class="mon-val" id="m-fc" style="color:var(--accent-green);">80</div></div>
-        </div>
-
-        <!-- QUADRO DE ILUSTRAÇÃO DO PROCEDIMENTO -->
-        <div class="illustration-box" id="illustration-container">
-            <!-- Ilustração SVG injetada dinamicamente -->
-        </div>
-
-        <div class="feedback-box" id="feedback-txt">Avaliando estado do paciente...</div>
-
-        <!-- PAINEL DE SINTOMAS OBSERVADOS -->
-        <div style="background: rgba(255,255,255,0.03); padding: 6px; border-radius: 6px; margin-bottom: 6px; text-align: left; font-size: 10px;">
-            <b style="color:var(--accent-yellow);">🔎 SINTOMAS OBSERVADOS NA VÍTIMA:</b>
-            <div id="sintomas-list" style="margin-top: 3px; color:#fff;">-</div>
-        </div>
-
-        <h2>AÇÕES DE EMERGÊNCIA:</h2>
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 4px;">
-            <button onclick="fazerAcao('calmar')">🧘 TRANQUILIZAR & SENTAR</button>
-            <button onclick="fazerAcao('elevar_pernas')">🦵 ELEVAR AS PERNAS</button>
-            <button class="btn-red" onclick="fazerAcao('samu')">🚑 LIGAR 192 (SAMU)</button>
-            <button class="btn-green" onclick="abrirRcp()">🫀 INICIAR RCP (PEITO)</button>
-        </div>
-
-        <button class="btn-back" onclick="changeScreen('screen-menu')">↩ Voltar ao Menu</button>
+    <!-- MÓDULO PCR & PR -->
+    <div id="sec-pcr" class="content-section">
+        <h2>🫀 REANIMAÇÃO CARDIORRESPIRATÓRIA (RCP)</h2>
+        <p><b>1. Checar:</b> Vítima inconsciente + Sem respiração + Sem pulso.</p>
+        <p><b>2. Chamar:</b> Ligue 192 (SAMU) e peça um DEA.</p>
+        <p><b>3. Comprimir:</b> Mãos no centro do peito, afundar 5 a 6 cm no ritmo de <b>100 a 120 compressões por minuto</b> (30 compressões : 2 ventilações).</p>
     </div>
 
-    <!-- MODAL DE RCP COM ILUSTRAÇÕES E EXPLICAÇÃO DETALHADA DO PASSO A PASSO -->
-    <div class="rcp-modal" id="rcp-modal">
-        <h2 style="color:var(--accent-red);">🫀 MANOBRA DE REANIMAÇÃO (RCP)</h2>
+    <!-- MÓDULO OVACE -->
+    <div id="sec-ovace" class="content-section">
+        <h2>🫁 DESOBSTRUÇÃO DE VIAS AÉREAS</h2>
+        <p><b>Adulto Consciente (Manobra de Heimlich):</b> Abrace a vítima por trás, posicione o punho fechado acima do umbigo e pressione para dentro e para cima.</p>
+        <p><b>Bebês (&lt; 1 ano):</b> 5 Golpes nas costas (cabeça para baixo) alternados com 5 compressões no peito.</p>
+    </div>
 
-        <!-- ILUSTRAÇÃO ANATÔMICA DE COMO FAZER A RCP -->
-        <div class="illustration-box" style="height: 110px; margin: 2px 0;" id="rcp-svg-container">
-            <svg viewBox="0 0 200 110" width="150" height="95">
-                <!-- Vítima Deitada de Costas em Superfície Rígida -->
-                <rect x="20" y="75" width="160" height="10" rx="3" fill="#374151"/>
-                <circle cx="45" cy="65" r="11" fill="#ffcc99"/>
-                <rect x="60" y="60" width="80" height="18" rx="5" fill="#1f618d"/>
-                <!-- Mãos Entrelaçadas no Centro do Peito -->
-                <circle cx="100" cy="60" r="6" fill="#ff1744"/>
-                <path d="M 100,15 L 100,52" stroke="#00f0ff" stroke-width="5" stroke-dasharray="3" stroke-linecap="round"/>
-                <polygon points="94,46 100,56 106,46" fill="#00f0ff"/>
-                <!-- Seta de Profundidade 5 a 6 cm -->
-                <text x="112" y="38" fill="#00f0ff" font-size="8" font-weight="bold">5-6 cm</text>
-            </svg>
+    <!-- MÓDULO SINAIS VITAIS -->
+    <div id="sec-vinais" class="content-section">
+        <h2>🩺 TABELA DE SINAIS VITAIS</h2>
+        <div class="table-responsive">
+            <table>
+                <tr><th>Parâmetro</th><th>Criança</th><th>Adulto</th></tr>
+                <tr><td>FC (BPM)</td><td>80 - 120</td><td>60 - 100</td></tr>
+                <tr><td>PA (mmHg)</td><td>80x50 - 110x70</td><td>100x60 - 120x80</td></tr>
+                <tr><td>SpO2 (%)</td><td>&ge; 95%</td><td>95% - 100%</td></tr>
+                <tr><td>FR (MRPM)</td><td>20 - 30</td><td>12 - 20</td></tr>
+            </table>
         </div>
-
-        <!-- EXPLICAÇÃO PASSO A PASSO -->
-        <div class="rcp-guide">
-            <b style="color:var(--accent-green);">📋 PASSO A PASSO DA RCP DE ALTA QUALIDADE:</b><br>
-            <b>1. Posição das Mãos:</b> Calcanhar de uma mão no centro do peito (metade inferior do esterno) com os dedos entrelaçados.<br>
-            <b>2. Postura:</b> Braços totalmente esticados, ombros diretamente sobre o peito da vítima.<br>
-            <b>3. Frequência:</b> Comprimir no ritmo de 100 a 120 compressões/minuto.<br>
-            <b>4. Profundidade:</b> Afundar o tórax de 5 a 6 cm e permitir o retorno completo do peito.<br>
-            <b>5. Proporção:</b> Alternar 30 compressões rápidas com 2 ventilações de resgate.
-        </div>
-
-        <div>
-            <span style="color:var(--accent-yellow); font-weight:bold; font-size: 10px;" id="rcp-ciclo">CICLO 1 / 5</span>
-            <div class="counter" id="rcp-count">00 / 30</div>
-            <p id="rcp-inst" style="font-size: 9.5px; color: #fff;">Pressione 'COMPRIMIR' mantendo o ritmo!</p>
-        </div>
-
-        <div style="display:flex; gap:6px;">
-            <button class="btn-red" style="flex:1; padding:10px;" onclick="comprimir()">🫀 COMPRIMIR (PEITO)</button>
-            <button class="btn-green" style="flex:1; padding:10px;" id="btn-vent" disabled onclick="ventilar()">🌬️ VENTILAR (2x)</button>
-        </div>
-
-        <button class="btn-back" onclick="fecharRcp()">ABANDONAR TREINO</button>
     </div>
 </div>
 
 <script>
-let paPas = 120, paPad = 80, fc = 80;
-let rcpComp = 0, rcpVent = 0, rcpCicloNum = 1;
-let cenarioAtual = '';
-
-/* Dicionário de SVGs Ilustrativos */
-const ilustracoes = {
-    crise: `<svg viewBox="0 0 200 120" width="160" height="110">
-        <!-- Vítima Sentada com Dor de Cabeça -->
-        <circle cx="100" cy="40" r="18" fill="#ffcc99"/>
-        <path d="M 85,30 Q 100,20 115,30" stroke="#ff1744" stroke-width="3" fill="none"/>
-        <path d="M 85,70 L 115,70 L 110,110 L 90,110 Z" fill="#1f618d"/>
-        <!-- Símbolo de Pressão/Dor -->
-        <path d="M 75,25 L 82,35 M 125,25 L 118,35" stroke="#ffd166" stroke-width="3" stroke-linecap="round"/>
-    </svg>`,
-    hipotensao: `<svg viewBox="0 0 200 120" width="160" height="110">
-        <!-- Vítima Deitada com Pernas Elevadas -->
-        <rect x="20" y="85" width="160" height="10" rx="3" fill="#374151"/>
-        <circle cx="45" cy="75" r="14" fill="#e0d0c0"/>
-        <rect x="60" y="70" width="60" height="18" rx="4" fill="#1f618d"/>
-        <!-- Pernas sobre calço (Elevadas) -->
-        <polygon points="120,78 160,55 165,65 120,88" fill="#2c3e50"/>
-        <rect x="145" y="65" width="25" height="20" fill="#ffd166" rx="3"/>
-    </svg>`,
-    samu: `<svg viewBox="0 0 200 120" width="160" height="110">
-        <!-- Ambulância / Ligação 192 -->
-        <rect x="40" y="40" width="100" height="50" rx="6" fill="#ffffff" stroke="#ff1744" stroke-width="2"/>
-        <path d="M 140,55 L 165,55 L 175,75 L 175,90 L 140,90 Z" fill="#ffffff" stroke="#ff1744" stroke-width="2"/>
-        <!-- Cruz Vermelha -->
-        <rect x="80" y="55" width="20" height="6" fill="#ff1744"/>
-        <rect x="87" y="48" width="6" height="20" fill="#ff1744"/>
-        <circle cx="65" cy="90" r="10" fill="#333"/>
-        <circle cx="155" cy="90" r="10" fill="#333"/>
-    </svg>`,
-    pcr: `<svg viewBox="0 0 200 120" width="160" height="110">
-        <!-- Parada Cardíaca -->
-        <path d="M 100,30 C 70,10 50,40 100,90 C 150,40 130,10 100,30 Z" fill="#ff1744"/>
-        <path d="M 60,60 L 85,60 L 95,40 L 105,80 L 115,60 L 140,60" stroke="#ffffff" stroke-width="3" fill="none"/>
-    </svg>`
-};
-
-function changeScreen(id) {
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-}
-
-function startScenario(tipo) {
-    cenarioAtual = tipo;
-    changeScreen('screen-sim');
-
-    if(tipo === 'alta') {
-        paPas = 150; paPad = 130; fc = 98;
-        document.getElementById('m-pa').style.color = "var(--accent-red)";
-        document.getElementById('illustration-container').innerHTML = ilustracoes.crise;
-        document.getElementById('sintomas-list').innerHTML = "• Dor forte de cabeça / nuca<br>• Visão embaçada ou pontos luminosos<br>• Zumbido no ouvido";
-        document.getElementById('feedback-txt').innerHTML = "🚨 CRISE HIPERTENSIVA! A pressão diastólica (130 mmHg) está criticamente elevada!";
-    } else if(tipo === 'baixa') {
-        paPas = 85; paPad = 50; fc = 110;
-        document.getElementById('m-pa').style.color = "var(--accent-blue)";
-        document.getElementById('illustration-container').innerHTML = ilustracoes.hipotensao;
-        document.getElementById('sintomas-list').innerHTML = "• Tontura forte ao se levantar<br>• Pele pálida, fria e suada<br>• Sensação de desmaio";
-        document.getElementById('feedback-txt').innerHTML = "🔵 PRESSÃO BAIXA! Fluxo sanguíneo reduzido temporariamente.";
-    } else if(tipo === 'pcr') {
-        paPas = 0; paPad = 0; fc = 0;
-        document.getElementById('m-pa').style.color = "var(--accent-red)";
-        document.getElementById('illustration-container').innerHTML = ilustracoes.pcr;
-        document.getElementById('sintomas-list').innerHTML = "• Inconsciente (Não responde ao chamar)<br>• Ausência de respiração<br>• Sem pulso palpável";
-        document.getElementById('feedback-txt').innerHTML = "🚨 PARADA CARDIORRESPIRATÓRIA! Inicie as compressões no centro do peito imediatamente!";
-        abrirRcp();
-    }
-
-    document.getElementById('m-pa').innerText = `${paPas}x${paPad}`;
-    document.getElementById('m-fc').innerText = fc;
-}
-
-function fazerAcao(acao) {
-    const fb = document.getElementById('feedback-txt');
-    const container = document.getElementById('illustration-container');
-
-    if(acao === 'calmar') {
-        if(cenarioAtual === 'alta') {
-            container.innerHTML = ilustracoes.crise;
-            fb.innerHTML = "✅ CORRETO: Manter a pessoa sentada e repousada reduz o esforço do coração. Evite deitar reto!";
-        } else {
-            fb.innerHTML = "ℹ️ Posição sentada mantida.";
-        }
-    } else if(acao === 'elevar_pernas') {
-        if(cenarioAtual === 'baixa') {
-            container.innerHTML = ilustracoes.hipotensao;
-            fb.innerHTML = "✅ CORRETO: Elevar as pernas a 30cm facilita o retorno venoso de sangue ao cérebro na Pressão Baixa!";
-        } else if(cenarioAtual === 'alta') {
-            fb.innerHTML = "⚠️ ATENÇÃO: NÃO eleve as pernas na Crise Hipertensiva! Isso aumenta a pressão vascular na cabeça.";
-        }
-    } else if(acao === 'samu') {
-        container.innerHTML = ilustracoes.samu;
-        fb.innerHTML = "🚑 SAMU 192 ACIONADO! Relate os valores pressóricos e sintomas ao médico regulador.";
-    }
-}
-
-/* LÓGICA PRÁTICA DE RCP 30:2 */
-function abrirRcp() {
-    document.getElementById('rcp-modal').style.display = 'flex';
-    rcpComp = 0; rcpVent = 0; rcpCicloNum = 1;
-    atualizarRcpUI();
-}
-function fecharRcp() { document.getElementById('rcp-modal').style.display = 'none'; }
-
-function comprimir() {
-    if(rcpComp < 30) {
-        rcpComp++;
-        document.getElementById('rcp-count').innerText = `${rcpComp.toString().padStart(2, '0')} / 30`;
-        if(rcpComp === 30) {
-            document.getElementById('btn-vent').disabled = false;
-            document.getElementById('rcp-inst').innerText = "30 Compressões concluídas! Agora aplique 2 Ventilações!";
-        }
-    }
-}
-
-function ventilar() {
-    if(rcpComp >= 30 && rcpVent < 2) {
-        rcpVent++;
-        document.getElementById('rcp-inst').innerText = `Ventilação ${rcpVent} / 2 efetuada.`;
-        if(rcpVent === 2) {
-            if(rcpCicloNum < 5) {
-                rcpCicloNum++;
-                rcpComp = 0; rcpVent = 0;
-                document.getElementById('btn-vent').disabled = true;
-                atualizarRcpUI();
-            } else {
-                fecharRcp();
-                alert("🎉 PARABÉNS! Você completou os 5 ciclos de RCP (150 compressões) no ritmo correto!");
-            }
-        }
-    }
-}
-
-function atualizarRcpUI() {
-    document.getElementById('rcp-ciclo').innerText = `CICLO ${rcpCicloNum} / 5`;
-    document.getElementById('rcp-count').innerText = "00 / 30";
-    document.getElementById('rcp-inst').innerText = "Pressione 'COMPRIMIR' mantendo o ritmo!";
+function showTopic(id) {
+    document.querySelectorAll('.content-section').forEach(el => el.classList.remove('active'));
+    document.getElementById('sec-' + id).classList.add('active');
 }
 </script>
 </body>
