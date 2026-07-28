@@ -3,108 +3,267 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Guia de Primeiros Socorros</title>
+<title>Guia Fácil de Primeiros Socorros</title>
 <style>
 :root {
-    --bg-dark: #0f172a;
+    --bg-main: #0f172a;
     --card-bg: #1e293b;
     --accent-blue: #38bdf8;
-    --accent-red: #ef4444;
     --accent-green: #22c55e;
+    --accent-red: #ef4444;
     --accent-yellow: #eab308;
-    --text-main: #f8fafc;
+    --accent-purple: #c084fc;
+    --text-primary: #f8fafc;
+    --text-dim: #94a3b8;
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif; user-select: none; }
 
-body { background: var(--bg-dark); color: var(--text-main); padding: 12px; display: flex; justify-content: center; }
+body {
+    background: var(--bg-main);
+    color: var(--text-primary);
+    display: flex; justify-content: center; align-items: center;
+    min-height: 100vh; padding: 12px;
+}
 
-.app-container { width: 100%; max-width: 480px; background: var(--card-bg); border-radius: 16px; padding: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+/* CONTAINER TIPO APLICATIVO CELULAR */
+.app-container {
+    width: 100%; max-width: 480px; height: 95vh; max-height: 850px;
+    background: var(--card-bg); border-radius: 24px;
+    display: flex; flex-direction: column; overflow: hidden;
+    border: 3px solid #334155; box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+    padding: 12px; position: relative;
+}
 
-h1 { font-size: 18px; color: var(--accent-blue); text-align: center; margin-bottom: 12px; text-transform: uppercase; }
+.header {
+    text-align: center; padding-bottom: 10px; border-bottom: 1px solid #334155; margin-bottom: 10px;
+}
+.header h1 { font-size: 18px; color: var(--accent-blue); text-transform: uppercase; }
+.header p { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
 
-.nav-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+/* MENU DE NAVEGAÇÃO */
+.nav-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;
+}
 
 button {
     background: #334155; color: #fff; border: 1px solid var(--accent-blue);
-    padding: 12px 8px; border-radius: 8px; font-size: 11px; font-weight: bold;
-    cursor: pointer; text-transform: uppercase; transition: 0.2s;
+    padding: 10px; border-radius: 10px; font-weight: bold; font-size: 11px;
+    cursor: pointer; text-transform: uppercase; transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
 }
 button:hover { background: var(--accent-blue); color: #000; }
+button:active { transform: scale(0.97); }
 
-.content-section { display: none; background: rgba(0,0,0,0.2); padding: 12px; border-radius: 8px; border-left: 4px solid var(--accent-blue); margin-bottom: 12px; }
-.content-section.active { display: block; }
+.btn-kid { background: rgba(192, 132, 252, 0.2); border-color: var(--accent-purple); color: var(--accent-purple); grid-column: span 2; font-size: 12px; padding: 12px; }
+.btn-red { background: rgba(239, 68, 68, 0.2); border-color: var(--accent-red); color: #fca5a5; }
+.btn-green { background: rgba(34, 197, 94, 0.2); border-color: var(--accent-green); color: var(--accent-green); }
+
+/* TELAS DO APP */
+.screen { display: none; flex-direction: column; height: 100%; overflow-y: auto; padding-right: 4px; }
+.screen.active { display: flex; }
+
+.card {
+    background: rgba(0,0,0,0.25); border-radius: 12px; padding: 12px;
+    margin-bottom: 10px; border-left: 4px solid var(--accent-blue);
+}
 
 h2 { font-size: 14px; color: var(--accent-yellow); margin-bottom: 6px; }
-p, li { font-size: 12px; color: #cbd5e1; line-height: 1.5; margin-bottom: 6px; }
-ul { padding-left: 16px; }
+p, li { font-size: 12px; color: #e2e8f0; line-height: 1.5; margin-bottom: 6px; }
+ul { padding-left: 18px; }
 
-.table-responsive { overflow-x: auto; margin-top: 8px; }
-table { width: 100%; border-collapse: collapse; font-size: 11px; text-align: left; }
-th, td { border: 1px solid #475569; padding: 6px; }
-th { background: var(--accent-blue); color: #000; }
+/* CALCULADORA DE PRESSÃO */
+.input-box { display: flex; gap: 8px; margin: 10px 0; }
+.input-field {
+    flex: 1; background: #0f172a; border: 1px solid var(--accent-blue);
+    color: #fff; padding: 10px; border-radius: 8px; font-size: 14px; text-align: center; outline: none;
+}
+.result-box {
+    padding: 10px; border-radius: 8px; text-align: center; font-weight: bold;
+    font-size: 13px; margin-top: 8px; display: none; line-height: 1.4;
+}
+
+/* ILUSTRAÇÃO SVG DA RCP */
+.svg-container {
+    width: 100%; height: 140px; background: #0f172a; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center; margin: 8px 0; border: 1px solid #334155;
+}
+
+/* TABELA SIMPLES */
+table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 6px; }
+th, td { border: 1px solid #475569; padding: 6px; text-align: left; }
+th { background: rgba(56, 189, 248, 0.2); color: var(--accent-blue); }
+
+.btn-back { background: #334155; color: #aaa; border-color: #64748b; margin-top: auto; }
 </style>
 </head>
 <body>
 
 <div class="app-container">
-    <h1>🆘 GUIA PRIMEIROS SOCORROS</h1>
+    <div class="header">
+        <h1>🆘 PRIMEIROS SOCORROS FÁCEIS</h1>
+        <p>Aprenda a ajudar de forma simples e rápida</p>
+    </div>
 
+    <!-- MENU DE SELEÇÃO -->
     <div class="nav-grid">
-        <button onclick="showTopic('pa')">🩸 PRESSÃO (PA)</button>
-        <button onclick="showTopic('pcr')">🫀 PCR & PR</button>
-        <button onclick="showTopic('ovace')">🫁 ENGASGO (OVACE)</button>
-        <button onclick="showTopic('vinais')">🩺 SINAIS VITAIS</button>
+        <button onclick="showScreen('check-pa')">🔍 CHECAR PRESSÃO</button>
+        <button onclick="showScreen('info-pa')">🩸 PRESSÃO ALTA E BAIXA</button>
+        <button class="btn-red" onclick="showScreen('rcp')">🫀 CORAÇÃO PARADO (RCP)</button>
+        <button class="btn-green" onclick="showScreen('ovace')">🫁 DESENGASGAR (ENGASGO)</button>
+        <button class="btn-kid" onclick="showScreen('kids')">🧒 MODO CRIANÇA: O QUE FAZER?</button>
     </div>
 
-    <!-- MÓDULO PRESSÃO ARTERIAL -->
-    <div id="sec-pa" class="content-section active">
-        <h2>🚨 PRESSÃO ALTA (HIPERTENSÃO)</h2>
-        <ul>
-            <li><b>Sinais:</b> Dor na nuca, visão embaçada, zumbido no ouvido.</li>
-            <li><b>Conduta:</b> Mantenha a pessoa sentada e em repouso. Acalme o ambiente. Se houver dor no peito ou falta de ar, ligue 192 (SAMU).</li>
-        </ul>
-        <h2 style="margin-top:10px;">🔵 PRESSÃO BAIXA (HIPOTENSÃO)</h2>
-        <ul>
-            <li><b>Sinais:</b> Tontura, suor frio, palidez, sensação de desmaio.</li>
-            <li><b>Conduta:</b> Deite a pessoa de costas e <b>eleve as pernas a 30 cm</b>. Afrouxe roupas apertadas.</li>
-        </ul>
+    <!-- TELA 1: CHECADOR INTERATIVO DE PRESSÃO -->
+    <div id="screen-check-pa" class="screen active">
+        <div class="card">
+            <h2>🔎 TESTAR VALOR DA PRESSÃO</h2>
+            <p>Digite os números que apareceram no aparelho de medir pressão:</p>
+            
+            <div class="input-box">
+                <input type="number" id="pa-cima" class="input-field" placeholder="Número de Cima (ex: 12 ou 120)">
+                <input type="number" id="pa-baixo" class="input-field" placeholder="Número de Baixo (ex: 8 ou 80)">
+            </div>
+            <button style="width: 100%;" onclick="analisarPressao()">ANALISAR AGORA</button>
+
+            <div id="pa-resultado" class="result-box"></div>
+        </div>
+        <button class="btn-back" onclick="showScreen('check-pa')">↩ VOLTAR</button>
     </div>
 
-    <!-- MÓDULO PCR & PR -->
-    <div id="sec-pcr" class="content-section">
-        <h2>🫀 REANIMAÇÃO CARDIORRESPIRATÓRIA (RCP)</h2>
-        <p><b>1. Checar:</b> Vítima inconsciente + Sem respiração + Sem pulso.</p>
-        <p><b>2. Chamar:</b> Ligue 192 (SAMU) e peça um DEA.</p>
-        <p><b>3. Comprimir:</b> Mãos no centro do peito, afundar 5 a 6 cm no ritmo de <b>100 a 120 compressões por minuto</b> (30 compressões : 2 ventilações).</p>
-    </div>
+    <!-- TELA 2: EXPLICAÇÃO DE PRESSÃO ALTA E BAIXA -->
+    <div id="screen-info-pa" class="screen">
+        <div class="card" style="border-color: var(--accent-red);">
+            <h2 style="color: var(--accent-red);">🔴 PRESSÃO ALTA (Acima de 14 por 9)</h2>
+            <ul>
+                <li><b>Sinais comuns:</b> Dor forte na nuca (atrás da cabeça), visão embaçada, zumbido no ouvido.</li>
+                <li><b>O que fazer:</b> Mantenha a pessoa sentada bem calma. Não deixe ela deitar reta. Pergunte se esqueceu de tomar o remédio de uso diário. Se houver dor no peito, ligue para o 192 (SAMU).</li>
+            </ul>
+        </div>
 
-    <!-- MÓDULO OVACE -->
-    <div id="sec-ovace" class="content-section">
-        <h2>🫁 DESOBSTRUÇÃO DE VIAS AÉREAS</h2>
-        <p><b>Adulto Consciente (Manobra de Heimlich):</b> Abrace a vítima por trás, posicione o punho fechado acima do umbigo e pressione para dentro e para cima.</p>
-        <p><b>Bebês (&lt; 1 ano):</b> 5 Golpes nas costas (cabeça para baixo) alternados com 5 compressões no peito.</p>
-    </div>
+        <div class="card" style="border-color: var(--accent-blue);">
+            <h2 style="color: var(--accent-blue);">🔵 PRESSÃO BAIXA (Abaixo de 9 por 6)</h2>
+            <ul>
+                <li><b>Sinais comuns:</b> Tontura ao levantar, vista escura, suor frio, sensação de desmaio.</li>
+                <li><b>O que fazer:</b> Deite a pessoa de costas no chão e <b>eleve as pernas dela para o alto</b> (use almofadas). Isso faz o sangue voltar rápido para a cabeça.</li>
+            </ul>
+        </div>
 
-    <!-- MÓDULO SINAIS VITAIS -->
-    <div id="sec-vinais" class="content-section">
-        <h2>🩺 TABELA DE SINAIS VITAIS</h2>
-        <div class="table-responsive">
+        <div class="card">
+            <h2>📊 VALORES DE REFERÊNCIA DA PRESSÃO</h2>
             <table>
-                <tr><th>Parâmetro</th><th>Criança</th><th>Adulto</th></tr>
-                <tr><td>FC (BPM)</td><td>80 - 120</td><td>60 - 100</td></tr>
-                <tr><td>PA (mmHg)</td><td>80x50 - 110x70</td><td>100x60 - 120x80</td></tr>
-                <tr><td>SpO2 (%)</td><td>&ge; 95%</td><td>95% - 100%</td></tr>
-                <tr><td>FR (MRPM)</td><td>20 - 30</td><td>12 - 20</td></tr>
+                <tr><th>Tipo de Pressão</th><th>Valor de Cima</th><th>Valor de Baixo</th></tr>
+                <tr style="color:#60a5fa;"><td>Pressão Baixa</td><td>Abaixo de 9 (90)</td><td>Abaixo de 6 (60)</td></tr>
+                <tr style="color:#4ade80;"><td>Pressão Normal</td><td>12 (120)</td><td>8 (80)</td></tr>
+                <tr style="color:#f87171;"><td>Pressão Alta</td><td>Acima de 14 (140)</td><td>Acima de 9 (90)</td></tr>
+                <tr style="color:#ef4444; font-weight:bold;"><td>Muito Alta (Perigo)</td><td>Acima de 18 (180)</td><td>Acima de 11 (110)</td></tr>
             </table>
+        </div>
+    </div>
+
+    <!-- TELA 3: CORAÇÃO PARADO (RCP) COM DESENHO EXPLICATIVO -->
+    <div id="screen-rcp" class="screen">
+        <div class="card" style="border-color: var(--accent-red);">
+            <h2 style="color: var(--accent-red);">🫀 COMO AJUDAR SE O CORAÇÃO PARAR</h2>
+            <p>Se a pessoa caiu, não responde ao ser chamada e o peito não se mexe:</p>
+
+            <!-- ILUSTRAÇÃO DESENHADA DO PASSO A PASSO -->
+            <div class="svg-container">
+                <svg viewBox="0 0 200 120" width="160" height="110">
+                    <!-- Vítima no chão -->
+                    <rect x="20" y="80" width="160" height="10" rx="3" fill="#475569"/>
+                    <circle cx="45" cy="70" r="11" fill="#ffcc99"/>
+                    <rect x="60" y="65" width="80" height="18" rx="5" fill="#1e3a8a"/>
+                    <!-- Posição das mãos e braço esticado -->
+                    <circle cx="100" cy="65" r="5" fill="#ef4444"/>
+                    <path d="M 100,20 L 100,58" stroke="#38bdf8" stroke-width="5" stroke-linecap="round"/>
+                    <polygon points="94,50 100,60 106,50" fill="#38bdf8"/>
+                    <text x="110" y="40" fill="#38bdf8" font-size="9" font-weight="bold">Empurrar 5cm</text>
+                </svg>
+            </div>
+
+            <ul>
+                <li><b>1. Chame Ajuda:</b> Peça para alguém ligar para o <b>192 (SAMU)</b> imediatamente.</li>
+                <li><b>2. Posição das Mãos:</b> Junte as duas mãos e coloque no meio do peito da pessoa.</li>
+                <li><b>3. Mantenha os Braços Retos:</b> Empurre o peito para baixo com força e firmeza.</li>
+                <li><b>4. Ritmo da Batida:</b> Empurre o peito de <b>100 a 120 vezes por minuto</b> (no ritmo rápido da música "Stayin' Alive"). Sem parar até a ambulância chegar!</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- TELA 4: ENGASGO (DESENGASGAR) -->
+    <div id="screen-ovace" class="screen">
+        <div class="card" style="border-color: var(--accent-green);">
+            <h2 style="color: var(--accent-green);">🫁 O QUE FAZER EM CASO DE ENGASGO</h2>
+            <p>Se a pessoa levou as mãos ao pescoço, está roxa e não consegue falar ou tossir:</p>
+            <ul>
+                <li><b>Adultos:</b> Abrace a pessoa por trás. Coloque o seu punho fechado um pouco acima do umbigo dela. Pressione com força para dentro e para cima (como se quisesse erguer a pessoa) até o alimento sair.</li>
+                <li><b>Bebês (Menores de 1 ano):</b> Deite o bebê de barriga para baixo no seu braço (com a cabeça levemente inclinada para baixo). Dê <b>5 tapas firmes nas costas</b> (entre os ombros). Depois vire o bebê e faça 5 empurrões no peito com dois dedos.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- TELA 5: MODO CRIANÇA (O QUE FAZER) -->
+    <div id="screen-kids" class="screen">
+        <div class="card" style="border-color: var(--accent-purple);">
+            <h2 style="color: var(--accent-purple);">🧒 GUIA SUPER HERÓI (PARA CRIANÇAS)</h2>
+            <p>Se um adulto passar mal perto de você, siga estes passos de herói:</p>
+            <ul>
+                <li><b>⭐ REGRA DE OURO:</b> Mantenha a calma. Você é muito corajoso!</li>
+                <li><b>1. Chame um Adulto:</b> Grite por socorro ou corra até um vizinho conhecido que você confia.</li>
+                <li><b>2. Ligue para a Emergência:</b> Pegue o celular e discando para o número <b>192 (SAMU)</b> ou <b>193 (Bombeiros)</b>. A ligação é grátis!</li>
+                <li><b>3. O que Falar no Telefone:</b>
+                    <br>• Diga o seu nome.
+                    <br>• Diga o nome da sua rua e o número da sua casa.
+                    <br>• Conte o que aconteceu com o adulto.</li>
+                <li><b>4. Se o Adulto Engasgar:</b> Peça para ele tossir o mais forte que conseguir!</li>
+            </ul>
         </div>
     </div>
 </div>
 
 <script>
-function showTopic(id) {
-    document.querySelectorAll('.content-section').forEach(el => el.classList.remove('active'));
-    document.getElementById('sec-' + id).classList.add('active');
+function showScreen(screenId) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('screen-' + screenId).classList.add('active');
+}
+
+function analisarPressao() {
+    let cima = parseFloat(document.getElementById('pa-cima').value);
+    let baixo = parseFloat(document.getElementById('pa-baixo').value);
+    const res = document.getElementById('pa-resultado');
+
+    if (isNaN(cima) || isNaN(baixo)) {
+        res.style.display = 'block';
+        res.style.background = 'rgba(239, 68, 68, 0.2)';
+        res.style.color = '#fca5a5';
+        res.innerHTML = "⚠️ Por favor, digite os dois números para analisar.";
+        return;
+    }
+
+    // Ajusta se a pessoa digitou em dezenas (ex: 12 em vez de 120)
+    if (cima < 30) cima = cima * 10;
+    if (baixo < 30) baixo = baixo * 10;
+
+    res.style.display = 'block';
+
+    if (cima >= 180 || baixo >= 110) {
+        res.style.background = 'rgba(239, 68, 68, 0.3)';
+        res.style.color = '#ef4444';
+        res.innerHTML = "🚨 PRESSÃO MUITO ALTA (CRISE)!<br>Ligue imediatamente para o 192 (SAMU). Mantenha a pessoa sentada e bem calma.";
+    } else if (cima >= 140 || baixo >= 90) {
+        res.style.background = 'rgba(234, 179, 8, 0.2)';
+        res.style.color = '#eab308';
+        res.innerHTML = "⚠️ PRESSÃO ALTA!<br>Mantenha a pessoa sentada e tranquila. Cheque se ela tomou o remédio do dia. Se sentir dor no peito, vá ao médico.";
+    } else if (cima < 90 || baixo < 60) {
+        res.style.background = 'rgba(56, 189, 248, 0.2)';
+        res.style.color = '#38bdf8';
+        res.innerHTML = "🔵 PRESSÃO BAIXA!<br>Deite a pessoa de costas no chão e eleve as pernas dela a cerca de 30cm com ajuda de almofadas.";
+    } else {
+        res.style.background = 'rgba(34, 197, 94, 0.2)';
+        res.style.color = '#22c55e';
+        res.innerHTML = "🟢 PRESSÃO NORMAL!<br>Os valores estão ótimos e dentro da faixa saudável.";
+    }
 }
 </script>
 </body>
